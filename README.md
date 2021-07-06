@@ -1,5 +1,5 @@
-# emss-frontend
-
+# Eyjafjalla Minecraft Server Supervisor
+- Manage your server with docker!
 ## Project setup
 ```
 npm install
