@@ -1,6 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '@/store'
 import Workbench from '@/views/Workbench.vue'
+import ServerList from '@/views/ServerList.vue'
+import NotFound from '@/views/NotFound.vue'
+import ServerListHeader from '@/components/server/ServerListHeader.vue'
 
 const routes = [
     {
@@ -16,6 +19,31 @@ const routes = [
         },
 
         component: Workbench,
+    },
+    {
+        path: '/server/list',
+        name: 'server_list',
+        meta: {
+            menu_Index: '/server/list',
+            breadcrumb: ['工作台', '服务器'],
+        },
+        components: {
+            default: ServerList,
+            extra: ServerListHeader,
+        },
+    },
+    {
+        path: '/404',
+        name: 'not_found',
+        meta: {
+            menuIndex: '/404',
+            breadcrumb: ['工作台', '404'],
+        },
+        component: NotFound,
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: { name: 'not_found' },
     },
 ]
 
