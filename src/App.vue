@@ -1,32 +1,152 @@
 <template>
-  <div>
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <el-container class="full-height">
+    <el-aside width="auto" class="container" v-if="!isMobile">
+      <my-navigator v-model:collapsed="collapseSide"></my-navigator>
+    </el-aside>
+    <el-container>
+      <el-header class="my-shadow">
+        <header-nav @collapse-click="collapseSide = !collapseSide"
+                    :collapseSide="collapseSide"
+                    :show-breadcrumb="!isMobile"
+        ></header-nav>
+      </el-header>
+      <el-main class="main-content">
+        <div class="content-header">
+          <header-breadcrumb v-if="isMobile"
+                             :max-breadcrumb="5"
+                             style="margin-bottom: 10px"
+          >
+          </header-breadcrumb>
+
+          <router-view name="extra"></router-view>
+        </div>
+        <div class="view">
+          <router-view></router-view>
+        </div>
+
+        <el-backtop target=".main-content"></el-backtop>
+      </el-main>
+    </el-container>
+    <el-drawer :with-header="false" v-model="showSide" append-to-body
+               direction="ltr" v-if="isMobile" size="249px" custom-class="drawer">
+      <my-navigator v-model:collapsed="collapseSide"
+                    is-drawer @select="showSide = false"></my-navigator>
+    </el-drawer>
+  </el-container>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+
+import MyNavigator from '@/components/header/Navigator.vue';
+import HeaderNav from '@/components/header/HeaderNav.vue';
+import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue';
+
+const smMatch = window.matchMedia('(max-width: 768px)');
+
+export default {
+  name: 'App',
+  data() {
+    return {
+      collapseSide: smMatch.matches === true,
+      isMobile: smMatch.matches === true,
+    };
+  },
+  computed: {
+    showSide: {
+      get() {
+        return !this.collapseSide;
+      },
+      set(value) {
+        this.collapseSide = !value;
+      },
+    },
+  },
+  mounted() {
+    window.addEventListener('resize', this.onResize);
+  },
+  unmounted() {
+    window.removeEventListener('resize', this.onResize);
+  },
+  methods: {
+    onResize() {
+      const val = smMatch.matches === true;
+      if (val !== this.isMobile) {
+        this.$store.commit('setIsMobile', val);
+        this.isMobile = val;
+      }
+    },
+  },
+  components: { HeaderNav, MyNavigator, HeaderBreadcrumb },
+};
+</script>
+
+<style>
+html, body, #app, .full-height {
+  height: 100%;
+}
+.full-height {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.9);
 }
 
-#nav {
-  padding: 30px;
+.my-shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+.blank, .auto-size {
+  flex: 1 1 0;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.color-primary {
+  color: #409EFF !important;
+}
+
+.color-danger {
+  color: #F56C6C !important;
+}
+
+.color-success {
+  color: #67C23A !important;
+}
+
+.color-info {
+  color: #909399 !important;
+}
+
+.color-warn {
+  color: #E6A23C !important;
+}
+
+</style>
+
+<style scoped>
+
+.content-header {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background-color: #ffffff;
+
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f2f2;
+  padding: 0;
+}
+
+.main-content .view {
+  padding: 8px 16px;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.main-content .view div{
+  flex: 1 1 auto;
 }
 </style>
