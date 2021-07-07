@@ -83,50 +83,50 @@
 <script>
 
 export default {
-  name: 'my-navigator',
-  props: {
-    isDrawer: {
-      type: Boolean,
-      default: false,
+    name: 'my-navigator',
+    props: {
+        isDrawer: {
+            type: Boolean,
+            default: false,
+        },
+        collapsed: {
+            type: Boolean,
+            default: false,
+        },
     },
-    collapsed: {
-      type: Boolean,
-      default: false,
+    data() {
+        return {
+            backgroundColor: '#545c64',
+            textColor: '#fff',
+            activeTextColor: '#ffd04b',
+        }
     },
-  },
-  data() {
-    return {
-      backgroundColor: '#545c64',
-      textColor: '#fff',
-      activeTextColor: '#ffd04b',
-    };
-  },
-  computed: {
-    icon() {
-      return this.collapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold';
+    computed: {
+        icon() {
+            return this.collapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'
+        },
+        menuIndex() {
+            const { menuIndex } = this.$route.meta
+            if (typeof menuIndex === 'function') {
+                return menuIndex(this.$route)
+            }
+            return menuIndex
+        },
+        runningServer() {
+            return this.$store.state.serverList?.filter((s) => s.running) || []
+        },
+        stoppedServer() {
+            return this.$store.state.serverList?.filter((s) => !s.running) || []
+        },
     },
-    menuIndex() {
-      const { menuIndex } = this.$route.meta;
-      if (typeof menuIndex === 'function') {
-        return menuIndex(this.$route);
-      }
-      return menuIndex;
+    methods: {
+        menuSelect(e) {
+            if (this.isDrawer) {
+                this.$emit('select', e)
+            }
+        },
     },
-    runningServer() {
-      return this.$store.state.serverList?.filter((s) => s.running) || [];
-    },
-    stoppedServer() {
-      return this.$store.state.serverList?.filter((s) => !s.running) || [];
-    },
-  },
-  methods: {
-    menuSelect(e) {
-      if (this.isDrawer) {
-        this.$emit('select', e);
-      }
-    },
-  },
-};
+}
 </script>
 
 <style>

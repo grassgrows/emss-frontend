@@ -1,7 +1,7 @@
 <template>
   <el-container class="full-height">
     <el-aside width="auto" class="container" v-if="!isMobile">
-      <my-navigator v-model:collapsed="collapseSide"></my-navigator>
+      <my-navigator :collapsed.sync="collapseSide"></my-navigator>
     </el-aside>
     <el-container>
       <el-header class="my-shadow">
@@ -29,7 +29,7 @@
     </el-container>
     <el-drawer :with-header="false" v-model="showSide" append-to-body
                direction="ltr" v-if="isMobile" size="249px" custom-class="drawer">
-      <my-navigator v-model:collapsed="collapseSide"
+      <my-navigator :collapsed.sync="collapseSide"
                     is-drawer @select="showSide = false"></my-navigator>
     </el-drawer>
   </el-container>
@@ -37,47 +37,47 @@
 
 <script>
 
-import MyNavigator from '@/components/header/Navigator.vue';
-import HeaderNav from '@/components/header/HeaderNav.vue';
-import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue';
+import MyNavigator from '@/components/header/Navigator.vue'
+import HeaderNav from '@/components/header/HeaderNav.vue'
+import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue'
 
-const smMatch = window.matchMedia('(max-width: 768px)');
+const smMatch = window.matchMedia('(max-width: 768px)')
 
 export default {
-  name: 'App',
-  data() {
-    return {
-      collapseSide: smMatch.matches === true,
-      isMobile: smMatch.matches === true,
-    };
-  },
-  computed: {
-    showSide: {
-      get() {
-        return !this.collapseSide;
-      },
-      set(value) {
-        this.collapseSide = !value;
-      },
+    name: 'App',
+    data() {
+        return {
+            collapseSide: smMatch.matches === true,
+            isMobile: smMatch.matches === true,
+        }
     },
-  },
-  mounted() {
-    window.addEventListener('resize', this.onResize);
-  },
-  unmounted() {
-    window.removeEventListener('resize', this.onResize);
-  },
-  methods: {
-    onResize() {
-      const val = smMatch.matches === true;
-      if (val !== this.isMobile) {
-        this.$store.commit('setIsMobile', val);
-        this.isMobile = val;
-      }
+    computed: {
+        showSide: {
+            get() {
+                return !this.collapseSide
+            },
+            set(value) {
+                this.collapseSide = !value
+            },
+        },
     },
-  },
-  components: { HeaderNav, MyNavigator, HeaderBreadcrumb },
-};
+    mounted() {
+        window.addEventListener('resize', this.onResize)
+    },
+    unmounted() {
+        window.removeEventListener('resize', this.onResize)
+    },
+    methods: {
+        onResize() {
+            const val = smMatch.matches === true
+            if (val !== this.isMobile) {
+                this.$store.commit('setIsMobile', val)
+                this.isMobile = val
+            }
+        },
+    },
+    components: { HeaderNav, MyNavigator, HeaderBreadcrumb },
+}
 </script>
 
 <style>

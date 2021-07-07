@@ -1,38 +1,38 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-import store from '@/store';
-import Workbench from '@/views/Workbench.vue';
+import { createRouter, createWebHashHistory } from 'vue-router'
+import store from '@/store'
+import Workbench from '@/views/Workbench.vue'
 
 const routes = [
-  {
-    path: '/',
-    redirect: { name: 'workbench' },
-  },
-  {
-    path: '/workbench',
-    name: 'workbench',
-    meta: {
-      menuIndex: '/workbench',
-      breadcrumb: ['工作台'],
+    {
+        path: '/',
+        redirect: { name: 'workbench' },
     },
+    {
+        path: '/workbench',
+        name: 'workbench',
+        meta: {
+            menuIndex: '/workbench',
+            breadcrumb: ['工作台'],
+        },
 
-    component: Workbench,
-  },
-];
+        component: Workbench,
+    },
+]
 
 const router = createRouter({
-  history: createWebHashHistory(),
-  routes,
-});
+    history: createWebHashHistory(),
+    routes,
+})
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.noLogin !== true && !store.state.authToken) {
+    if (to.meta.noLogin !== true && !store.state.authToken) {
     // TODO: 跳转到登录
-    store.commit('refreshServerList');
-    next();
+        store.commit('refreshServerList')
+        next()
     // next({ name: 'Login' });
-  } else {
-    next();
-  }
-});
+    } else {
+        next()
+    }
+})
 
-export default router;
+export default router

@@ -16,27 +16,27 @@
 </template>
 
 <script>
-import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue';
+import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue'
 
 export default {
-  name: 'HeaderNav',
-  props: {
-    collapseSide: {
-      type: Boolean,
-      default: true,
+    name: 'HeaderNav',
+    props: {
+        collapseSide: {
+            type: Boolean,
+            default: true,
+        },
+        showBreadcrumb: {
+            type: Boolean,
+            default: true,
+        },
     },
-    showBreadcrumb: {
-      type: Boolean,
-      default: true,
+    components: { HeaderBreadcrumb },
+    computed: {
+        icon() {
+            return this.collapseSide ? 'el-icon-s-unfold' : 'el-icon-s-fold'
+        },
     },
-  },
-  components: { HeaderBreadcrumb },
-  computed: {
-    icon() {
-      return this.collapseSide ? 'el-icon-s-unfold' : 'el-icon-s-fold';
-    },
-  },
-};
+}
 </script>
 
 <style scoped>
