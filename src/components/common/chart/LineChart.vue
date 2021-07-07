@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { Chart, registerables } from 'chartjs'
+import { Chart, registerables } from 'chart.js'
 
 Chart.register(...registerables)
 

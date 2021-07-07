@@ -3,16 +3,26 @@
     <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
       <settings-inspect :id="id"></settings-inspect>
     </el-col>
+    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
+      <cpu-usage :id="id"></cpu-usage>
+    </el-col>
+    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
+      <file-io :id="id"></file-io>
+    </el-col>
   </el-row>
 </template>
 
 <script>
 import SettingsInspect from '@/components/server/info/SettingsInspect.vue'
+import CpuUsage from '@/components/server/info/chart/CpuUsage.vue'
+import FileIo from '@/components/server/info/chart/FileIo.vue'
 
 export default {
     name: 'Info',
     components: {
-        SettingsInspect
+        SettingsInspect,
+        CpuUsage,
+        FileIo
     },
     props: ['id'],
 }
