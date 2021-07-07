@@ -1,5 +1,5 @@
 <template>
-  <common-info-card :labels="labels" :datasets="datasets"
+  <common-chart-card :labels="labels" :datasets="datasets"
                     :value-precision="3" value-suffix=" KB/s"
                     header="磁盘IO （KB/s）"
                     v-loading="loading"
@@ -7,18 +7,18 @@
     <span style="color: #409EFF">读 {{ currentRead }} KB/s</span>
     <span>&nbsp;&nbsp;</span>
     <span style="color: #67C23A">写 {{ currentWrite }} KB/s</span>
-  </common-info-card>
+  </common-chart-card>
 </template>
 
 <script>
 import { round } from 'lodash'
-import CommonInfoCard from '@/components/server/info/common/CommonChartCard.vue'
+import CommonChartCard from '@/components/server/info/common/CommonChartCard.vue'
 import api from '@/api'
 
 export default {
     name: 'FileIo',
     components: {
-        CommonInfoCard,
+        CommonChartCard,
     },
     data() {
         return {

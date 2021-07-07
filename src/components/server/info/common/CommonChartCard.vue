@@ -18,7 +18,7 @@ import { merge, round } from 'lodash'
 import { DateTime } from 'luxon'
 
 export default {
-    name: 'CommonInfoCard',
+    name: 'CommonChartCard',
     components: {
         LineChart,
     },

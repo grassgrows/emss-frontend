@@ -1,23 +1,23 @@
 <template>
-  <common-info-card tooltip-prefix="CPU使用率："
+  <common-chart-card tooltip-prefix="CPU使用率："
                     :labels="labels" :datasets="datasets"
                     :value-precision="2" value-suffix="%"
                     :customConfig="options"
                     header="CPU使用率 (%)"
                     v-loading="loading"
   >当前： {{ current }}%
-  </common-info-card>
+  </common-chart-card>
 </template>
 
 <script>
-import CommonInfoCard from '@/components/server/info/common/CommonChartCard.vue'
+import CommonChartCard from '@/components/server/info/common/CommonChartCard.vue'
 import api from '@/api'
 import { round } from 'lodash'
 
 export default {
     name: 'CpuUsage',
     components: {
-        CommonInfoCard,
+        CommonChartCard,
     },
     props: ['id'],
     data() {
