@@ -3,7 +3,7 @@
            shadow="hover">
     <div class="list-card">
       <div class="add-card card-container"
-           @click="$emit('click', $event)"
+           @click="$emit('add')"
            v-if="addCard">
         <i class="iconfont my-icon-plus"></i>
         <span>添加服务器</span>
