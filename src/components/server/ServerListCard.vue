@@ -83,6 +83,7 @@ export default {
         showPop() {
             return this.name.gblen() > 20
         },
+
         tpsStyle() {
             if (this.tps >= 19) {
                 return { color: '#67C23A' }

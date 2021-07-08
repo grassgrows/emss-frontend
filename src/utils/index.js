@@ -11,7 +11,7 @@ async function wait(time) {
 function mapData(dataKey, names) {
     const res = {}
     names.forEach((key) => {
-        res[key] = function mappedData() {
+        res[key] = function () {
             if (typeof this[dataKey] === 'undefined') {
                 return undefined
             }

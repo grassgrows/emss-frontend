@@ -9,7 +9,7 @@
                     <el-input v-model="newServer.shortName"></el-input>
                 </el-form-item>
             </el-form>
-            <div>
+            <div style="text-align: center">
                 <el-button type="primary" @click="nextStep">下一步</el-button>
             </div>
         </el-dialog>
@@ -48,7 +48,7 @@ export default {
             console.log('下一步')
         },
         closeDialog() {
-            
+
         }
     }
 }
