@@ -1,6 +1,6 @@
 {
   "name": "emss-frontend",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "animate.css": "^4.1.1",
-    "chartjs": "^0.3.24",
+    "chart.js": "^3.4.1",
     "chartjs-adapter-luxon": "^1.0.0",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.28",
@@ -30,10 +30,12 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.12.1",
     "less": "^4.1.1",
-    "less-loader": "^10.0.1",
+    "less-loader": "^5.0.0",
     "sass": "^1.27.0",
     "sass-loader": "^10.0.4",
-    "vue-cli-plugin-element-plus": "0.0.13"
+    "style-resources-loader": "^1.4.1",
+    "vue-cli-plugin-element-plus": "0.0.13",
+    "vue-cli-plugin-style-resources-loader": "~0.1.5"
   },
   "eslintConfig": {
     "root": true,

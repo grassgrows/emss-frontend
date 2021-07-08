@@ -1,38 +1,38 @@
 <template>
-  <el-container class="full-height">
-    <el-aside width="auto" class="container" v-if="!isMobile">
-      <my-navigator :collapsed.sync="collapseSide"></my-navigator>
-    </el-aside>
-    <el-container>
-      <el-header class="my-shadow">
-        <header-nav @collapse-click="collapseSide = !collapseSide"
-                    :collapseSide="collapseSide"
-                    :show-breadcrumb="!isMobile"
-        ></header-nav>
-      </el-header>
-      <el-main class="main-content">
-        <div class="content-header">
-          <header-breadcrumb v-if="isMobile"
-                             :max-breadcrumb="5"
-                             style="margin-bottom: 10px"
-          >
-          </header-breadcrumb>
+    <el-container class="full-height">
+        <el-aside width="auto" class="container" v-if="!isMobile">
+            <my-navigator :collapsed.sync="collapseSide"></my-navigator>
+        </el-aside>
+        <el-container>
+            <el-header class="my-shadow">
+                <header-nav @collapse-click="collapseSide = !collapseSide"
+                            :collapseSide="collapseSide"
+                            :show-breadcrumb="!isMobile"
+                ></header-nav>
+            </el-header>
+            <el-main class="main-content">
+                <div class="content-header">
+                    <header-breadcrumb v-if="isMobile"
+                                       :max-breadcrumb="5"
+                                       style="margin-bottom: 10px"
+                    >
+                    </header-breadcrumb>
 
-          <router-view name="extra"></router-view>
-        </div>
-        <div class="view">
-          <router-view></router-view>
-        </div>
+                    <router-view name="extra"></router-view>
+                </div>
+                <div class="view">
+                    <router-view></router-view>
+                </div>
 
-        <el-backtop target=".main-content"></el-backtop>
-      </el-main>
+                <el-backtop target=".main-content"></el-backtop>
+            </el-main>
+        </el-container>
+        <el-drawer :with-header="false" v-model="showSide" append-to-body
+                   direction="ltr" v-if="isMobile" size="249px" custom-class="drawer">
+            <my-navigator :collapsed.sync="collapseSide"
+                          is-drawer @select="showSide = false"></my-navigator>
+        </el-drawer>
     </el-container>
-    <el-drawer :with-header="false" v-model="showSide" append-to-body
-               direction="ltr" v-if="isMobile" size="249px" custom-class="drawer">
-      <my-navigator :collapsed.sync="collapseSide"
-                    is-drawer @select="showSide = false"></my-navigator>
-    </el-drawer>
-  </el-container>
 </template>
 
 <script>
@@ -76,77 +76,83 @@ export default {
             }
         },
     },
-    components: { HeaderNav, MyNavigator, HeaderBreadcrumb },
+    components: {HeaderNav, MyNavigator, HeaderBreadcrumb},
 }
 </script>
 
-<style>
+<style lang="less">
+@import "styles/global";
+
 html, body, #app, .full-height {
-  height: 100%;
+    height: 100%;
 }
+
 .full-height {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
+
 body {
-  margin: 0;
-  color: rgba(0, 0, 0, 0.9);
+    margin: 0;
+    color: rgba(0, 0, 0, 0.9);
 }
 
 .my-shadow {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
 }
 
+
 .blank, .auto-size {
-  flex: 1 1 0;
+    flex: 1 1 0;
 }
 
 .color-primary {
-  color: #409EFF !important;
+    color: @color-primary !important;
 }
 
 .color-danger {
-  color: #F56C6C !important;
+    color: @color-danger !important;
 }
 
 .color-success {
-  color: #67C23A !important;
+    color: @color-success !important;
 }
 
 .color-info {
-  color: #909399 !important;
+    color: @color-info !important;
 }
 
 .color-warn {
-  color: #E6A23C !important;
+    color: @color-warn !important;
 }
+
 
 </style>
 
 <style scoped>
 
 .content-header {
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background-color: #ffffff;
 
 }
 
 .main-content {
-  display: flex;
-  flex-direction: column;
-  background-color: #f2f2f2;
-  padding: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #f2f2f2;
+    padding: 0;
 }
 
 .main-content .view {
-  padding: 8px 16px;
-  display: flex;
-  flex: 1 0 auto;
-  flex-direction: column;
+    padding: 8px 16px;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
 }
 
-.main-content .view div{
-  flex: 1 1 auto;
+.main-content .view div {
+    flex: 1 1 auto;
 }
 </style>

@@ -6,6 +6,7 @@ const store = createStore({
         return {
             serverList: [],
             currentServer: {},
+            addState: false,
         }
     },
     mutations: {
@@ -16,6 +17,9 @@ const store = createStore({
         async setServer(state, server) {
             state.currentServer = server
         },
+        async changeAddState(state,val) {
+            state.addState = val
+        }
     },
     actions: {},
     modules: {},

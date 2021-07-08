@@ -3,7 +3,7 @@
            shadow="hover">
     <div class="list-card">
       <div class="add-card card-container"
-           @click="$emit('click', $event)"
+           @click="$emit('add')"
            v-if="addCard">
         <i class="iconfont my-icon-plus"></i>
         <span>添加服务器</span>
@@ -80,6 +80,10 @@ export default {
     },
     computed: {
         ...utils.mapData('serverData',['id','name','running','port','tps','lastRun','onlinePlayer','maxPlayer']),
+        showPop() {
+            return this.name.gblen() > 20
+        },
+
         tpsStyle() {
             if (this.tps >= 19) {
                 return { color: '#67C23A' }

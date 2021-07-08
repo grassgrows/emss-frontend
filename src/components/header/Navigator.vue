@@ -76,6 +76,21 @@
       </el-submenu>
     </el-submenu>
 
+    <el-submenu index="/system">
+      <template #title>
+        <i class="el-icon-s-tools"></i>
+        <span>系统管理</span>
+      </template>
+      <el-menu-item index="/system/users">
+        <i class="el-icon-user-solid"></i>
+        <template #title>用户管理</template>
+      </el-menu-item>
+      <el-menu-item index="/system/setting">
+        <i class="el-icon-s-tools"></i>
+        <template #title>系统设置</template>
+      </el-menu-item>
+    </el-submenu>
+
   </el-menu>
 
 </template>

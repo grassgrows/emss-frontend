@@ -11,9 +11,11 @@
     <el-col :span="8" :xs="24" :sm="12"
             :md="8" :lg="6" :xl="4">
       <server-list-card
-          class="card" add-card>
+          class="card" add-card @add="showAdd">
       </server-list-card>
     </el-col>
+
+    <add-server></add-server>
 
   </el-row>
 </template>
@@ -21,11 +23,18 @@
 <script>
 import ServerListCard from '@/components/server/ServerListCard'
 import { mapState } from 'vuex'
+import AddServer from '@/views/AddServer'
 
 export default {
     name: 'ServerList',
     components: {
         ServerListCard,
+        AddServer
+    },
+    data() {
+        return {
+
+        }
     },
     mounted() {
         this.$store.commit('refreshServerList')
@@ -40,6 +49,11 @@ export default {
                 return 0
             })
             return result
+        }
+    },
+    methods: {
+        showAdd() {
+            this.$store.commit('changeAddState',true)
         }
     }
 }
