@@ -27,13 +27,12 @@
         <div class="empty"></div>
         <div class="button-group" style="text-align: center">
             <el-button type="primary" @click="$emit('back')">上一步</el-button>
-            <el-button name="submit" type="primary" @click="$emit('submit')">完成</el-button>
+            <el-button name="submit" type="primary" @click="$emit('submit');$emit('sendData',dockerData)">完成</el-button>
         </div>
     </div>
 </template>
 
 <script>
-import store from '@/store'
 
 export default {
     name: 'Step2',

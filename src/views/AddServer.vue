@@ -10,11 +10,11 @@
 
                 <div class="step-one" v-show="active === 0">
                     <step1 :clear-data="dialogAdd"
-                           @next="next" @back="back"></step1>
+                           @next="next" @back="back" @sendData="receiveData1"></step1>
                 </div>
                 <div class="step-two" v-show="active === 1">
                     <step2 :clear-data="dialogAdd"
-                           @back="back" @submit="submit"></step2>
+                           @back="back" @submit="submit" @sendData="receiveData2"></step2>
                 </div>
                 <div class="step-three step-container" v-show="active === 2">
                     <step3 v-loading="loading"></step3>
@@ -47,7 +47,10 @@ export default {
     data() {
         return {
             active: 0,
-            loading: false
+            loading: false,
+            serverData: Object,
+            dockerData: Object,
+            completeData: Object
         }
     },
     computed: {
@@ -78,7 +81,7 @@ export default {
             }, 100)
         },
         async waitCreate() {
-            await api.server.create()
+            await api.server.create(this.completeData)
             this.loading = false
         },
         submit() {
@@ -87,6 +90,19 @@ export default {
         close() {
             this.$store.commit('changeAddState', false)
         },
+      
+        receiveData1(data){
+            this.serverData = data
+            console.log(data)
+        },
+        receiveData2(data){
+            this.dockerData = data
+            console.log(data)
+            this.completeData = Object.assign(this.serverData,this.dockerData)
+            console.log(this.completeData)
+        },
+
+      
         closeDialog() {
             setTimeout(()=>{
                 this.active = 0

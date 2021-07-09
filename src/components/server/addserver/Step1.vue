@@ -23,7 +23,7 @@
         <div class="empty"></div>
         <div class="button-group" style="text-align: center">
             <el-button type="primary" @click="$emit('back')">上一步</el-button>
-            <el-button type="primary" @click="$emit('next')">下一步</el-button>
+            <el-button type="primary" @click="$emit('next');$emit('sendData',serverData)">下一步</el-button>
         </div>
     </div>
 </template>
@@ -59,7 +59,7 @@ export default {
     },
     methods: {
         onChange(index,checked) {
-            this.selectedManager[index] = checked
+            this.serverData.selectedManager[index] = checked
             // console.log(this.selectedManager)
         },
     }
