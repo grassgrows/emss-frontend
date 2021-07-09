@@ -5,7 +5,7 @@
       <div class="add-card card-container"
            @click="$emit('add')"
            v-if="addCard">
-        <i class="iconfont my-icon-plus"></i>
+        <i class="iconfont emss-icon-plus"></i>
         <span>添加服务器</span>
       </div>
       <div class="card-container" v-else-if="loading">
