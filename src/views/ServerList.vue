@@ -1,23 +1,25 @@
 <template>
-  <el-row :gutter="20">
-    <el-col :span="8" :xs="24" :sm="12"
-            :md="8" :lg="6" :xl="4"
-            v-for="s in displayList" :key="s.id">
+    <div class="list-container">
+        <el-row :gutter="20">
+            <el-col :span="8" :xs="24" :sm="12"
+                    :md="8" :lg="6" :xl="4"
+                    v-for="s in displayList" :key="s.id">
 
-            <server-list-card class="card" :server-data="s">
-            </server-list-card>
+                <server-list-card class="card" :server-data="s">
+                </server-list-card>
 
-    </el-col>
-    <el-col :span="8" :xs="24" :sm="12"
-            :md="8" :lg="6" :xl="4">
-      <server-list-card
-          class="card" add-card @add="showAdd">
-      </server-list-card>
-    </el-col>
+            </el-col>
+            <el-col :span="8" :xs="24" :sm="12"
+                    :md="8" :lg="6" :xl="4">
+                <server-list-card
+                    class="card" add-card @add="showAdd">
+                </server-list-card>
+            </el-col>
 
-    <add-server></add-server>
+            <add-server></add-server>
 
-  </el-row>
+        </el-row>
+    </div>
 </template>
 
 <script>
