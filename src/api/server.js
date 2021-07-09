@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty-function */
 import monitor from '@/api/serverMonitor'
-
+import utils from '@/utils'
 /**
  * 列出全部服务器列表
  */
@@ -46,6 +46,10 @@ async function list() {
 /**
  * 开服 关服 重启
  */
+async function create() {
+    await utils.wait()
+}
+
 async function start(id) {
 
 }
@@ -65,5 +69,5 @@ async function info(id) {
 }
 
 export default {
-    monitor, list, start, stop, restart,
+    monitor, list, start, stop, restart, create,
 }

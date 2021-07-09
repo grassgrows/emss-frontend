@@ -2,9 +2,10 @@
     <div class="add">
         <el-dialog title="添加服务器" v-model="dialogAdd" @close="closeDialog">
             <div class="dialog-content">
-                <el-steps :active="active" finish-status="success">
+                <el-steps :active="active" finish-status="success" class="step-list-container">
                     <el-step title="步骤1" icon="el-icon-edit"></el-step>
                     <el-step title="步骤2" icon="el-icon-upload"></el-step>
+                    <el-step title="步骤3" icon="el-icon-success"></el-step>
                 </el-steps>
 
                 <div class="step-one step-container" v-show="active === 0">
@@ -23,6 +24,15 @@
                         <el-button name="submit" type="primary" @click="submit">完成</el-button>
                     </div>
                 </div>
+                <div class="step-three step-container" v-show="active === 2">
+                    <step3 v-loading="loading"></step3>
+                    <div class="empty"></div>
+                    <div v-if="!loading" style="text-align: center">
+                        <el-button name="submit" type="primary"
+                                   @click="close">完成
+                        </el-button>
+                    </div>
+                </div>
             </div>
         </el-dialog>
     </div>
@@ -31,18 +41,21 @@
 <script>
 import Step1 from '@/components/server/addserver/Step1'
 import Step2 from '@/components/server/addserver/Step2'
+import Step3 from '@/components/server/addserver/Step3'
+import api from '@/api'
+
 export default {
     name: 'AddServer',
     components: {
         Step1,
-        Step2
+        Step2,
+        Step3
     },
-    props: {
-
-    },
+    props: {},
     data() {
         return {
             active: 0,
+            loading: false
         }
     },
     computed: {
@@ -57,24 +70,33 @@ export default {
     },
     methods: {
         back() {
-            if(this.active <= 0){
+            if (this.active <= 0) {
                 alert('已经是第一步')
                 return
             }
             this.active--
         },
         next() {
-            if(this.active >= 1){
-                alert('已经是最后一步')
-                return
+            if (this.active === 1) {  // 进入step3
+                this.loading = true
+                this.waitCreate()
             }
-            this.active++
+            setTimeout(() => {
+                this.active++
+            }, 100)
+        },
+        async waitCreate() {
+            await api.server.create()
+            this.loading = false
         },
         submit() {
+            this.next()
+        },
+        close() {
             this.$store.commit('changeAddState', false)
         },
         closeDialog() {
-            this.active = 0, 
+            this.active = 0
             this.clearData = true
         }
     }
@@ -82,14 +104,14 @@ export default {
 </script>
 
 <style scoped>
-.dialog-content{
-    height: 70vh;
+.dialog-content {
+    height: 60vh;
     overflow: auto;
     display: flex;
     flex-direction: column;
 }
 
-button[name='submit']{
+button[name='submit'] {
     width: 84px;
 }
 
@@ -98,11 +120,18 @@ button[name='submit']{
     flex-direction: column;
     /*justify-content: space-between;*/
     flex: 1 1 0;
-
+    margin-top: 1cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
 }
 
 .step-container .empty {
     flex: 1 1 0;
+}
+
+.step-list-container {
+    margin-left: 1.5cm;
+    margin-right: 1.5cm;
 }
 
 

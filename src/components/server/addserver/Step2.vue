@@ -17,6 +17,12 @@
            <el-form-item label="启动命令">
                <el-input></el-input>
            </el-form-item>
+           <el-form-item label="端口映射">
+               <el-space spacer=":">
+                   <el-input placeholder="主机端口"></el-input>
+                   <el-input placeholder="容器端口"></el-input>
+               </el-space>
+           </el-form-item>
        </el-form>
     </div>
 </template>

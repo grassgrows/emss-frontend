@@ -4,6 +4,9 @@
             <el-form-item label="服务器名称">
                 <el-input v-model="serverData.name"></el-input>
             </el-form-item>
+            <el-form-item label="服务器别名">
+                <el-input v-model="serverData.anotherName"></el-input>
+            </el-form-item>
             <el-form-item label="服务器缩写">
                 <el-input v-model="serverData.shortName"></el-input>
             </el-form-item>
@@ -33,6 +36,7 @@ export default {
         clearData: function () {
             this.serverData.name = '',
             this.serverData.shortName = '',
+            this.serverData.anotherName = '',
             this.selectedManager = []
         }
     },
@@ -41,6 +45,7 @@ export default {
             serverData: {
                 name: '',
                 shortName: '',
+                anotherName: '',
                 managerList: ['1','2','3']
             },
             selectedManager: []
