@@ -1,13 +1,13 @@
 <template>
     <div class="step1">
         <el-form v-model="serverData">
-            <el-form-item label="服务器名称">
+            <el-form-item label="服务器名称" class="input-style">
                 <el-input v-model="serverData.name"></el-input>
             </el-form-item>
-            <el-form-item label="服务器别名">
+            <el-form-item label="服务器别名" class="input-style">
                 <el-input v-model="serverData.anotherName"></el-input>
             </el-form-item>
-            <el-form-item label="服务器缩写">
+            <el-form-item label="服务器缩写" class="input-style">
                 <el-input v-model="serverData.shortName"></el-input>
             </el-form-item>
             <el-form-item label="服务器管理员">
@@ -61,6 +61,8 @@ export default {
 </script>
 
 <style scoped>
-
+.input-style{
+    width: 90%;
+}
 
 </style>

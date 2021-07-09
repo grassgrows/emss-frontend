@@ -1,8 +1,8 @@
 <template>
     <div class="step2">
-       <el-form>
-           <el-form-item label="Docker镜像">
-               <el-select v-model="selectedDocker" placeholder="请选择...">
+       <el-form class="form" label-width="100px" label-position="left">
+           <el-form-item label="Docker镜像" class="input-style">
+               <el-select v-model="selectedDocker" placeholder="请选择..." style="width: 100%;">
                    <el-option
                        v-for="docker in dockerList"
                        :key="docker"
@@ -11,14 +11,14 @@
                    ></el-option>
                </el-select>
            </el-form-item>
-           <el-form-item label="服务器位置">
+           <el-form-item label="服务器位置" class="input-style">
                <el-input></el-input>
            </el-form-item>
-           <el-form-item label="启动命令">
+           <el-form-item label="启动命令" class="input-style">
                <el-input></el-input>
            </el-form-item>
-           <el-form-item label="端口映射">
-               <el-space spacer=":">
+           <el-form-item label="端口映射" class="input-style">
+               <el-space spacer=":" style="width: 100%">
                    <el-input placeholder="主机端口"></el-input>
                    <el-input placeholder="容器端口"></el-input>
                </el-space>
@@ -51,5 +51,7 @@ export default {
 </script>
 
 <style scoped>
-
+.input-style{
+    width: 90%;
+}
 </style>

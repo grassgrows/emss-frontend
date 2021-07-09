@@ -4,8 +4,8 @@
             <div class="dialog-content">
                 <el-steps :active="active" finish-status="success" class="step-list-container">
                     <el-step title="步骤1" icon="el-icon-edit"></el-step>
-                    <el-step title="步骤2" icon="el-icon-upload"></el-step>
-                    <el-step title="步骤3" icon="el-icon-success"></el-step>
+                    <el-step title="步骤2" icon="el-icon-download"></el-step>
+                    <el-step title="步骤3" icon="el-icon-upload"></el-step>
                 </el-steps>
 
                 <div class="step-one step-container" v-show="active === 0">
@@ -96,8 +96,10 @@ export default {
             this.$store.commit('changeAddState', false)
         },
         closeDialog() {
-            this.active = 0
-            this.clearData = true
+            setTimeout(()=>{
+                this.active = 0
+                this.clearData = true
+            },200)
         }
     }
 }
@@ -121,8 +123,8 @@ button[name='submit'] {
     /*justify-content: space-between;*/
     flex: 1 1 0;
     margin-top: 1cm;
-    margin-left: 0.5cm;
-    margin-right: 0.5cm;
+    margin-left: 1.5cm;
+    margin-right: 1.5cm;
 }
 
 .step-container .empty {
