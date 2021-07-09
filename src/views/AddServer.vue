@@ -8,21 +8,13 @@
                     <el-step title="步骤3" icon="el-icon-upload"></el-step>
                 </el-steps>
 
-                <div class="step-one step-container" v-show="active === 0">
-                    <step1 :clear-data="dialogAdd"></step1>
-                    <div class="empty"></div>
-                    <div class="button-group" style="text-align: center">
-                        <el-button type="primary" @click="back">上一步</el-button>
-                        <el-button type="primary" @click="next">下一步</el-button>
-                    </div>
+                <div class="step-one" v-show="active === 0">
+                    <step1 :clear-data="dialogAdd"
+                           @next="next" @back="back"></step1>
                 </div>
-                <div class="step-two step-container" v-show="active === 1">
-                    <step2 :clear-data="dialogAdd"></step2>
-                    <div class="empty"></div>
-                    <div class="button-group" style="text-align: center">
-                        <el-button type="primary" @click="back">上一步</el-button>
-                        <el-button name="submit" type="primary" @click="submit">完成</el-button>
-                    </div>
+                <div class="step-two" v-show="active === 1">
+                    <step2 :clear-data="dialogAdd"
+                           @back="back" @submit="submit"></step2>
                 </div>
                 <div class="step-three step-container" v-show="active === 2">
                     <step3 v-loading="loading"></step3>
@@ -120,7 +112,6 @@ button[name='submit'] {
 .step-container {
     display: flex;
     flex-direction: column;
-    /*justify-content: space-between;*/
     flex: 1 1 0;
     margin-top: 1cm;
     margin-left: 1.5cm;

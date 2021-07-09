@@ -2,6 +2,7 @@
 /* eslint-disable no-empty-function */
 import monitor from '@/api/serverMonitor'
 import utils from '@/utils'
+
 /**
  * 列出全部服务器列表
  */
@@ -46,8 +47,9 @@ async function list() {
 /**
  * 开服 关服 重启
  */
-async function create() {
-    await utils.wait()
+async function create(val) {
+    await utils.wait() // 等待服务器响应
+
 }
 
 async function start(id) {
