@@ -1,9 +1,7 @@
 import server from '@/api/server'
-
-// eslint-disable-next-line no-undef
-const production = process.env.NODE_ENV === 'production'
+import setting from '@/api/setting'
 
 
 export default {
-    server, production
+    server, setting
 }

@@ -9,7 +9,7 @@
             <ul class="setting-list list">
                 <li v-for="(node, key) in settingsType" :key="key">
                     <div class="title">{{ node.title }}</div>
-                    <div class="content">{{ systemSetting[key] }}</div>
+                    <div class="content">{{ systemSetting.baseSetting[key] }}</div>
                     <div class="action">
                         <el-link @click="edit(key)" href="javascript:void(0);">编辑</el-link>
                     </div>
@@ -27,14 +27,22 @@
                 <li v-for="dockerData in systemSetting.dockerList" :key="dockerData">
                     <div class="list-item">
                         <div class="name">{{ dockerData.name }}</div>
+                        <div class="content">{{ `${dockerData.repository}:${dockerData.tag}` }}</div>
                         <div class="action">
-                            <el-link v-if="dockerData.status === 'Ready'" href="javascript:void(0);">下载</el-link>
-                            <el-link v-if="dockerData.status === 'Downloading'" href="javascript:void(0);" disabled>下载中</el-link>
-                            <el-link v-if="dockerData.status === 'Downloaded'" href="javascript:void(0);">删除</el-link>
+                            <el-link v-if="getStatus(dockerData.id).status === 'Ready'" href="javascript:void(0);"
+                                     @click="beginDownloadImage(dockerData.id, dockerData.name)">下载
+                            </el-link>
+                            <el-link v-if="getStatus(dockerData.id).status === 'Downloading'"
+                                     href="javascript:void(0);" disabled>
+                                下载中
+                            </el-link>
+                            <el-link v-if="getStatus(dockerData.id).status === 'Downloaded'"
+                                     href="javascript:void(0);">删除
+                            </el-link>
                         </div>
                     </div>
-                    <span v-if="dockerData.status === 'Downloading'"
-                          :style="{width: `${100 * dockerData.progress}%`}"
+                    <span v-if="getStatus(dockerData.id).status === 'Downloading'"
+                          :style="{width: `${100 * getStatus(dockerData.id).progress}%`}"
                           class="progress"></span>
                 </li>
                 <li>
@@ -85,7 +93,8 @@
 </template>
 
 <script>
-// import DockerCard from '@/components/setting/dockerCard.vue'
+import api from '@/api'
+
 export default {
     name: 'Setting',
     components: {},
@@ -109,43 +118,122 @@ export default {
                     title: '系统名称',
                     description: '这里缺一段文案，balabalabala',
                 },
-                path: {
+                serverRootDirectory: {
                     title: '服务端路径',
                     description: '这里缺一段文案，balabalabala',
                 },
 
             },
+            imageStatuses: {
+                0: {
+                    status: 'Downloading',
+                    progress: 0.3,
+                }
+            },
             systemSetting: {
-                name: 'EMSS',
+                baseSetting: {
+                    name: 'EMSS',
+                    serverRootDirectory: '/mnt/device1/servers',
+                },
                 dockerList: [
                     {
                         id: 0,
                         name: 'Image Open JDK 8',
-                        status: 'Downloading',
-                        progress: 0.3,
+                        repository: 'openjdk',
+                        tag: '8',
                     },
                     {
                         id: 1,
+                        repository: 'openjdk',
+                        tag: 'latest',
                         name: 'Image Open JDK 11',
                         status: 'None',
                     }
                 ],
-                path: '/mnt/device1/servers'
             }
         }
     },
+
+
+    beforeRouteEnter(from, to, next) {
+        next(vm => {
+            vm.updateSetting()
+            vm.updateImages()
+        })
+    },
     methods: {
+        getStatus(imageId) {
+            const status = this.imageStatuses[imageId]
+            return typeof status === 'undefined' ? {
+                status: 'Unknown',
+            } : status
+        },
+        async updateSetting() {
+            this.systemSetting.baseSetting = await api.setting.baseSetting()
+        },
+        async updateImages() {
+            const images = await api.setting.images()
+            this.systemSetting.dockerList = images
+
+            for (const i of images) {
+                await this.updateImageStatus(i.id)
+            }
+
+        },
+        async updateImageStatus(imageId) {
+            const result = await api.setting.imageStatus(imageId)
+            this.imageStatuses[imageId] = result
+
+            return result.status
+        },
+        async beginDownloadImage(imageId, imageName) {
+            const downloading = api.setting.downloadImage(imageId)
+            this.$notify({
+                title: '下载开始',
+                message: `正在下载镜像: ${imageName}`,
+                type: 'info'
+            })
+
+            let actionId
+            const action = async () => {
+                let status = await this.updateImageStatus(imageId)
+                if (status !== 'Downloading' && status !== 'Ready') {
+                    clearInterval(actionId)
+                    if (status === 'Downloaded') {
+                        this.$notify({
+                            title: '下载成功',
+                            message: `镜像: ${imageName} 下载成功，现在你可以创建服务器了`,
+                            type: 'success'
+                        })
+                    } else {
+                        this.$notify({
+                            title: '下载失败',
+                            message: `镜像: ${imageName} 下载失败`,
+                            type: 'error'
+                        })
+                        this.imageStatuses[imageId].status = 'Ready'
+                    }
+                }
+            }
+            actionId = setInterval(action, 1000)
+
+            await downloading
+
+        },
         edit(key) {
             this.editor.editingName = key
             this.editor.editing = true
-            this.editor.value = this.systemSetting[key]
+            this.editor.value = this.systemSetting.baseSetting[key]
             this.editor.editTitle = this.settingsType[key].title
             this.editor.editDescription = this.settingsType[key].description
         },
-        editOkClick() {
+        async editOkClick() {
             this.editor.editing = false
-            //TODO: 更新设置
-            this.systemSetting[this.editor.editingName] = this.editor.value
+            const editSetting = {}
+            editSetting[this.editor.editingName] = this.editor.value
+            await api.setting.updateSetting(editSetting)
+            this.systemSetting.baseSetting[this.editor.editingName] = this.editor.value
+            await this.updateSetting()
         },
         imageOkClick() {
             this.imageCreating = false

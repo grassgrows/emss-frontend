@@ -1,6 +1,7 @@
 import { random } from 'lodash'
 import fileIconMap from '@/assets/fileIconMaps.json'
 import iconfont from '@/assets/icon-file/iconfont.json'
+import promise from '@/utils/promise'
 
 const availableIcons = iconfont.glyphs.map((f) => f.font_class)
 
@@ -31,6 +32,13 @@ function getIconName(ext) {
     return `#icon-f-${ext}`
 }
 
+// eslint-disable-next-line no-undef
+const production = process.env.NODE_ENV === 'production'
+function getAddress(raw) {
+    return production ? `/api${raw}`: `http://localhost:7777${raw}`
+}
+
+
 export default {
-    wait, mapData, getIconName,
+    wait, mapData, getIconName, getAddress, promise
 }
