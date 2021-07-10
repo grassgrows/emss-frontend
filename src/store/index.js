@@ -6,7 +6,7 @@ const store = createStore({
         return {
             serverList: [],
             currentServer: {},
-            addState: false,
+            addState: false
         }
     },
     mutations: {

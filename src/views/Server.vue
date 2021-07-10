@@ -11,7 +11,7 @@ function processRoute(to, next) {
     const { serverList } = store.state
     for (let i = 0; i < serverList.length; i++) {
         const s = serverList[i]
-        if (s.id === to.params.id) {
+        if (s.abbr === to.params.abbr) {
             store.commit('setServer', s)
             return next()
         }
@@ -21,7 +21,6 @@ function processRoute(to, next) {
 
 export default {
     name: 'server',
-    props: ['id'],
     data() {
         return {}
     },

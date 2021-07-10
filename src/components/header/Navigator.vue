@@ -40,12 +40,12 @@
     </el-menu-item>
     <el-submenu index="/server">
       <template #title>
-        <i class="el-icon- iconfont my-icon-server"></i>
+        <i class="el-icon- iconfont emss-icon-server"></i>
         <span>服务器管理</span>
       </template>
 
       <el-menu-item index="/server/list">
-        <i class="el-icon- iconfont my-icon-server"></i>
+        <i class="el-icon- iconfont emss-icon-server"></i>
         <template #title>服务器列表</template>
       </el-menu-item>
       <el-submenu index="/servers">
@@ -59,7 +59,7 @@
           </template>
           <el-menu-item class="server-name"
                         v-for="s in runningServer"
-                        :key="s.id" :index="`/servers/${s.id}`">
+                        :key="s.id" :index="`/servers/${s.abbr}`">
             <template #title>{{ s.name }}</template>
           </el-menu-item>
         </el-menu-item-group>
@@ -69,7 +69,7 @@
           </template>
           <el-menu-item class="server-name"
                         v-for="s in stoppedServer"
-                        :key="s.id" :index="`/servers/${s.id}`">
+                        :key="s.id" :index="`/servers/${s.abbr}`">
             <template #title>{{ s.name }}</template>
           </el-menu-item>
         </el-submenu>
