@@ -28,7 +28,7 @@
                     <div class="list-item">
                         <div class="name">{{ dockerData.name }}</div>
                         <div class="action">
-                            <el-link v-if="dockerData.status === 'None'" href="javascript:void(0);">下载</el-link>
+                            <el-link v-if="dockerData.status === 'Ready'" href="javascript:void(0);">下载</el-link>
                             <el-link v-if="dockerData.status === 'Downloading'" href="javascript:void(0);" disabled>下载中</el-link>
                             <el-link v-if="dockerData.status === 'Downloaded'" href="javascript:void(0);">删除</el-link>
                         </div>

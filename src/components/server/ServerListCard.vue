@@ -115,6 +115,7 @@ export default {
             else if(typeof date === 'string') dateObj = DateTime.fromISO(date)
             else if(typeof date instanceof Date) dateObj = DateTime.fromJSDate(date)
             else dateObj = DateTime.fromObject(date)
+            DateTime.fromISO()
 
             return dateObj.toFormat('D T')
         },
