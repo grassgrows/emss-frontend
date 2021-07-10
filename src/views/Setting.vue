@@ -41,7 +41,7 @@
                     <div class="list-item">
                         <div class="name">自定义镜像</div>
                         <div class="action">
-                            <el-link href="javascript:void(0);">添加</el-link>
+                            <el-link @click="imageCreating = true" href="javascript:void(0);">添加</el-link>
                         </div>
                     </div>
                 </li>
@@ -61,8 +61,27 @@
                 </span>
             </template>
         </el-dialog>
+      
+        <el-dialog title="自定义镜像"
+                   v-model="imageCreating"
+                   custom-class="edit-dialog"
+                   @close="clearData">
+          <el-form :model="imageToCreate" label-width="110px" label-position="left" ref="imageForm">
+            <el-form-item label="名字/name">
+              <el-input v-model="imageToCreate.name"></el-input>
+            </el-form-item>
+            <el-form-item label="库/repository">
+              <el-input v-model="imageToCreate.repository" placeholder="java:latest"></el-input>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="imageCreating = false">取 消</el-button>
+              <el-button type="primary" @click="imageOkClick">确 定</el-button>
+            </span>
+          </template>
+        </el-dialog>
     </div>
-
 </template>
 
 <script>
@@ -80,6 +99,11 @@ export default {
                 editDescription: '',
 
             },
+            imageToCreate: {
+                name: '',
+                repository: '',
+            },
+            imageCreating: false,
             settingsType: {
                 name: {
                     title: '系统名称',
@@ -122,6 +146,15 @@ export default {
             this.editor.editing = false
             //TODO: 更新设置
             this.systemSetting[this.editor.editingName] = this.editor.value
+        },
+        imageOkClick() {
+            this.imageCreating = false
+            // 数据库添加镜像
+        },
+        clearData() {
+            // this.$refs['imageForm'].resetFields()
+            this.imageToCreate.name = ''
+            this.imageToCreate.repository = ''
         }
     }
 }
