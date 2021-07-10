@@ -77,9 +77,6 @@ export default {
     display: flex;
     flex-direction: column;
     flex: 1 1 0;
-    /*margin-top: 1cm;*/
-    /*margin-left: 1.5cm;*/
-    /*margin-right: 1.5cm;*/
 }
 
 .step2 .empty {

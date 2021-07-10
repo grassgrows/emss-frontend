@@ -1,3 +1,7 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/10
+ -->
 <template>
   <div class="step3" style="text-align: center">
     <div class="ok-icon">
