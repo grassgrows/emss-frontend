@@ -69,7 +69,7 @@
                 </span>
             </template>
         </el-dialog>
-      
+
         <el-dialog title="自定义镜像"
                    v-model="imageCreating"
                    custom-class="edit-dialog"
@@ -237,7 +237,7 @@ export default {
         },
         imageOkClick() {
             this.imageCreating = false
-            // 数据库添加镜像
+            api.setting.createImage(this.imageToCreate.name, this.imageToCreate.repository)
         },
         clearData() {
             // this.$refs['imageForm'].resetFields()

@@ -59,7 +59,7 @@
           </template>
           <el-menu-item class="server-name"
                         v-for="s in runningServer"
-                        :key="s.id" :index="`/servers/${s.id}`">
+                        :key="s.id" :index="`/servers/${s.abbr}`">
             <template #title>{{ s.name }}</template>
           </el-menu-item>
         </el-menu-item-group>
@@ -69,7 +69,7 @@
           </template>
           <el-menu-item class="server-name"
                         v-for="s in stoppedServer"
-                        :key="s.id" :index="`/servers/${s.id}`">
+                        :key="s.id" :index="`/servers/${s.abbr}`">
             <template #title>{{ s.name }}</template>
           </el-menu-item>
         </el-submenu>

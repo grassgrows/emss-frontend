@@ -1,6 +1,6 @@
 <template>
     <div class="add">
-        <el-dialog title="添加服务器" v-model="dialogAdd" @close="closeDialog">
+        <el-dialog title="添加服务器" v-model="dialogAdd" @open="openDialog" @close="closeDialog">
             <div class="dialog-content">
                 <el-steps :active="active" finish-status="success" class="step-list-container">
                     <el-step title="步骤1" icon="el-icon-edit"></el-step>
@@ -14,6 +14,7 @@
                 </div>
                 <div class="step-two" v-show="active === 1">
                     <step2 :clear-data="dialogAdd"
+                           :docker-image-list="dockerImageList"
                            @back="back" @submit="submit" @sendData="receiveData2"></step2>
                 </div>
                 <div class="step-three step-container" v-show="active === 2">
@@ -50,7 +51,8 @@ export default {
             loading: false,
             serverData: Object,
             dockerData: Object,
-            completeData: Object
+            completeData: {},
+            dockerImageList: [],
         }
     },
     computed: {
@@ -74,7 +76,6 @@ export default {
         next() {
             if (this.active === 1) {  // 进入step3
                 this.loading = true
-                this.waitCreate()
             }
             setTimeout(() => {
                 this.active++
@@ -90,24 +91,41 @@ export default {
         close() {
             this.$store.commit('changeAddState', false)
         },
-      
-        receiveData1(data){
+
+        receiveData1(data) {
             this.serverData = data
             console.log(data)
         },
-        receiveData2(data){
+        receiveData2(data) {
             this.dockerData = data
             console.log(data)
-            this.completeData = Object.assign(this.serverData,this.dockerData)
+            this.completeData = Object.assign(this.completeData, this.serverData)
+            this.completeData = Object.assign(this.completeData, this.dockerData)
             console.log(this.completeData)
+            this.waitCreate()
         },
 
-      
+
+        async openDialog() {
+            const images = await api.setting.images()
+            const result = []
+            for(const image of images) {
+                const s = await api.setting.imageStatus(image.id)
+                if(s.status === 'Downloaded') {
+                    result.push({
+                        id: image.id,
+                        name: image.name,
+                    })
+                }
+            }
+            this.dockerImageList = result
+        },
+
         closeDialog() {
-            setTimeout(()=>{
+            setTimeout(() => {
                 this.active = 0
                 this.clearData = true
-            },200)
+            }, 200)
         }
     }
 }

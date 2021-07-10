@@ -38,11 +38,11 @@ const routes = [
         },
     },
     {
-        path: '/servers/:id',
+        path: '/servers/:abbr',
         name: 'server',
         meta: {
-            menuIndex: (route) => `/servers/${route.params.id}`,
-            breadcrumb: (route) => ['工作台', '服务器', route.params.id],
+            menuIndex: (route) => `/servers/${route.params.abbr}`,
+            breadcrumb: (route) => ['工作台', '服务器', route.params.abbr],
         },
         props: true,
         // component: Server,
