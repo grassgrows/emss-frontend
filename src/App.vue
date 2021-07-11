@@ -3,40 +3,55 @@
  * @Date: 2021/7/6
  -->
 <template>
-    <el-container class="full-height">
-        <el-aside width="auto" class="container" v-if="!isMobile">
-            <my-navigator v-model:collapsed="collapseSide"></my-navigator>
-        </el-aside>
-        <el-container>
-            <el-header class="my-shadow">
-                <header-nav @collapse-click="collapseSide = !collapseSide"
-                            :collapseSide="collapseSide"
-                            :show-breadcrumb="!isMobile"
-                ></header-nav>
-            </el-header>
-            <el-main class="main-content">
-                <div class="content-header">
-                    <header-breadcrumb v-if="isMobile"
-                                       :max-breadcrumb="5"
-                                       style="margin-bottom: 10px"
-                    >
-                    </header-breadcrumb>
+  <el-container class="full-height">
+    <el-aside
+      v-if="!isMobile"
+      width="auto"
+      class="container"
+    >
+      <my-navigator v-model:collapsed="collapseSide" />
+    </el-aside>
+    <el-container>
+      <el-header class="my-shadow">
+        <header-nav
+          :collapse-side="collapseSide"
+          :show-breadcrumb="!isMobile"
+          @collapse-click="collapseSide = !collapseSide"
+        />
+      </el-header>
+      <el-main class="main-content">
+        <div class="content-header">
+          <header-breadcrumb
+            v-if="isMobile"
+            :max-breadcrumb="5"
+            style="margin-bottom: 10px"
+          />
 
-                    <router-view name="extra"></router-view>
-                </div>
-                <div class="view">
-                    <router-view></router-view>
-                </div>
+          <router-view name="extra" />
+        </div>
+        <div class="view">
+          <router-view />
+        </div>
 
-                <el-backtop target=".main-content"></el-backtop>
-            </el-main>
-        </el-container>
-        <el-drawer :with-header="false" v-model="showSide" append-to-body
-                   direction="ltr" v-if="isMobile" size="249px" custom-class="drawer">
-            <my-navigator v-model:collapsed="collapseSide"
-                          is-drawer @select="showSide = false"></my-navigator>
-        </el-drawer>
+        <el-backtop target=".main-content" />
+      </el-main>
     </el-container>
+    <el-drawer
+      v-if="isMobile"
+      v-model="showSide"
+      :with-header="false"
+      append-to-body
+      direction="ltr"
+      size="249px"
+      custom-class="drawer"
+    >
+      <my-navigator
+        v-model:collapsed="collapseSide"
+        is-drawer
+        @select="showSide = false"
+      />
+    </el-drawer>
+  </el-container>
 </template>
 
 <script>
@@ -49,6 +64,7 @@ const smMatch = window.matchMedia('(max-width: 768px)')
 
 export default {
     name: 'App',
+    components: {HeaderNav, MyNavigator, HeaderBreadcrumb},
     data() {
         return {
             collapseSide: smMatch.matches === true,
@@ -80,7 +96,6 @@ export default {
             }
         },
     },
-    components: {HeaderNav, MyNavigator, HeaderBreadcrumb},
 }
 </script>
 

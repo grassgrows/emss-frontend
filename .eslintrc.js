@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
     'env': {
         'browser': true,
@@ -5,7 +6,7 @@ module.exports = {
     },
     'extends': [
         'eslint:recommended',
-        'plugin:vue/vue3-essential'
+        'plugin:vue/vue3-recommended'
     ],
     'parserOptions': {
         'ecmaVersion': 11,

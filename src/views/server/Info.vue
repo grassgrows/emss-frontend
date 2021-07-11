@@ -4,23 +4,59 @@
  -->
 <template>
   <el-row :gutter="20">
-    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
-      <settings-inspect :id="id"></settings-inspect>
+    <el-col
+      :span="8"
+      :xs="24"
+      :sm="12"
+      :lg="8"
+      :xl="6"
+    >
+      <settings-inspect :id="id" />
     </el-col>
-    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
-      <cpu-usage :id="id"></cpu-usage>
+    <el-col
+      :span="8"
+      :xs="24"
+      :sm="12"
+      :lg="8"
+      :xl="6"
+    >
+      <cpu-usage :id="id" />
     </el-col>
-    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
-      <file-io :id="id"></file-io>
+    <el-col
+      :span="8"
+      :xs="24"
+      :sm="12"
+      :lg="8"
+      :xl="6"
+    >
+      <file-io :id="id" />
     </el-col>
-    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
-      <network-io :id="id"></network-io>
+    <el-col
+      :span="8"
+      :xs="24"
+      :sm="12"
+      :lg="8"
+      :xl="6"
+    >
+      <network-io :id="id" />
     </el-col>
-    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
-      <online-number :id="id"></online-number>
+    <el-col
+      :span="8"
+      :xs="24"
+      :sm="12"
+      :lg="8"
+      :xl="6"
+    >
+      <online-number :id="id" />
     </el-col>
-    <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">
-      <tps :id="id"></tps>
+    <el-col
+      :span="8"
+      :xs="24"
+      :sm="12"
+      :lg="8"
+      :xl="6"
+    >
+      <tps :id="id" />
     </el-col>
   </el-row>
 </template>

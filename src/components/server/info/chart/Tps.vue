@@ -3,12 +3,16 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <common-chart-card tooltip-prefix="TPS: "
-                     :labels="labels" :datasets="datasets"
-                     :value-precision="2" :custom-config="options"
-                     header="服务器TPS"
-                     v-loading="loading">
-     当前：{{ current }}
+  <common-chart-card
+    v-loading="loading"
+    tooltip-prefix="TPS: "
+    :labels="labels"
+    :datasets="datasets"
+    :value-precision="2"
+    :custom-config="options"
+    header="服务器TPS"
+  >
+    当前：{{ current }}
   </common-chart-card>
 </template>
 

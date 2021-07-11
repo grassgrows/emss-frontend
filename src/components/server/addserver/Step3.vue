@@ -3,9 +3,12 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <div class="step3" style="text-align: center">
+  <div
+    class="step3"
+    style="text-align: center"
+  >
     <div class="ok-icon">
-      <i class="el-icon-circle-check"></i>
+      <i class="el-icon-circle-check" />
     </div>
     <h1>已添加</h1>
   </div>

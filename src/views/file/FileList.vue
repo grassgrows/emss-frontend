@@ -4,7 +4,7 @@
  -->
 <template>
   <div class="file-list">
-    <file-list-item></file-list-item>
+    <file-list-item />
   </div>
 </template>
 

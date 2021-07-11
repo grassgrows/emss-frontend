@@ -3,84 +3,140 @@
  * @Date: 2021/7/7
  -->
 <template>
-    <el-card :body-style="{ padding: '0px'}"
-             shadow="hover">
-        <div class="list-card">
-            <div class="add-card card-container"
-                 @click="$emit('add')"
-                 v-if="addCard">
-                <i class="iconfont emss-icon-plus"></i>
-                <span>添加服务器</span>
+  <el-card
+    :body-style="{ padding: '0px'}"
+    shadow="hover"
+  >
+    <div class="list-card">
+      <div
+        v-if="addCard"
+        class="add-card card-container"
+        @click="$emit('add')"
+      >
+        <i class="iconfont emss-icon-plus" />
+        <span>添加服务器</span>
+      </div>
+      <div
+        v-else-if="loading"
+        class="card-container"
+      >
+        <el-skeleton loading />
+      </div>
+      <template v-else>
+        <div
+          class="card-container"
+          @click="$router.push({name:'server', params:{abbr}})"
+        >
+          <div>
+            <div class="server-name">
+              <el-tooltip
+                :disabled="!showPop"
+                effect="dark"
+                :content="name"
+              >
+                <h4 ref="name">
+                  {{ name }}
+                </h4>
+              </el-tooltip>
             </div>
-            <div class="card-container" v-else-if="loading">
-                <el-skeleton loading/>
-            </div>
-            <template v-else>
-                <div class="card-container"
-                     @click="$router.push({name:'server', params:{abbr}})">
-                    <div>
-                        <div class="server-name">
-                            <el-tooltip :disabled="!showPop" effect="dark" :content="name">
-                                <h4 ref="name">{{ name }}</h4>
-                            </el-tooltip>
-                        </div>
-                        <div class="blank"></div>
-                        <el-tag type="success" class="status-tag" v-if="running">运行中</el-tag>
-                        <el-tag type="info" class="status-tag" v-else>已关闭</el-tag>
-                    </div>
-                    <el-divider style="margin: 0"></el-divider>
-                    <div class="infos">
-                        <statistic title="映射端口" :value="port"></statistic>
-                        <template v-if="running">
-                            <statistic title="在线玩家" :value="`${onlinePlayer} / ${maxPlayer}`"></statistic>
-                            <statistic title="TPS" :value="tps" :precision="3"
-                                       :content-style="tpsStyle"
-                            ></statistic>
-                        </template>
-                        <template v-else>
-                            <statistic title="最后启动时间" :value="lastRun" :format="formatLastRun"
-                                       :content-style="{ fontSize : '20px', paddingTop: '4px'}"
-                            ></statistic>
-                        </template>
-                    </div>
-                </div>
-                <el-button-group class="bottom">
-
-                    <template v-if="running">
-                        <el-button type="text" class="button auto-size color-danger"
-                                 @click="closeServer">
-                          关闭
-                        </el-button>
-                        <el-divider direction="vertical"></el-divider>
-                        <el-button type="text" class="button auto-size color-warn"
-                                   @click="restartServer">
-                          重启
-                        </el-button>
-                    </template>
-                    <template v-else>
-                      <el-button type="text" class="button auto-size color-danger"
-                                 @click="removeServer">
-                        删除
-                      </el-button>
-                      <el-button type="text" class="button auto-size color-success"
-                                 @click="startServer">
-                        开启
-                      </el-button>
-                    </template>
-                    <el-divider direction="vertical"></el-divider>
-                    <el-button type="text" class="button auto-size color-info"
-                             @click="$router.push({name:'terminal', params:{id}})">
-                    终端
-                    </el-button>
-                    <el-divider direction="vertical"></el-divider>
-                    <el-button type="text" class="button auto-size color-primary"
-                             @click="$router.push({name:'files', params:{ filePath:id }})">
-                    文件
-                    </el-button>
-                </el-button-group>
+            <div class="blank" />
+            <el-tag
+              v-if="running"
+              type="success"
+              class="status-tag"
+            >
+              运行中
+            </el-tag>
+            <el-tag
+              v-else
+              type="info"
+              class="status-tag"
+            >
+              已关闭
+            </el-tag>
+          </div>
+          <el-divider style="margin: 0" />
+          <div class="infos">
+            <statistic
+              title="映射端口"
+              :value="port"
+            />
+            <template v-if="running">
+              <statistic
+                title="在线玩家"
+                :value="`${onlinePlayer} / ${maxPlayer}`"
+              />
+              <statistic
+                title="TPS"
+                :value="tps"
+                :precision="3"
+                :content-style="tpsStyle"
+              />
             </template>
+            <template v-else>
+              <statistic
+                title="最后启动时间"
+                :value="lastRun"
+                :format="formatLastRun"
+                :content-style="{ fontSize : '20px', paddingTop: '4px'}"
+              />
+            </template>
+          </div>
         </div>
-    </el-card>
+        <el-button-group class="bottom">
+          <template v-if="running">
+            <el-button
+              type="text"
+              class="button auto-size color-danger"
+              @click="closeServer"
+            >
+              关闭
+            </el-button>
+            <el-divider direction="vertical" />
+            <el-button
+              type="text"
+              class="button auto-size color-warn"
+              @click="restartServer"
+            >
+              重启
+            </el-button>
+          </template>
+          <template v-else>
+            <el-button
+              type="text"
+              class="button auto-size color-danger"
+              @click="removeServer"
+            >
+              删除
+            </el-button>
+            <el-button
+              type="text"
+              class="button auto-size color-success"
+              @click="startServer"
+            >
+              开启
+            </el-button>
+          </template>
+          <el-divider direction="vertical" />
+          <el-button
+            type="text"
+            class="button auto-size color-info"
+            @click="$router.push({name:'terminal', params:{id}})"
+          >
+            终端
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button
+            type="text"
+            class="button auto-size color-primary"
+            @click="$router.push({name:'files', params:{ filePath:id }})"
+          >
+            文件
+          </el-button>
+        </el-button-group>
+      </template>
+    </div>
+  </el-card>
 </template>
 
 <script>

@@ -3,38 +3,80 @@
  * @Date: 2021/7/9
  -->
 <template>
-    <div class="add">
-        <el-dialog custom-class="add-dialog" top="10vh" title="添加服务器"
-                   v-model="dialogAdd" @open="openDialog"
-                   @close="closeDialog">
-            <div class="dialog-content">
-                <el-steps :active="active" finish-status="success" class="step-list-container">
-                    <el-step title="步骤1" icon="el-icon-edit"></el-step>
-                    <el-step title="步骤2" icon="el-icon-download"></el-step>
-                    <el-step title="步骤3" icon="el-icon-upload"></el-step>
-                </el-steps>
+  <div class="add">
+    <el-dialog
+      v-model="dialogAdd"
+      custom-class="add-dialog"
+      top="10vh"
+      title="添加服务器"
+      @open="openDialog"
+      @close="closeDialog"
+    >
+      <div class="dialog-content">
+        <el-steps
+          :active="active"
+          finish-status="success"
+          class="step-list-container"
+        >
+          <el-step
+            title="步骤1"
+            icon="el-icon-edit"
+          />
+          <el-step
+            title="步骤2"
+            icon="el-icon-download"
+          />
+          <el-step
+            title="步骤3"
+            icon="el-icon-upload"
+          />
+        </el-steps>
 
-                <div class="step-one step-container" v-show="active === 0">
-                    <step1 :clear-data="dialogAdd"
-                           @next="next" @back="back" @sendData="receiveData1"></step1>
-                </div>
-                <div class="step-two step-container" v-show="active === 1">
-                    <step2 :clear-data="dialogAdd"
-                           :docker-image-list="dockerImageList"
-                           @back="back" @submit="submit" @sendData="receiveData2"></step2>
-                </div>
-                <div class="step-three step-container" v-show="active === 2">
-                    <step3 v-loading="loading"></step3>
-                    <div class="empty"></div>
-                    <div v-if="!loading" style="text-align: center">
-                        <el-button name="submit" type="primary"
-                                   @click="close">完成
-                        </el-button>
-                    </div>
-                </div>
-            </div>
-        </el-dialog>
-    </div>
+        <div
+          v-show="active === 0"
+          class="step-one step-container"
+        >
+          <step1
+            :clear-data="dialogAdd"
+            @next="next"
+            @back="back"
+            @sendData="receiveData1"
+          />
+        </div>
+        <div
+          v-show="active === 1"
+          class="step-two step-container"
+        >
+          <step2
+            :clear-data="dialogAdd"
+            :docker-image-list="dockerImageList"
+            @back="back"
+            @submit="submit"
+            @sendData="receiveData2"
+          />
+        </div>
+        <div
+          v-show="active === 2"
+          class="step-three step-container"
+        >
+          <step3 v-loading="loading" />
+          <div class="empty" />
+          <div
+            v-if="!loading"
+            style="text-align: center"
+          >
+            <el-button
+              name="submit"
+              type="primary"
+              @click="close"
+            >
+              完成
+            </el-button>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>

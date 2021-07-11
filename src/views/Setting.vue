@@ -3,107 +3,174 @@
  * @Date: 2021/7/9
  -->
 <template>
-    <div>
-        <el-card shadow="always" class="card" v-loading="loadingBaseSetting">
-            <template #header>
-                <div class="card-header">
-                    <span>服务器基本设置</span>
-                </div>
-            </template>
-            <ul class="setting-list list">
-                <li v-for="(node, key) in settingsType" :key="key">
-                    <div class="title">{{ node.title }}</div>
-                    <div class="content">{{ baseSetting[key] }}</div>
-                    <div class="action">
-                        <el-link @click="edit(key)" href="javascript:void(0);">编辑</el-link>
-                    </div>
-                </li>
-            </ul>
-        </el-card>
-        <el-card shadow="always" class="card" v-loading="loadingImage">
-            <template #header>
-                <div class="card-header">
-                    <span>Docker容器设置</span>
-                </div>
-            </template>
-
-            <ul class="docker-list list">
-                <li v-for="image in imageSetting" :key="image.id">
-                    <div class="list-item">
-                        <div class="name">{{ image.name }}</div>
-                        <div class="content">{{ `${image.repository}:${image.tag}` }}</div>
-                        <div class="download">
-                            <template v-if="image.statusObj && image.statusObj.status === 'Downloading'">
-                                <span>{{ formatProgress(image) }}</span>&nbsp;<span>{{ formatSpeed(image) }}</span>
-                            </template>
-                        </div>
-                        <div class="action">
-                            <el-link v-if="image.acting && image.acting.busy" href="javascript:void(0);" disabled>
-                                {{ image.acting.message }}
-                            </el-link>
-                            <el-link v-else-if="image.statusObj && image.statusObj.status === 'Ready'"
-                                     href="javascript:void(0);"
-                                     @click="beginDownloadImage(image)">下载
-                            </el-link>
-                            <el-link v-else-if="image.statusObj && image.statusObj.status === 'Downloading'"
-                                     href="javascript:void(0);"
-                                     @click="cancelDownloadImage(image.id)">
-                                取消
-                            </el-link>
-                            <el-link v-else-if="image.statusObj && image.statusObj.status === 'Downloaded'"
-                                     href="javascript:void(0);">删除
-                            </el-link>
-                        </div>
-                    </div>
-                    <span v-if="image.statusObj && image.statusObj.status === 'Downloading'"
-                          :style="{width: formatProgress(image)}"
-                          class="progress"></span>
-                </li>
-                <li>
-                    <div class="list-item">
-                        <div class="name">自定义镜像</div>
-                        <div class="action">
-                            <el-link @click="imageCreating = true" href="javascript:void(0);">添加</el-link>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </el-card>
-
-        <el-dialog :title="`设置 ${editor.editTitle}`"
-                   v-model="editor.editing"
-                   custom-class="edit-dialog"
+  <div>
+    <el-card
+      v-loading="loadingBaseSetting"
+      shadow="always"
+      class="card"
+    >
+      <template #header>
+        <div class="card-header">
+          <span>服务器基本设置</span>
+        </div>
+      </template>
+      <ul class="setting-list list">
+        <li
+          v-for="(node, key) in settingsType"
+          :key="key"
         >
-            <div class="edit-description">{{ editor.editDescription }}</div>
-            <el-input v-model="editor.value"></el-input>
-            <template #footer>
-                <span class="dialog-footer">
-                    <el-button @click="editor.editing = false">取 消</el-button>
-                    <el-button type="primary" @click="editOkClick">确 定</el-button>
-                </span>
-            </template>
-        </el-dialog>
+          <div class="title">
+            {{ node.title }}
+          </div>
+          <div class="content">
+            {{ baseSetting[key] }}
+          </div>
+          <div class="action">
+            <el-link
+              href="javascript:void(0);"
+              @click="edit(key)"
+            >
+              编辑
+            </el-link>
+          </div>
+        </li>
+      </ul>
+    </el-card>
+    <el-card
+      v-loading="loadingImage"
+      shadow="always"
+      class="card"
+    >
+      <template #header>
+        <div class="card-header">
+          <span>Docker容器设置</span>
+        </div>
+      </template>
 
-        <el-dialog title="自定义镜像"
-                   v-model="imageCreating"
-                   custom-class="edit-dialog"
-                   @close="clearData">
-            <el-form :model="imageToCreate" label-width="110px" label-position="left" ref="imageForm">
-                <el-form-item label="名字/name">
-                    <el-input v-model="imageToCreate.name"></el-input>
-                </el-form-item>
-                <el-form-item label="库/repository">
-                    <el-input v-model="imageToCreate.repository" placeholder="java:latest"></el-input>
-                </el-form-item>
-            </el-form>
-            <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="imageCreating = false">取 消</el-button>
-              <el-button type="primary" @click="imageOkClick">确 定</el-button>
-            </span>
-            </template>
-        </el-dialog>
-    </div>
+      <ul class="docker-list list">
+        <li
+          v-for="image in imageSetting"
+          :key="image.id"
+        >
+          <div class="list-item">
+            <div class="name">
+              {{ image.name }}
+            </div>
+            <div class="content">
+              {{ `${image.repository}:${image.tag}` }}
+            </div>
+            <div class="download">
+              <template v-if="image.statusObj && image.statusObj.status === 'Downloading'">
+                <span>{{ formatProgress(image) }}</span>&nbsp;<span>{{ formatSpeed(image) }}</span>
+              </template>
+            </div>
+            <div class="action">
+              <el-link
+                v-if="image.acting && image.acting.busy"
+                href="javascript:void(0);"
+                disabled
+              >
+                {{ image.acting.message }}
+              </el-link>
+              <el-link
+                v-else-if="image.statusObj && image.statusObj.status === 'Ready'"
+                href="javascript:void(0);"
+                @click="beginDownloadImage(image)"
+              >
+                下载
+              </el-link>
+              <el-link
+                v-else-if="image.statusObj && image.statusObj.status === 'Downloading'"
+                href="javascript:void(0);"
+                @click="cancelDownloadImage(image.id)"
+              >
+                取消
+              </el-link>
+              <el-link
+                v-else-if="image.statusObj && image.statusObj.status === 'Downloaded'"
+                href="javascript:void(0);"
+              >
+                删除
+              </el-link>
+            </div>
+          </div>
+          <span
+            v-if="image.statusObj && image.statusObj.status === 'Downloading'"
+            :style="{width: formatProgress(image)}"
+            class="progress"
+          />
+        </li>
+        <li>
+          <div class="list-item">
+            <div class="name">
+              自定义镜像
+            </div>
+            <div class="action">
+              <el-link
+                href="javascript:void(0);"
+                @click="imageCreating = true"
+              >
+                添加
+              </el-link>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </el-card>
+
+    <el-dialog
+      v-model="editor.editing"
+      :title="`设置 ${editor.editTitle}`"
+      custom-class="edit-dialog"
+    >
+      <div class="edit-description">
+        {{ editor.editDescription }}
+      </div>
+      <el-input v-model="editor.value" />
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="editor.editing = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="editOkClick"
+          >确 定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="imageCreating"
+      title="自定义镜像"
+      custom-class="edit-dialog"
+      @close="clearData"
+    >
+      <el-form
+        ref="imageForm"
+        :model="imageToCreate"
+        label-width="110px"
+        label-position="left"
+      >
+        <el-form-item label="名字/name">
+          <el-input v-model="imageToCreate.name" />
+        </el-form-item>
+        <el-form-item label="库/repository">
+          <el-input
+            v-model="imageToCreate.repository"
+            placeholder="java:latest"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="imageCreating = false">取 消</el-button>
+          <el-button
+            type="primary"
+            @click="imageOkClick"
+          >确 定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -113,6 +180,14 @@ import delay from 'delay'
 export default {
     name: 'Setting',
     components: {},
+
+
+    beforeRouteEnter(from, to, next) {
+        next(vm => {
+            vm.updateSetting()
+            vm.updateImages()
+        })
+    },
     data() {
         return {
             editor: {
@@ -150,14 +225,6 @@ export default {
             loadingImage: true,
             loadingBaseSetting: true,
         }
-    },
-
-
-    beforeRouteEnter(from, to, next) {
-        next(vm => {
-            vm.updateSetting()
-            vm.updateImages()
-        })
     },
     methods: {
         formatProgress(image) {

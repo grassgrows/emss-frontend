@@ -4,7 +4,7 @@
  -->
 <template>
   <div>
-    <canvas ref="line_chart"></canvas>
+    <canvas ref="line_chart" />
   </div>
 </template>
 
@@ -22,21 +22,6 @@ export default {
     ],
     data() {
         return {}
-    },
-    methods: {
-        getRandomInt() {
-            return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-        },
-    },
-    mounted() {
-        const chart = new Chart(this.$refs.line_chart, {
-            type: 'line',
-        })
-        chart.draw()
-        this.chart = chart
-    },
-    unmounted() {
-        this.chart.clear()
     },
     watch: {
         options(value) {
@@ -63,6 +48,21 @@ export default {
                 }
             }
             this.chart.update()
+        },
+    },
+    mounted() {
+        const chart = new Chart(this.$refs.line_chart, {
+            type: 'line',
+        })
+        chart.draw()
+        this.chart = chart
+    },
+    unmounted() {
+        this.chart.clear()
+    },
+    methods: {
+        getRandomInt() {
+            return Math.floor(Math.random() * (50 - 5 + 1)) + 5
         },
     },
 }

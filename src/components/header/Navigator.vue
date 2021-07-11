@@ -3,19 +3,24 @@
  * @Date: 2021/7/6
  -->
 <template>
-  <el-menu router unique-opened
-           style="margin: 0"
-           id="my-menu"
-           :default-active="menuIndex"
-           class="my-menu full-height"
-           :collapse="collapsed && !isDrawer"
-           :background-color="backgroundColor"
-           :text-color="textColor"
-           :active-text-color="activeTextColor"
-           @select="menuSelect">
+  <el-menu
+    id="my-menu"
+    router
+    unique-opened
+    style="margin: 0"
+    :default-active="menuIndex"
+    class="my-menu full-height"
+    :collapse="collapsed && !isDrawer"
+    :background-color="backgroundColor"
+    :text-color="textColor"
+    :active-text-color="activeTextColor"
+    @select="menuSelect"
+  >
     <template v-if="isDrawer">
-      <div class="el-menu-item title is-disabled"
-           :style="{backgroundColor, opacity:1, textAlign: 'center'}">
+      <div
+        class="el-menu-item title is-disabled"
+        :style="{backgroundColor, opacity:1, textAlign: 'center'}"
+      >
         <span>GrassGrows</span>
       </div>
       <el-menu-item-group>
@@ -25,56 +30,80 @@
       </el-menu-item-group>
     </template>
     <template v-else>
-      <div class="el-menu-item title"
-           @click="$emit('update:collapsed', !collapsed)"
-           :style="{backgroundColor}">
-        <i :class="icon"></i>
+      <div
+        class="el-menu-item title"
+        :style="{backgroundColor}"
+        @click="$emit('update:collapsed', !collapsed)"
+      >
+        <i :class="icon" />
         <span v-if="!collapsed">GrassGrows</span>
       </div>
       <el-menu-item-group>
-        <template #title v-if="!collapsed">
+        <template
+          v-if="!collapsed"
+          #title
+        >
           <span style="white-space: nowrap">服务器管理控制台</span>
         </template>
-        <template #title v-else>&nbsp;</template>
+        <template
+          v-else
+          #title
+        >
+&nbsp;
+        </template>
       </el-menu-item-group>
     </template>
     <el-menu-item index="/workbench">
-      <i class="el-icon-s-data"></i>
-      <template #title>工作台</template>
+      <i class="el-icon-s-data" />
+      <template #title>
+        工作台
+      </template>
     </el-menu-item>
     <el-submenu index="/server">
       <template #title>
-        <i class="el-icon- iconfont emss-icon-server"></i>
+        <i class="el-icon- iconfont emss-icon-server" />
         <span>服务器管理</span>
       </template>
 
       <el-menu-item index="/server/list">
-        <i class="el-icon- iconfont emss-icon-server"></i>
-        <template #title>服务器列表</template>
+        <i class="el-icon- iconfont emss-icon-server" />
+        <template #title>
+          服务器列表
+        </template>
       </el-menu-item>
       <el-submenu index="/servers">
         <template #title>
-          <i class="el-icon-open"></i>
+          <i class="el-icon-open" />
           <span>服务器</span>
         </template>
         <el-menu-item-group>
           <template #title>
             <span style="white-space: nowrap">开启的服务器</span>
           </template>
-          <el-menu-item class="server-name"
-                        v-for="s in runningServer"
-                        :key="s.id" :index="`/servers/${s.abbr}`">
-            <template #title>{{ s.name }}</template>
+          <el-menu-item
+            v-for="s in runningServer"
+            :key="s.id"
+            class="server-name"
+            :index="`/servers/${s.abbr}`"
+          >
+            <template #title>
+              {{ s.name }}
+            </template>
           </el-menu-item>
         </el-menu-item-group>
         <el-submenu index="/servers#stopped">
           <template #title>
             <span style="white-space: nowrap; color: #909399; font-size: 12px">关闭的服务器</span>
           </template>
-          <el-menu-item class="server-name"
-                        v-for="s in stoppedServer"
-                        :key="s.id" :index="`/servers/${s.abbr}`">
-            <template #title>{{ s.name }}</template>
+          <el-menu-item
+            v-for="s in stoppedServer"
+            :key="s.id"
+            class="server-name"
+            :index="`/servers/${s.abbr}`"
+          >
+            <template #title>
+              {{ s.name }}
+            </template>
           </el-menu-item>
         </el-submenu>
       </el-submenu>
@@ -82,42 +111,48 @@
 
     <el-submenu index="/file">
       <template #title>
-        <i class="iconfont emss-icon-books "></i>
+        <i class="iconfont emss-icon-books " />
         <span>文件管理</span>
       </template>
       <el-menu-item index="/file/setting">
-        <i class="el-icon-set-up"></i>
-        <template #title>文件系统设置</template>
+        <i class="el-icon-set-up" />
+        <template #title>
+          文件系统设置
+        </template>
       </el-menu-item>
       <el-menu-item index="/files">
-        <i class="el-icon-folder"></i>
-        <template #title>文件列表</template>
+        <i class="el-icon-folder" />
+        <template #title>
+          文件列表
+        </template>
       </el-menu-item>
     </el-submenu>
 
     <el-submenu index="/system">
       <template #title>
-        <i class="el-icon-s-tools"></i>
+        <i class="el-icon-s-tools" />
         <span>系统管理</span>
       </template>
       <el-menu-item index="/system/users">
-        <i class="el-icon-user-solid"></i>
-        <template #title>用户管理</template>
+        <i class="el-icon-user-solid" />
+        <template #title>
+          用户管理
+        </template>
       </el-menu-item>
       <el-menu-item index="/system/setting">
-        <i class="el-icon-s-tools"></i>
-        <template #title>系统设置</template>
+        <i class="el-icon-s-tools" />
+        <template #title>
+          系统设置
+        </template>
       </el-menu-item>
     </el-submenu>
-
   </el-menu>
-
 </template>
 
 <script>
 
 export default {
-    name: 'my-navigator',
+    name: 'MyNavigator',
     props: {
         isDrawer: {
             type: Boolean,
