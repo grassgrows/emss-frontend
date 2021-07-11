@@ -7,7 +7,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty-function */
 import monitor from '@/api/serverMonitor'
-import utils from '@/utils'
 import axios from 'axios'
 
 /**
@@ -15,7 +14,7 @@ import axios from 'axios'
  */
 async function list() {
 
-    const resp = await axios.get(utils.getAddress('/server/list'))
+    const resp = await axios.get('/api/server/list')
     //TODO
     return resp.data.map(d => {
         return {
@@ -49,20 +48,20 @@ async function create(val) {
         imageId: val.selectedDocker,
     }
     console.log(req)
-    const resp = await axios.post(utils.getAddress('/server/create'), req)
+    const resp = await axios.post('/api/server/create', req)
 
 }
 
 async function start(id) {
-    const resp = await axios.post(utils.getAddress(`/server/${id}/start`))
+    const resp = await axios.post(`/api/server/${id}/start`)
 }
 
 async function stop(id) {
-    await axios.post(utils.getAddress(`/server/${id}/stop`))
+    await axios.post(`/api/server/${id}/stop`)
 }
 
 async function restart(id) {
-    await axios.post(utils.getAddress(`/server/${id}/restart`))
+    await axios.post(`/api/server/${id}/restart`)
 }
 
 async function remove(id) {

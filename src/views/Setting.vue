@@ -129,30 +129,13 @@ export default {
 
             },
             imageStatuses: {
-                0: {
-                    status: 'Downloading',
-                    progress: 0.3,
-                }
             },
             systemSetting: {
                 baseSetting: {
-                    name: 'EMSS',
-                    serverRootDirectory: '/mnt/device1/servers',
+                    name: '',
+                    serverRootDirectory: '',
                 },
                 dockerList: [
-                    {
-                        id: 0,
-                        name: 'Image Open JDK 8',
-                        repository: 'openjdk',
-                        tag: '8',
-                    },
-                    {
-                        id: 1,
-                        repository: 'openjdk',
-                        tag: 'latest',
-                        name: 'Image Open JDK 11',
-                        status: 'None',
-                    }
                 ],
             }
         }
@@ -296,7 +279,24 @@ ul.list {
             top: -2px;
             position: relative;
         }
+
+
+        .title {
+            font-size: 16px;
+            flex: 1 0 100px;
+        }
+
+        .content {
+            font-size: 14px;
+            color: rgba(0, 0, 0, .45);
+            flex: 1 1;
+        }
+
+        .action {
+            flex: 0 0 50px;
+        }
     }
+
 }
 
 .setting-list {

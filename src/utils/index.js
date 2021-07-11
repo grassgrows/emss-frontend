@@ -38,13 +38,7 @@ function getIconName(ext) {
     return `#icon-f-${ext}`
 }
 
-// eslint-disable-next-line no-undef
-const production = process.env.NODE_ENV === 'production'
-function getAddress(raw) {
-    return production ? `/api${raw}`: `http://localhost:7777${raw}`
-}
-
 
 export default {
-    wait, mapData, getIconName, getAddress, promise
+    wait, mapData, getIconName, promise
 }
