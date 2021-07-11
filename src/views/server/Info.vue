@@ -1,3 +1,7 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/8
+ -->
 <template>
   <el-row :gutter="20">
     <el-col :span="8" :xs="24" :sm="12" :lg="8" :xl="6">

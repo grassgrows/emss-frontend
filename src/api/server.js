@@ -1,7 +1,12 @@
+/**
+ *
+ * @author ：WarmthDawn
+ * @date ：2021/7/10
+ *
+ */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty-function */
 import monitor from '@/api/serverMonitor'
-import utils from '@/utils'
 import axios from 'axios'
 
 /**
@@ -9,7 +14,7 @@ import axios from 'axios'
  */
 async function list() {
 
-    const resp = await axios.get(utils.getAddress('/server/list'))
+    const resp = await axios.get('/api/server/list')
     //TODO
     return resp.data.map(d => {
         return {
@@ -26,42 +31,6 @@ async function list() {
             max_player: 20,
         }
     })
-
-    // return [
-    //     {
-    //         id: 'ftbi',
-    //         name: 'FTB Interactions',
-    //         running: false,
-    //         port: 521,
-    //         last_run: new Date('2020/4/23 11:54:32'),
-    //     },
-    //     {
-    //         id: 'as',
-    //         name: 'Fiction Craft: Atomtic Space',
-    //         running: true,
-    //         port: 522,
-    //         tps: 20.0,
-    //         online_player: 3,
-    //         max_player: 20,
-    //     },
-    //     {
-    //         id: 'e2e',
-    //         name: 'E2E',
-    //         running: true,
-    //         port: 524,
-    //         tps: 3.14,
-    //         online_player: 18,
-    //         max_player: 40,
-    //     },
-    //     {
-    //         id: 'et2',
-    //         name: '玄理2',
-    //         running: false,
-    //         port: 527,
-    //         last_run: new Date('2020/5/1 1:52:00'),
-    //
-    //     },
-    // ]
 }
 
 /**
@@ -79,20 +48,24 @@ async function create(val) {
         imageId: val.selectedDocker,
     }
     console.log(req)
-    const resp = await axios.post(utils.getAddress('/server/create'), req)
+    const resp = await axios.post('/api/server/create', req)
 
 }
 
 async function start(id) {
-    const resp = await axios.post(utils.getAddress(`/server/${id}/start`))
+    const resp = await axios.post(`/api/server/${id}/start`)
 }
 
 async function stop(id) {
-    await axios.post(utils.getAddress(`/server/${id}/stop`))
+    await axios.post(`/api/server/${id}/stop`)
 }
 
 async function restart(id) {
-    await axios.post(utils.getAddress(`/server/${id}/restart`))
+    await axios.post(`/api/server/${id}/restart`)
+}
+
+async function remove(id) {
+
 }
 
 async function info(id) {

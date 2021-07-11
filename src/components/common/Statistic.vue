@@ -1,3 +1,7 @@
+<!--
+ * @Author: WarmthDawn
+ * @Date: 2021/7/8
+ -->
 <template>
     <div class="static-container" :class="{reverse}">
         <div class="title">{{ title }}</div>

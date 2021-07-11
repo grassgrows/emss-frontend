@@ -1,3 +1,7 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/9
+ -->
 <template>
     <div class="add">
         <el-dialog title="添加服务器" v-model="dialogAdd" @open="openDialog" @close="closeDialog">
@@ -8,11 +12,11 @@
                     <el-step title="步骤3" icon="el-icon-upload"></el-step>
                 </el-steps>
 
-                <div class="step-one" v-show="active === 0">
+                <div class="step-one step-container" v-show="active === 0">
                     <step1 :clear-data="dialogAdd"
                            @next="next" @back="back" @sendData="receiveData1"></step1>
                 </div>
-                <div class="step-two" v-show="active === 1">
+                <div class="step-two step-container" v-show="active === 1">
                     <step2 :clear-data="dialogAdd"
                            :docker-image-list="dockerImageList"
                            @back="back" @submit="submit" @sendData="receiveData2"></step2>

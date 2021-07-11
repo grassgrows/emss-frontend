@@ -1,3 +1,7 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/9
+ -->
 <template>
   <common-chart-card :labels="labels" :datasets="datasets"
                     :value-precision="2" value-suffix=" Mbps"

@@ -1,17 +1,27 @@
+<!--
+ * @Author: WarmthDawn
+ * @Date: 2021/7/7
+ -->
 <template>
   <div class="extra-header">
     <h1>{{ name }}</h1>
     <div class="blank"></div>
     <div class="general-status">
-      <el-button type="danger" class="button auto-size"
-                 @click="closeServer" v-if="running">
-        关闭
-      </el-button>
-      <el-button type="success" class="button auto-size"
-                 @click="startServer" v-else>
-        开启
-      </el-button>
-      <template v-if="running">
+      <template  v-if="!running">
+        <el-button type="danger" class="button auto-size"
+                   @click="removeServer">
+          删除
+        </el-button>
+        <el-button type="success" class="button auto-size"
+                   @click="startServer">
+          开启
+        </el-button>
+      </template>
+      <template v-else>
+        <el-button type="danger" class="button auto-size"
+                   @click="closeServer">
+          关闭
+        </el-button>
         <el-button type="warning" class="button auto-size"
                    @click="restartServer">
           重启
@@ -56,6 +66,9 @@ export default {
         restartServer() {
             api.server.restart(this.id)
         },
+        removeServer() {
+            api.server.remove(this.id)
+        }
     },
 }
 </script>

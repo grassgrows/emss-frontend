@@ -1,3 +1,7 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/7
+ -->
 <template>
     <el-card :body-style="{ padding: '0px'}"
              shadow="hover">
@@ -41,22 +45,38 @@
                     </div>
                 </div>
                 <el-button-group class="bottom">
-                    <el-button type="text" class="button auto-size color-danger"
-                               @click="closeServer" v-if="running">
-                        关闭
-                    </el-button>
-                    <el-button type="text" class="button auto-size color-success"
-                               @click="startServer" v-else>
-                        开启
-                    </el-button>
+
                     <template v-if="running">
+                        <el-button type="text" class="button auto-size color-danger"
+                                 @click="closeServer">
+                          关闭
+                        </el-button>
                         <el-divider direction="vertical"></el-divider>
                         <el-button type="text" class="button auto-size color-warn"
                                    @click="restartServer">
-                            重启
+                          重启
                         </el-button>
                     </template>
+                    <template v-else>
+                      <el-button type="text" class="button auto-size color-danger"
+                                 @click="removeServer">
+                        删除
+                      </el-button>
+                      <el-button type="text" class="button auto-size color-success"
+                                 @click="startServer">
+                        开启
+                      </el-button>
+                    </template>
                     <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" class="button auto-size color-info"
+                             @click="$router.push({name:'terminal', params:{id}})">
+                    终端
+                    </el-button>
+                    <el-divider direction="vertical"></el-divider>
+                    <el-button type="text" class="button auto-size color-primary"
+                             @click="$router.push({name:'files', params:{ filePath:id }})">
+                    文件
+                    </el-button>
                 </el-button-group>
             </template>
         </div>
@@ -154,6 +174,15 @@ export default {
         },
         async restartServer() {
             await api.server.restart(this.id)
+            this.$store.commit('refreshServerList')
+        },
+        async removeServer() {
+            await api.server.remove(this.id)
+            this.$notify({
+                title: '删除成功',
+                message: '正在删除服务器',
+                type: 'success'
+            })
             this.$store.commit('refreshServerList')
         }
     }

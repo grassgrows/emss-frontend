@@ -1,3 +1,7 @@
+<!--
+ * @Author: WarmthDawn
+ * @Date: 2021/7/6
+ -->
 <template>
   <el-menu router unique-opened
            style="margin: 0"
@@ -74,6 +78,21 @@
           </el-menu-item>
         </el-submenu>
       </el-submenu>
+    </el-submenu>
+
+    <el-submenu index="/file">
+      <template #title>
+        <i class="iconfont emss-icon-books "></i>
+        <span>文件管理</span>
+      </template>
+      <el-menu-item index="/file/setting">
+        <i class="el-icon-set-up"></i>
+        <template #title>文件系统设置</template>
+      </el-menu-item>
+      <el-menu-item index="/files">
+        <i class="el-icon-folder"></i>
+        <template #title>文件列表</template>
+      </el-menu-item>
     </el-submenu>
 
     <el-submenu index="/system">

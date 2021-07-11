@@ -1,3 +1,9 @@
+/**
+ *
+ * @author ：WarmthDawn
+ * @date ：2021/7/6
+ *
+ */
 // eslint-disable-next-line no-extend-native
 String.prototype.gblen = function () {
     let len = 0

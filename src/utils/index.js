@@ -1,3 +1,9 @@
+/**
+ *
+ * @author ：WarmthDawn
+ * @date ：2021/7/6
+ *
+ */
 import { random } from 'lodash'
 import fileIconMap from '@/assets/fileIconMaps.json'
 import iconfont from '@/assets/icon-file/iconfont.json'
@@ -32,13 +38,7 @@ function getIconName(ext) {
     return `#icon-f-${ext}`
 }
 
-// eslint-disable-next-line no-undef
-const production = process.env.NODE_ENV === 'production'
-function getAddress(raw) {
-    return production ? `/api${raw}`: `http://localhost:7777${raw}`
-}
-
 
 export default {
-    wait, mapData, getIconName, getAddress, promise
+    wait, mapData, getIconName, promise
 }

@@ -1,5 +1,10 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/9
+ -->
 <template>
     <div class="step1">
+      <div>
         <el-form v-model="serverData" label-width="100px" label-position="left">
             <el-form-item label="服务器名称" class="input-style">
                 <el-input v-model="serverData.name"></el-input>
@@ -20,11 +25,12 @@
                 </el-space>
             </el-form-item>
         </el-form>
-        <div class="empty"></div>
-        <div class="button-group" style="text-align: center">
-            <el-button type="primary" @click="$emit('back')">上一步</el-button>
-            <el-button type="primary" @click="$emit('next');$emit('sendData',serverData)">下一步</el-button>
-        </div>
+      </div>
+      <div class="empty"></div>
+      <div class="button-group" style="text-align: center">
+        <el-button type="primary" @click="$emit('back')">上一步</el-button>
+        <el-button type="primary" @click="$emit('next');$emit('sendData',serverData)">下一步</el-button>
+      </div>
     </div>
 </template>
 
@@ -75,9 +81,6 @@ export default {
     display: flex;
     flex-direction: column;
     flex: 1 1 0;
-    margin-top: 1cm;
-    margin-left: 1.5cm;
-    margin-right: 1.5cm;
 }
 
 .step1 .empty {
