@@ -8,6 +8,7 @@ import { random } from 'lodash'
 import fileIconMap from '@/assets/fileIconMaps.json'
 import iconfont from '@/assets/icon-file/iconfont.json'
 import promise from '@/utils/promise'
+import result from '@/utils/result'
 
 const availableIcons = iconfont.glyphs.map((f) => f.font_class)
 
@@ -40,5 +41,5 @@ function getIconName(ext) {
 
 
 export default {
-    wait, mapData, getIconName, promise
+    wait, mapData, getIconName, promise, result
 }

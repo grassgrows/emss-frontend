@@ -8,6 +8,7 @@
 /* eslint-disable no-empty-function */
 import monitor from '@/api/serverMonitor'
 import axios from 'axios'
+import result from '@/utils/result'
 
 /**
  * 列出全部服务器列表
@@ -15,8 +16,9 @@ import axios from 'axios'
 async function list() {
 
     const resp = await axios.get('/api/server/list')
+    let servers = result.getData(resp.data, '获取服务器信息失败')
     //TODO
-    return resp.data.map(d => {
+    return servers.map(d => {
         return {
             id: d.id,
             abbr: d.abbr,
@@ -47,21 +49,24 @@ async function create(val) {
         hostPort: val.hostPort,
         imageId: val.selectedDocker,
     }
-    console.log(req)
-    const resp = await axios.post('/api/server/create', req)
 
+    const resp = await axios.post('/api/server/create', req)
+    result.getData(resp.data, '创建服务器失败')
 }
 
 async function start(id) {
     const resp = await axios.post(`/api/server/${id}/start`)
+    result.getData(resp.data, '启动服务器失败')
 }
 
 async function stop(id) {
-    await axios.post(`/api/server/${id}/stop`)
+    const resp = await axios.post(`/api/server/${id}/stop`)
+    result.getData(resp.data, '关闭服务器失败')
 }
 
 async function restart(id) {
-    await axios.post(`/api/server/${id}/restart`)
+    const resp = await axios.post(`/api/server/${id}/restart`)
+    result.getData(resp.data, '重启服务器失败')
 }
 
 async function remove(id) {
