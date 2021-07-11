@@ -1,3 +1,7 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/9
+ -->
 <template>
   <common-info-card header="服务器设置" icon="el-icon-setting"
                     @click="$emit('click')">

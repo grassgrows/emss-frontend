@@ -1,3 +1,7 @@
+<!--
+ * @Author: WarmthDawn
+ * @Date: 2021/7/9
+ -->
 <template>
   <common-chart-card tooltip-prefix="CPU使用率："
                     :labels="labels" :datasets="datasets"

@@ -1,3 +1,9 @@
+/**
+ *
+ * @author ：WarmthDawn
+ * @date ：2021/7/6
+ *
+ */
 import { random } from 'lodash'
 import fileIconMap from '@/assets/fileIconMaps.json'
 import iconfont from '@/assets/icon-file/iconfont.json'

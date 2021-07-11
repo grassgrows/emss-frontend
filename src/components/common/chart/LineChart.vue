@@ -1,3 +1,7 @@
+<!--
+ * @Author: xgl
+ * @Date: 2021/7/8
+ -->
 <template>
   <div>
     <canvas ref="line_chart"></canvas>
