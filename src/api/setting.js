@@ -34,7 +34,11 @@ async function createImage(imageName, imageRepository) {
 
 async function downloadImage(imageId) {
     const resp = await axios.post(`/api/settings/image/${imageId}/download`)
-    result.getData(resp.data, '下载镜像失败')
+    return resp.data
+}
+
+async function cancelDownloadImage(imageId) {
+    await axios.post(`/api/settings/image/${imageId}/cancelDownload`)
 }
 
 
@@ -49,5 +53,5 @@ async function updateSetting(setting) {
 }
 
 export default {
-    images, imageInfo, imageStatus, createImage, downloadImage, baseSetting, updateSetting
+    images, imageInfo, imageStatus, createImage, downloadImage, baseSetting, updateSetting, cancelDownloadImage
 }

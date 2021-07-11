@@ -5,7 +5,7 @@
 <template>
     <el-container class="full-height">
         <el-aside width="auto" class="container" v-if="!isMobile">
-            <my-navigator :collapsed.sync="collapseSide"></my-navigator>
+            <my-navigator v-model:collapsed="collapseSide"></my-navigator>
         </el-aside>
         <el-container>
             <el-header class="my-shadow">
@@ -33,7 +33,7 @@
         </el-container>
         <el-drawer :with-header="false" v-model="showSide" append-to-body
                    direction="ltr" v-if="isMobile" size="249px" custom-class="drawer">
-            <my-navigator :collapsed.sync="collapseSide"
+            <my-navigator v-model:collapsed="collapseSide"
                           is-drawer @select="showSide = false"></my-navigator>
         </el-drawer>
     </el-container>

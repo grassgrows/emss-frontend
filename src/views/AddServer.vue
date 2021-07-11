@@ -4,7 +4,9 @@
  -->
 <template>
     <div class="add">
-        <el-dialog title="添加服务器" v-model="dialogAdd" @open="openDialog" @close="closeDialog">
+        <el-dialog custom-class="add-dialog" top="10vh" title="添加服务器"
+                   v-model="dialogAdd" @open="openDialog"
+                   @close="closeDialog">
             <div class="dialog-content">
                 <el-steps :active="active" finish-status="success" class="step-list-container">
                     <el-step title="步骤1" icon="el-icon-edit"></el-step>
@@ -113,9 +115,9 @@ export default {
         async openDialog() {
             const images = await api.setting.images()
             const result = []
-            for(const image of images) {
+            for (const image of images) {
                 const s = await api.setting.imageStatus(image.id)
-                if(s.status === 'Downloaded') {
+                if (s.status === 'Downloaded') {
                     result.push({
                         id: image.id,
                         name: image.name,
@@ -135,9 +137,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .dialog-content {
-    height: 60vh;
+    height: 66vh;
     overflow: auto;
     display: flex;
     flex-direction: column;
@@ -151,19 +153,30 @@ button[name='submit'] {
     display: flex;
     flex-direction: column;
     flex: 1 1 0;
-    margin-top: 1cm;
-    margin-left: 1.5cm;
-    margin-right: 1.5cm;
+    padding: 20px 6vh 0;
+    @media screen and (max-width: 768px) {
+        padding: 20px 0 0;
+    }
+    .empty {
+        flex: 1 1 0;
+    }
 }
 
-.step-container .empty {
-    flex: 1 1 0;
-}
 
 .step-list-container {
-    margin-left: 1.5cm;
-    margin-right: 1.5cm;
+    padding: 0 6vh;
+    @media screen and (max-width: 768px) {
+        padding: 0 5px;
+    }
 }
 
 
+</style>
+<style lang="less">
+.el-dialog.add-dialog {
+    @media screen and (max-width: 768px) {
+        width: auto !important;
+        margin: 0 20px;
+    }
+}
 </style>

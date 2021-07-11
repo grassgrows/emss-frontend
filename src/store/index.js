@@ -4,7 +4,7 @@
  * @date ：2021/7/6
  *
  */
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 import api from '@/api'
 
 const store = createStore({
@@ -12,19 +12,23 @@ const store = createStore({
         return {
             serverList: [],
             currentServer: {},
-            addState: false
+            addState: false,
+            isMobile: false,
         }
     },
     mutations: {
         async refreshServerList(state) {
             state.serverList = await api.server.list()
         },
-		
+
         async setServer(state, server) {
             state.currentServer = server
         },
-        async changeAddState(state,val) {
+        async changeAddState(state, val) {
             state.addState = val
+        },
+        setIsMobile(state, val) {
+            state.isMobile = val
         }
     },
     actions: {},

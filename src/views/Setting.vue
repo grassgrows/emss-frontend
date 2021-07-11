@@ -4,7 +4,7 @@
  -->
 <template>
     <div>
-        <el-card shadow="always" class="card">
+        <el-card shadow="always" class="card" v-loading="loadingBaseSetting">
             <template #header>
                 <div class="card-header">
                     <span>服务器基本设置</span>
@@ -13,14 +13,14 @@
             <ul class="setting-list list">
                 <li v-for="(node, key) in settingsType" :key="key">
                     <div class="title">{{ node.title }}</div>
-                    <div class="content">{{ systemSetting.baseSetting[key] }}</div>
+                    <div class="content">{{ baseSetting[key] }}</div>
                     <div class="action">
                         <el-link @click="edit(key)" href="javascript:void(0);">编辑</el-link>
                     </div>
                 </li>
             </ul>
         </el-card>
-        <el-card shadow="always" class="card">
+        <el-card shadow="always" class="card" v-loading="loadingImage">
             <template #header>
                 <div class="card-header">
                     <span>Docker容器设置</span>
@@ -28,25 +28,35 @@
             </template>
 
             <ul class="docker-list list">
-                <li v-for="dockerData in systemSetting.dockerList" :key="dockerData">
+                <li v-for="image in imageSetting" :key="image.id">
                     <div class="list-item">
-                        <div class="name">{{ dockerData.name }}</div>
-                        <div class="content">{{ `${dockerData.repository}:${dockerData.tag}` }}</div>
+                        <div class="name">{{ image.name }}</div>
+                        <div class="content">{{ `${image.repository}:${image.tag}` }}</div>
+                        <div class="download">
+                            <template v-if="image.statusObj && image.statusObj.status === 'Downloading'">
+                                <span>{{ formatProgress(image) }}</span>&nbsp;<span>{{ formatSpeed(image) }}</span>
+                            </template>
+                        </div>
                         <div class="action">
-                            <el-link v-if="getStatus(dockerData.id).status === 'Ready'" href="javascript:void(0);"
-                                     @click="beginDownloadImage(dockerData.id, dockerData.name)">下载
+                            <el-link v-if="image.acting && image.acting.busy" href="javascript:void(0);" disabled>
+                                {{ image.acting.message }}
                             </el-link>
-                            <el-link v-if="getStatus(dockerData.id).status === 'Downloading'"
-                                     href="javascript:void(0);" disabled>
-                                下载中
+                            <el-link v-else-if="image.statusObj && image.statusObj.status === 'Ready'"
+                                     href="javascript:void(0);"
+                                     @click="beginDownloadImage(image)">下载
                             </el-link>
-                            <el-link v-if="getStatus(dockerData.id).status === 'Downloaded'"
+                            <el-link v-else-if="image.statusObj && image.statusObj.status === 'Downloading'"
+                                     href="javascript:void(0);"
+                                     @click="cancelDownloadImage(image.id)">
+                                取消
+                            </el-link>
+                            <el-link v-else-if="image.statusObj && image.statusObj.status === 'Downloaded'"
                                      href="javascript:void(0);">删除
                             </el-link>
                         </div>
                     </div>
-                    <span v-if="getStatus(dockerData.id).status === 'Downloading'"
-                          :style="{width: `${100 * getStatus(dockerData.id).progress}%`}"
+                    <span v-if="image.statusObj && image.statusObj.status === 'Downloading'"
+                          :style="{width: formatProgress(image)}"
                           class="progress"></span>
                 </li>
                 <li>
@@ -78,26 +88,27 @@
                    v-model="imageCreating"
                    custom-class="edit-dialog"
                    @close="clearData">
-          <el-form :model="imageToCreate" label-width="110px" label-position="left" ref="imageForm">
-            <el-form-item label="名字/name">
-              <el-input v-model="imageToCreate.name"></el-input>
-            </el-form-item>
-            <el-form-item label="库/repository">
-              <el-input v-model="imageToCreate.repository" placeholder="java:latest"></el-input>
-            </el-form-item>
-          </el-form>
-          <template #footer>
+            <el-form :model="imageToCreate" label-width="110px" label-position="left" ref="imageForm">
+                <el-form-item label="名字/name">
+                    <el-input v-model="imageToCreate.name"></el-input>
+                </el-form-item>
+                <el-form-item label="库/repository">
+                    <el-input v-model="imageToCreate.repository" placeholder="java:latest"></el-input>
+                </el-form-item>
+            </el-form>
+            <template #footer>
             <span class="dialog-footer">
               <el-button @click="imageCreating = false">取 消</el-button>
               <el-button type="primary" @click="imageOkClick">确 定</el-button>
             </span>
-          </template>
+            </template>
         </el-dialog>
     </div>
 </template>
 
 <script>
 import api from '@/api'
+import delay from 'delay'
 
 export default {
     name: 'Setting',
@@ -128,16 +139,16 @@ export default {
                 },
 
             },
-            imageStatuses: {
+            imageStatuses: {},
+            baseSetting: {
+                name: '',
+                serverRootDirectory: '',
             },
-            systemSetting: {
-                baseSetting: {
-                    name: '',
-                    serverRootDirectory: '',
-                },
-                dockerList: [
-                ],
-            }
+
+            imageSetting: [],
+
+            loadingImage: true,
+            loadingBaseSetting: true,
         }
     },
 
@@ -149,68 +160,121 @@ export default {
         })
     },
     methods: {
-        getStatus(imageId) {
-            const status = this.imageStatuses[imageId]
-            return typeof status === 'undefined' ? {
-                status: 'Unknown',
-            } : status
-        },
-        async updateSetting() {
-            this.systemSetting.baseSetting = await api.setting.baseSetting()
-        },
-        async updateImages() {
-            const images = await api.setting.images()
-            this.systemSetting.dockerList = images
-
-            for (const i of images) {
-                await this.updateImageStatus(i.id)
+        formatProgress(image) {
+            if (!image || !image.statusObj) {
+                return '0%'
             }
 
-        },
-        async updateImageStatus(imageId) {
-            const result = await api.setting.imageStatus(imageId)
-            this.imageStatuses[imageId] = result
+            const pro = image.statusObj.progress
+            if (typeof pro !== 'number' && isNaN(pro) || pro < 0) {
+                return '0%'
+            }
 
+            if (pro > 1) {
+                return '100%'
+            }
+            return `${(pro * 100).toFixed(1)}%`
+        },
+        formatSpeed(image) {
+            if (!image || !image.statusObj) {
+                return '<1KB/s'
+            }
+            let speed = image.statusObj.speed
+            speed *= 10
+            if (speed > 1024 * 1024 * 1024) {
+                return `${(speed / 1024 / 1024 / 1024).toPrecision(3)} GB/s`
+            }
+            if (speed > 1024 * 1024) {
+                return `${(speed / 1024 / 1024).toPrecision(3)} MB/s`
+            }
+            if (speed > 1024) {
+                return `${(speed / 1024).toPrecision(3)} KB/s`
+            }
+
+            return '<1KB/s'
+
+        },
+        async updateSetting() {
+            this.loadingBaseSetting = true
+            this.baseSetting = await api.setting.baseSetting()
+            this.loadingBaseSetting = false
+        },
+        async updateImages() {
+            this.loadingImage = true
+            const images = await api.setting.images()
+            for (const image of images) {
+                image.acting = {
+                    busy: false,
+                    message: ''
+                }
+                await this.updateImageStatus(image)
+            }
+            this.imageSetting = images
+            this.loadingImage = false
+
+        },
+        async updateImageStatus(image) {
+            const result = await api.setting.imageStatus(image.id)
+            image.statusObj = result
             return result.status
         },
-        async beginDownloadImage(imageId, imageName) {
-            const downloading = api.setting.downloadImage(imageId)
-            this.$notify({
-                title: '下载开始',
-                message: `正在下载镜像: ${imageName}`,
-                type: 'info'
-            })
+        async cancelDownloadImage(imageId) {
+            await api.setting.cancelDownloadImage(imageId)
+        },
+        async beginDownloadImage(image) {
+            // noinspection ES6MissingAwait
+            api.setting.downloadImage(image.id)
+            image.acting = {
+                busy: true,
+                message: '开始下载'
+            }
+            let started = false
 
-            let actionId
-            const action = async () => {
-                let status = await this.updateImageStatus(imageId)
+            for (; ;) {
+                const status = await this.updateImageStatus(image)
+                if (!started && status === 'Downloading') {
+                    this.$notify({
+                        title: '下载开始',
+                        message: `正在下载镜像: ${image.name}`,
+                        type: 'info'
+                    })
+
+                    image.acting = {
+                        busy: false,
+                        message: ''
+                    }
+                    started = true
+                }
                 if (status !== 'Downloading' && status !== 'Ready') {
-                    clearInterval(actionId)
                     if (status === 'Downloaded') {
                         this.$notify({
                             title: '下载成功',
-                            message: `镜像: ${imageName} 下载成功，现在你可以创建服务器了`,
+                            message: `镜像: ${image.name} 下载成功，现在你可以创建服务器了`,
                             type: 'success'
                         })
                     } else {
                         this.$notify({
                             title: '下载失败',
-                            message: `镜像: ${imageName} 下载失败`,
+                            message: `镜像: ${image.name} 下载失败`,
                             type: 'error'
                         })
-                        this.imageStatuses[imageId].status = 'Ready'
+                        image.statusObj.status = 'Ready'
                     }
+                    break
                 }
+                await delay(500)
             }
-            actionId = setInterval(action, 1000)
+            image.acting = {
+                busy: false,
+                message: ''
+            }
 
-            await downloading
 
         },
         edit(key) {
             this.editor.editingName = key
             this.editor.editing = true
-            this.editor.value = this.systemSetting.baseSetting[key]
+            this.editor.value = this.baseSetting[key]
             this.editor.editTitle = this.settingsType[key].title
             this.editor.editDescription = this.settingsType[key].description
         },
@@ -219,7 +283,7 @@ export default {
             const editSetting = {}
             editSetting[this.editor.editingName] = this.editor.value
             await api.setting.updateSetting(editSetting)
-            this.systemSetting.baseSetting[this.editor.editingName] = this.editor.value
+            this.baseSetting[this.editor.editingName] = this.editor.value
             await this.updateSetting()
         },
         imageOkClick() {
@@ -253,6 +317,7 @@ ul.list {
 .list-item {
     display: flex;
     align-items: flex-end;
+    align-content: flex-end;
     justify-content: space-between;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 5px 0;
@@ -265,9 +330,54 @@ ul.list {
 
 .docker-list {
     li {
+
         .list-item {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            //border-bottom: none;
+
+            .name {
+                font-size: 16px;
+                flex: 1 0 120px;
+            }
+
+            .content {
+                font-size: 14px;
+                color: rgba(0, 0, 0, .45);
+                flex: 1 1;
+            }
+
+            .download {
+                font-size: 12px;
+                color: rgba(0, 0, 0, .45);
+                flex: 0 0 100px;
+            }
+
+            @media screen and (max-width: 768px) {
+                flex-wrap: wrap;
+                min-height: 60px;
+                .name {
+                    flex: 1 0 150px;
+                }
+
+                .content {
+                    padding-left: 10px;
+                    order: 1;
+                    flex: 1 1 200px;
+                }
+
+                .download {
+                    order: 1;
+                }
+            }
+
+
+            .action {
+                flex: 0 0 60px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            &:last-child .list-item {
+                min-height: 40px;
+            }
         }
 
         .progress {
@@ -281,20 +391,6 @@ ul.list {
         }
 
 
-        .title {
-            font-size: 16px;
-            flex: 1 0 100px;
-        }
-
-        .content {
-            font-size: 14px;
-            color: rgba(0, 0, 0, .45);
-            flex: 1 1;
-        }
-
-        .action {
-            flex: 0 0 50px;
-        }
     }
 
 }
@@ -315,8 +411,18 @@ ul.list {
             flex: 10 1;
         }
 
-        .action {
-            flex: 0 0 50px;
+        @media screen and (max-width: 768px) {
+            flex-wrap: wrap;
+            min-height: 60px;
+            .title {
+                flex: 1 0 150px;
+            }
+
+            .content {
+                padding-left: 20px;
+                order: 1;
+                flex: 1 1 200px;
+            }
         }
     }
 }
@@ -330,9 +436,18 @@ ul.list {
 
 </style>
 
-<style>
-.edit-dialog > .el-dialog__body {
-    padding: 10px 20px;
+<style lang="less">
+.el-dialog.edit-dialog {
+    @media screen and (max-width: 768px) {
+        width: auto !important;
+        margin: 0 20px;
+    }
+
+    .el-dialog__body {
+        padding: 10px 20px;
+
+
+    }
 }
 
 </style>
