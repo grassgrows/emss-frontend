@@ -10,12 +10,6 @@ import {throttle} from 'lodash'
 
 export default {
     name: 'Xterm',
-    props: {
-        showing: {
-            type: Boolean,
-            default: false,
-        }
-    },
     emits: ['resize', 'key'],
     data() {
         return {
@@ -36,7 +30,7 @@ export default {
     },
     methods: {
         fitTerm() {
-            if(this.showing) {
+            if(this.$el.visible) {
                 this.fitAddon.fit()
             }
         }

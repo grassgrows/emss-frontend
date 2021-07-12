@@ -111,7 +111,7 @@
 
     <el-submenu index="/file">
       <template #title>
-        <i class="iconfont emss-icon-books " />
+        <i class="el-icon- iconfont emss-icon-books " />
         <span>文件管理</span>
       </template>
       <el-menu-item index="/file/setting">

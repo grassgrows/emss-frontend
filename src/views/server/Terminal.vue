@@ -9,10 +9,7 @@
           label="模拟终端"
           name="first"
         >
-          <xterm
-            class="terminal"
-            :showing="selected==='first'"
-          />
+          <xterm class="terminal" />
         </el-tab-pane>
         <el-tab-pane
           label="聊天窗口"

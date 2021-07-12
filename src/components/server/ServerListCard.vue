@@ -121,7 +121,7 @@
           <el-button
             type="text"
             class="button auto-size color-info"
-            @click="$router.push({name:'terminal', params:{id}})"
+            @click="$router.push({name:'terminal', params:{abbr}})"
           >
             终端
           </el-button>
@@ -129,7 +129,7 @@
           <el-button
             type="text"
             class="button auto-size color-primary"
-            @click="$router.push({name:'files', params:{ filePath:id }})"
+            @click="$router.push({name:'files', params:{ filePath:abbr }})"
           >
             文件
           </el-button>
@@ -155,6 +155,7 @@ export default {
         },
         serverData: Object,
     },
+    emits: ['add'],
     computed: {
         ...utils.mapData('serverData', ['id', 'abbr', 'name', 'running', 'port', 'tps', 'lastRun', 'onlinePlayer', 'maxPlayer']),
         showPop() {
