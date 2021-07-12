@@ -10,9 +10,6 @@
 
 export default {
     name: 'Workbench',
-    mounted() {
-        this.$store.commit('refreshServerList')
-    },
 
 }
 </script>

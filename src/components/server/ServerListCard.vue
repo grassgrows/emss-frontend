@@ -206,7 +206,7 @@ export default {
                 message: '服务器正在关闭',
                 type: 'success'
             })
-            this.$store.commit('refreshServerList')
+            await this.$store.dispatch('refreshServerList')
         },
         async startServer() {
             try {
@@ -217,7 +217,7 @@ export default {
                     message: e.message,
                     type: 'error'
                 })
-                this.$store.commit('refreshServerList')
+                this.$store.dispatch('refreshServerList')
                 return
             }
 
@@ -226,11 +226,11 @@ export default {
                 message: '服务器已经启动',
                 type: 'success'
             })
-            this.$store.commit('refreshServerList')
+            await this.$store.dispatch('refreshServerList')
         },
         async restartServer() {
             await api.server.restart(this.id)
-            this.$store.commit('refreshServerList')
+            this.$store.dispatch('refreshServerList')
         },
         async removeServer() {
             await api.server.remove(this.id)
@@ -239,7 +239,7 @@ export default {
                 message: '正在删除服务器',
                 type: 'success'
             })
-            this.$store.commit('refreshServerList')
+            await this.$store.dispatch('refreshServerList')
         }
     }
 }

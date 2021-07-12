@@ -68,9 +68,6 @@ export default {
             return result
         }
     },
-    mounted() {
-        this.$store.commit('refreshServerList')
-    },
     methods: {
         showAdd() {
             this.$store.commit('changeAddState',true)

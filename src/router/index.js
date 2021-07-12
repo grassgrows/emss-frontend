@@ -130,10 +130,10 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     if (to.meta.noLogin !== true && !store.state.authToken) {
     // TODO: 跳转到登录
-        store.commit('refreshServerList')
+        await store.dispatch('refreshServerList')
         next()
     // next({ name: 'Login' });
     } else {
