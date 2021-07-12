@@ -96,7 +96,7 @@ const routes = [
                 return ['工作台', '文件管理', ...path.split('/').filter((s) => Boolean(s))]
             },
         },
-        component: Files,
+        component: Files
     },
     {
         path: '/system/setting',
