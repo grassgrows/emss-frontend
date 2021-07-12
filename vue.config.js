@@ -1,3 +1,4 @@
+/* eslint-disable */
 const path = require('path')
 module.exports = {
     pluginOptions: {
@@ -19,9 +20,6 @@ module.exports = {
             // '/api': {
             //     target: 'https://emss.warmthdawn.top',
             //     ws: true,
-            //     headers: {
-            //         Connection: 'keep-alive'
-            //     }
             // }
         }
     },

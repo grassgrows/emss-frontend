@@ -14,6 +14,8 @@ import '@/assets/icon-file/iconfont'
 import '@/assets/icon-file/iconfont.css'
 import 'animate.css'
 
+import 'element-plus/lib/theme-chalk/base.css'
+
 const app = createApp(App)
 installElementPlus(app)
 app.use(store)

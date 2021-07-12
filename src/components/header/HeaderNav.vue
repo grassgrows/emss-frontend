@@ -4,17 +4,23 @@
  -->
 <template>
   <div class="my-header-nav">
-    <div class="button small" @click="$router.back()">
-      <i class="el-icon-back"></i>
+    <div
+      class="button small"
+      @click="$router.back()"
+    >
+      <i class="el-icon-back" />
     </div>
-    <div class="button" @click="$emit('collapse-click')">
-      <i :class="icon"></i>
+    <div
+      class="button"
+      @click="$emit('collapse-click')"
+    >
+      <i :class="icon" />
     </div>
 
-    <header-breadcrumb v-if="showBreadcrumb"></header-breadcrumb>
-    <div class="blank"></div>
+    <header-breadcrumb v-if="showBreadcrumb" />
+    <div class="blank" />
     <div class="my-header-end">
-      <el-avatar icon="el-icon-user"></el-avatar>
+      <el-avatar icon="el-icon-user" />
     </div>
   </div>
 </template>
@@ -24,6 +30,7 @@ import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue'
 
 export default {
     name: 'HeaderNav',
+    components: { HeaderBreadcrumb },
     props: {
         collapseSide: {
             type: Boolean,
@@ -34,7 +41,6 @@ export default {
             default: true,
         },
     },
-    components: { HeaderBreadcrumb },
     computed: {
         icon() {
             return this.collapseSide ? 'el-icon-s-unfold' : 'el-icon-s-fold'

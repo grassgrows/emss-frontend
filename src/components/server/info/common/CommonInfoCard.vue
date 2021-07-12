@@ -3,21 +3,25 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <el-card :body-style="{ padding: '0px'}"
-           shadow="always">
+  <el-card
+    :body-style="{ padding: '0px'}"
+    shadow="always"
+  >
     <div class="card-container">
       <div class="card-header">
         <div>{{ header }}</div>
         <template v-if="typeof icon !== 'undefined'">
-          <div class="blank"></div>
-          <div class="header-icon"><i :class="icon"></i></div>
+          <div class="blank" />
+          <div class="header-icon">
+            <i :class="icon" />
+          </div>
         </template>
       </div>
       <div class="card-subheader">
-        <slot name="subheader"></slot>
+        <slot name="subheader" />
       </div>
       <div class="card-content">
-        <slot></slot>
+        <slot />
       </div>
     </div>
   </el-card>

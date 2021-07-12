@@ -3,13 +3,17 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <common-chart-card tooltip-prefix="CPU使用率："
-                    :labels="labels" :datasets="datasets"
-                    :value-precision="2" value-suffix="%"
-                    :customConfig="options"
-                    header="CPU使用率 (%)"
-                    v-loading="loading"
-  >当前： {{ current }}%
+  <common-chart-card
+    v-loading="loading"
+    tooltip-prefix="CPU使用率："
+    :labels="labels"
+    :datasets="datasets"
+    :value-precision="2"
+    value-suffix="%"
+    :custom-config="options"
+    header="CPU使用率 (%)"
+  >
+    当前： {{ current }}%
   </common-chart-card>
 </template>
 

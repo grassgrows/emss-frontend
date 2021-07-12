@@ -3,24 +3,33 @@
  * @Date: 2021/7/9
  -->
 <template>
-    <div class="extra-header">
-        <h1>服务器列表</h1>
-        <div class="blank"></div>
-        <div class="general-status">
-            <statistic title="运行中" :value="running"
-                       class="statistic" reverse
-                       contentStyle="color: #67C23A;"
-            ></statistic>
-            <statistic title="已停止" :value="stopped"
-                       class="statistic" reverse
-                       contentStyle="color: #F56C6C;"
-            ></statistic>
-            <statistic title="总共" :value="total"
-                       class="statistic" reverse
-                       contentStyle="color: #409EFF;"
-            ></statistic>
-        </div>
+  <div class="extra-header">
+    <h1>服务器列表</h1>
+    <div class="blank" />
+    <div class="general-status">
+      <statistic
+        title="运行中"
+        :value="running"
+        class="statistic"
+        reverse
+        content-style="color: #67C23A;"
+      />
+      <statistic
+        title="已停止"
+        :value="stopped"
+        class="statistic"
+        reverse
+        content-style="color: #F56C6C;"
+      />
+      <statistic
+        title="总共"
+        :value="total"
+        class="statistic"
+        reverse
+        content-style="color: #409EFF;"
+      />
     </div>
+  </div>
 </template>
 
 <script>

@@ -3,15 +3,24 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <el-card shadow="always" :body-style="{ padding: '0px' }">
+  <el-card
+    shadow="always"
+    :body-style="{ padding: '0px' }"
+  >
     <div class="common-card">
-      <div class="card-header">{{ header }}</div>
-      <div class="card-content">
-        <slot></slot>
+      <div class="card-header">
+        {{ header }}
       </div>
-      <line-chart :labels="cpLabels" :datasets="datasets" :options="options"
-                  class="card-chart"
-                  @click="$emit('click')"></line-chart>
+      <div class="card-content">
+        <slot />
+      </div>
+      <line-chart
+        :labels="cpLabels"
+        :datasets="datasets"
+        :options="options"
+        class="card-chart"
+        @click="$emit('click')"
+      />
     </div>
   </el-card>
 </template>
@@ -71,7 +80,6 @@ export default {
             this.options.scales.x.time.stepSize = Math.max(step, 1)
         },
     },
-    methods: {},
     mounted() {
         const defaultOptions = {
             responsive: true,
@@ -123,6 +131,7 @@ export default {
         }
         this.options = defaultOptions
     },
+    methods: {},
 }
 </script>
 

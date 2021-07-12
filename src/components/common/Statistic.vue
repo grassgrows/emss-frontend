@@ -3,14 +3,22 @@
  * @Date: 2021/7/8
  -->
 <template>
-    <div class="static-container" :class="{reverse}">
-        <div class="title">{{ title }}</div>
-        <div class="value" :style="contentStyle">
-            <slot name="prefix"></slot>
-            <span class="content">{{ dispValue }}</span>
-            <slot name="suffix"></slot>
-        </div>
+  <div
+    class="static-container"
+    :class="{reverse}"
+  >
+    <div class="title">
+      {{ title }}
     </div>
+    <div
+      class="value"
+      :style="contentStyle"
+    >
+      <slot name="prefix" />
+      <span class="content">{{ dispValue }}</span>
+      <slot name="suffix" />
+    </div>
+  </div>
 </template>
 
 <script>

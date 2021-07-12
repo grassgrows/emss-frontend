@@ -4,7 +4,7 @@
  -->
 <template>
   <div>
-    <router-view></router-view>
+    <router-view />
   </div>
 </template>
 
@@ -24,15 +24,15 @@ function processRoute(to, next) {
 }
 
 export default {
-    name: 'server',
-    data() {
-        return {}
-    },
+    name: 'Server',
     beforeRouteEnter(to, from, next) {
         processRoute(to, next)
     },
     beforeRouteUpdate(to, from, next) {
         processRoute(to, next)
+    },
+    data() {
+        return {}
     },
 }
 </script>

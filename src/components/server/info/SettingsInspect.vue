@@ -3,12 +3,24 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <common-info-card header="服务器设置" icon="el-icon-setting"
-                    @click="$emit('click')">
-    <el-descriptions border direction="vertical">
-      <el-descriptions-item label="服务器Id">{{ id }}</el-descriptions-item>
-      <el-descriptions-item label="服务器名称">{{ name }}</el-descriptions-item>
-      <el-descriptions-item label="开放端口">{{ port }}</el-descriptions-item>
+  <common-info-card
+    header="服务器设置"
+    icon="el-icon-setting"
+    @click="$emit('click')"
+  >
+    <el-descriptions
+      border
+      direction="vertical"
+    >
+      <el-descriptions-item label="服务器Id">
+        {{ id }}
+      </el-descriptions-item>
+      <el-descriptions-item label="服务器名称">
+        {{ name }}
+      </el-descriptions-item>
+      <el-descriptions-item label="开放端口">
+        {{ port }}
+      </el-descriptions-item>
     </el-descriptions>
   </common-info-card>
 </template>

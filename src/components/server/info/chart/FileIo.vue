@@ -3,11 +3,15 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <common-chart-card :labels="labels" :datasets="datasets"
-                    :value-precision="3" value-suffix=" KB/s"
-                    header="磁盘IO （KB/s）"
-                    v-loading="loading"
-  ><span>当前：</span>
+  <common-chart-card
+    v-loading="loading"
+    :labels="labels"
+    :datasets="datasets"
+    :value-precision="3"
+    value-suffix=" KB/s"
+    header="磁盘IO （KB/s）"
+  >
+    <span>当前：</span>
     <span style="color: #409EFF">读 {{ currentRead }} KB/s</span>
     <span>&nbsp;&nbsp;</span>
     <span style="color: #67C23A">写 {{ currentWrite }} KB/s</span>

@@ -3,14 +3,18 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <common-chart-card :labels="labels" :datasets="datasets"
-                    :value-precision="2" value-suffix=" Mbps"
-                    header="网络带宽IO （Mbps）"
-                    v-loading="loading"
-  ><span>当前：</span>
-    <span style="color: #67C23A"><i class="el-icon-upload2"></i>{{ currentUpload }} Mbps</span>
+  <common-chart-card
+    v-loading="loading"
+    :labels="labels"
+    :datasets="datasets"
+    :value-precision="2"
+    value-suffix=" Mbps"
+    header="网络带宽IO （Mbps）"
+  >
+    <span>当前：</span>
+    <span style="color: #67C23A"><i class="el-icon-upload2" />{{ currentUpload }} Mbps</span>
     <span>&nbsp;</span>
-    <span style="color: #409EFF"><i class="el-icon-download"></i>{{ currentDownload }} Mbps</span>
+    <span style="color: #409EFF"><i class="el-icon-download" />{{ currentDownload }} Mbps</span>
   </common-chart-card>
 </template>
 

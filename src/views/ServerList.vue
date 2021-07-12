@@ -3,27 +3,41 @@
  * @Date: 2021/7/7
  -->
 <template>
-    <div class="list-container">
-        <el-row :gutter="20">
-            <el-col :span="8" :xs="24" :sm="12"
-                    :md="8" :lg="6" :xl="4"
-                    v-for="s in displayList" :key="s.id">
+  <div class="list-container">
+    <el-row :gutter="20">
+      <el-col
+        v-for="s in displayList"
+        :key="s.id"
+        :span="8"
+        :xs="24"
+        :sm="12"
+        :md="8"
+        :lg="6"
+        :xl="4"
+      >
+        <server-list-card
+          class="card"
+          :server-data="s"
+        />
+      </el-col>
+      <el-col
+        :span="8"
+        :xs="24"
+        :sm="12"
+        :md="8"
+        :lg="6"
+        :xl="4"
+      >
+        <server-list-card
+          class="card"
+          add-card
+          @add="showAdd"
+        />
+      </el-col>
 
-                <server-list-card class="card" :server-data="s">
-                </server-list-card>
-
-            </el-col>
-            <el-col :span="8" :xs="24" :sm="12"
-                    :md="8" :lg="6" :xl="4">
-                <server-list-card
-                    class="card" add-card @add="showAdd">
-                </server-list-card>
-            </el-col>
-
-            <add-server></add-server>
-
-        </el-row>
-    </div>
+      <add-server />
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -41,9 +55,6 @@ export default {
         return {
 
         }
-    },
-    mounted() {
-        this.$store.commit('refreshServerList')
     },
     computed: {
         ...mapState(['serverList']),

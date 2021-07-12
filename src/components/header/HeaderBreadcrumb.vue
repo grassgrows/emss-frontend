@@ -3,10 +3,15 @@
  * @Date: 2021/7/6
  -->
 <template>
-  <el-breadcrumb separator="/" class="my-breadcrumb">
-    <el-breadcrumb-item v-for="(b,i) in displayBCs.data"
-                        :key="i+ displayBCs.skipped"
-                        :to="getBreadPath(b,i)">
+  <el-breadcrumb
+    separator="/"
+    class="my-breadcrumb"
+  >
+    <el-breadcrumb-item
+      v-for="(b,i) in displayBCs.data"
+      :key="i+ displayBCs.skipped"
+      :to="getBreadPath(b,i)"
+    >
       {{ b }}
     </el-breadcrumb-item>
   </el-breadcrumb>
@@ -19,32 +24,11 @@ const pathMaps = new Map()
     .set('用户管理', '/system/users/')
     .set('文件管理', '/files')
 export default {
-    name: 'header-breadcrumb',
+    name: 'HeaderBreadcrumb',
     props: {
         maxBreadcrumb: {
             type: Number,
             default: -1,
-        },
-    },
-    methods: {
-        getBreadPath(breadcrumb, index) {
-            if (this.displayBCs.skipped > 0 && index === 0) {
-                if (this.displayBCs.skipped > 1) {
-                    return `/files/${this.breadcrumbs[2]}`
-                }
-                return '/files'
-            }
-            if (index >= this.displayBCs.data.length - 1) {
-                return null
-            }
-            const actualIndex = index + this.displayBCs.skipped
-            if (this.$route.meta.menuIndex === '/files' && actualIndex > 1) {
-                return `/files/${this.breadcrumbs.slice(2, actualIndex + 1).join('/')}`
-            }
-            if (typeof this.$route.meta.breadcrumbAdd === 'string' && index === this.breadcrumbs.length - 2) {
-                return `/servers/${breadcrumb}`
-            }
-            return pathMaps.get(breadcrumb)
         },
     },
     computed: {
@@ -90,6 +74,27 @@ export default {
             //   skipped: i,
             //   data: [...result.slice(0, this.maxBreadcrumb - 1), '...'],
             // };
+        },
+    },
+    methods: {
+        getBreadPath(breadcrumb, index) {
+            if (this.displayBCs.skipped > 0 && index === 0) {
+                if (this.displayBCs.skipped > 1) {
+                    return `/files/${this.breadcrumbs[2]}`
+                }
+                return '/files'
+            }
+            if (index >= this.displayBCs.data.length - 1) {
+                return null
+            }
+            const actualIndex = index + this.displayBCs.skipped
+            if (this.$route.meta.menuIndex === '/files' && actualIndex > 1) {
+                return `/files/${this.breadcrumbs.slice(2, actualIndex + 1).join('/')}`
+            }
+            if (typeof this.$route.meta.breadcrumbAdd === 'string' && index === this.breadcrumbs.length - 2) {
+                return `/servers/${breadcrumb}`
+            }
+            return pathMaps.get(breadcrumb)
         },
     },
 }

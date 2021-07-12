@@ -3,12 +3,16 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <common-chart-card tooltip-prefix="内存使用量"
-                    :labels="labels" :datasets="datasets"
-                    :value-precision="2" value-suffix=" GB"
-                    :customConfig="options"
-                    header="内存使用量 (GB)"
-                    v-loading="loading">
+  <common-chart-card
+    v-loading="loading"
+    tooltip-prefix="内存使用量"
+    :labels="labels"
+    :datasets="datasets"
+    :value-precision="2"
+    value-suffix=" GB"
+    :custom-config="options"
+    header="内存使用量 (GB)"
+  >
     当前：{{ current }} GB
   </common-chart-card>
 </template>

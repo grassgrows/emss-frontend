@@ -3,12 +3,16 @@
  * @Date: 2021/7/9
  -->
 <template>
-  <common-chart-card tooltip-prefix="在线玩家数："
-                     :labels="labels" :datasets="datasets"
-                     :value-precision="2" value-suffix=" 人"
-                     :custom-config="options"
-                     header="服务器在线玩家"
-                     v-loading="loading">
+  <common-chart-card
+    v-loading="loading"
+    tooltip-prefix="在线玩家数："
+    :labels="labels"
+    :datasets="datasets"
+    :value-precision="2"
+    value-suffix=" 人"
+    :custom-config="options"
+    header="服务器在线玩家"
+  >
     当前： {{ current }} 人在线
   </common-chart-card>
 </template>
