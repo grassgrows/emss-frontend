@@ -9,19 +9,52 @@
       class="card"
     >
       <div class="card-header">
-        <div class="search">
-          <el-input v-model="searchName" clearable>
-            <el-button icon="el-icon-search"></el-button>
-          </el-input>
-        </div>
         <div class="blank" />
-        <div class="button-group">
-          <el-button
-            type="danger"
-            size="medium"
+        <div class="operation-button">
+          <transition name="el-zoom-in-center">
+            <div v-show="showSearch">
+              <el-input
+                v-model="searchInfo"
+                clearable
+                @keyup.enter="searchFile"
+              />
+            </div>
+          </transition>
+          <el-button 
+            icon="el-icon-search" 
+            circle
+            @click="showSearch = !showSearch"
+          />
+          <el-popover 
+            placement="bottom"
+            :width="100"
+            trigger="click"
           >
-            删除
-          </el-button>
+            <template #reference>
+              <el-button 
+                type="primary" 
+                icon="el-icon-plus"
+                circle
+              />
+            </template>
+            <el-space
+              direction="vertical"
+              class="operations"
+            >
+              <el-link 
+                :underline="false"
+                href="javascript:void(0);"
+              >
+                复制
+              </el-link>
+              <el-link
+                :underline="false"
+                href="javascript:void(0);"
+              >
+                粘贴
+              </el-link>
+            </el-space>
+          </el-popover>
         </div>
       </div>
       <div class="card-body">
@@ -49,12 +82,16 @@ export default {
     data() {
         return {
             fileList: [],
-            searchName: ''
+            showSearch: false,
+            searchInfo: ''
         }
     },
     methods: {
         refresh() {
             this.fileList = file.getFiles(this.$route.params.filePath).files
+        },
+        searchFile() {
+            console.log('search...')
         }
     }
 }
@@ -70,5 +107,16 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.operations{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.operation-button{
+    display: flex;
+    flex-direction: row;
 }
 </style>
