@@ -1,21 +1,26 @@
 <template>
-  <div ref="xterm">
-    xterm
-  </div>
+  <div ref="xterm" />
 </template>
 
-<script>
-import { Terminal } from 'xterm'
-import { FitAddon } from 'xterm-addon-fit'
+<script >
+import {Terminal} from 'xterm'
+import {FitAddon} from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
-import { throttle } from 'lodash'
+import {throttle} from 'lodash'
 
 export default {
     name: 'Xterm',
+    props: {
+        showing: {
+            type: Boolean,
+            default: false,
+        }
+    },
+    emits: ['resize', 'key'],
     data() {
         return {
             terminal: new Terminal(),
-            fitAddon: new FitAddon()
+            fitAddon: new FitAddon(),
         }
     },
     mounted() {
@@ -27,16 +32,18 @@ export default {
 
         new ResizeObserver(throttle((entries) => entries
             .filter((e) => e.target === this.$el)
-            .forEach(() => this.fitTerm()), 500)).observe(this.$el)
+            .forEach(() => this.fitTerm()), 1000)).observe(this.$el)
     },
     methods: {
         fitTerm() {
-            this.fitAddon.fit()
+            if(this.showing) {
+                this.fitAddon.fit()
+            }
         }
     }
 }
-</script>
+</script >
 
-<style scoped>
+<style scoped >
 
-</style>
+</style >
