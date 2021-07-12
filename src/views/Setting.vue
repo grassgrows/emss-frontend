@@ -246,8 +246,7 @@ export default {
             if (!image || !image.statusObj) {
                 return '<1KB/s'
             }
-            let speed = image.statusObj.speed
-            speed *= 10
+            const speed = image.statusObj.speed
             if (speed > 1024 * 1024 * 1024) {
                 return `${(speed / 1024 / 1024 / 1024).toPrecision(3)} GB/s`
             }
