@@ -118,6 +118,7 @@
 <script>
 import FileList from '@/views/file/FileList.vue'
 import file from '@/api/file'
+import { DateTime } from 'luxon'
 
 export default {
     name: 'Files',
@@ -154,8 +155,42 @@ export default {
     },
     computed: {
         displayFiles() {
-            const result = this.files
-            result.filter((it) => it.type === 'folder').sort((a, b) => a.name.localeCompare(b.name))
+            let array1 = this.files.filter((it) => it.type === 'folder')
+            let array2 = this.files.filter((it) => it.type === 'file')
+            let result
+            if (this.selectedType === '文件名') {
+                array1 = array1.sort((a, b) => a.name.localeCompare(b.name))
+                array2 = array2.filter((it) => it.type === 'file').sort((a, b) => a.name.localeCompare(b.name))
+                result = array1.concat(array2)
+            } else if (this.selectedType === '修改时间') {
+                array1 = array1.sort((a, b) => {
+                    const atime = DateTime.fromJSDate(a.editTime)
+                    const btime = DateTime.fromJSDate(b.editTime)
+                    if (atime > btime) return 1
+                    if (atime < btime) return -1
+                    return 0
+                })
+                array2 = array2.sort((a, b) => {
+                    const atime = DateTime.fromJSDate(a.editTime)
+                    const btime = DateTime.fromJSDate(b.editTime)
+                    if (atime > btime) return 1
+                    if (atime < btime) return -1
+                    return 0
+                })
+                result = array1.concat(array2)
+            } else {
+                array1 = array1.sort((a, b) => a.name.localeCompare(b.name))
+                array2 = array2.sort((a, b) => {
+                    if (a.size > b.size) return -1
+                    if (a.size < b.size) return 1
+                    return 0
+                })
+                result = array1.concat(array2)
+            }
+
+            if (!this.isAscend) {
+                result.reverse()
+            }
             return result
         },
     },
