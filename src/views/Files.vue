@@ -199,7 +199,8 @@ export default {
             this.files = file.getFiles(this.$route.params.filePath).files
         },
         searchFile() {
-            console.log('searching...')
+            // console.log('searching...')
+            this.$router.push({name:'file_search'})
         },
         handleSelect(item) {
             console.log(item.name)

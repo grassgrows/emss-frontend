@@ -99,6 +99,11 @@ const routes = [
         component: Files
     },
     {
+        path: '/file/search/:keyword',
+        name: 'file_search',
+        component: Files
+    },
+    {
         path: '/system/setting',
         name: 'setting',
         meta: {
