@@ -51,6 +51,7 @@
         @select="showSide = false"
       />
     </el-drawer>
+    <uploader />
   </el-container>
 </template>
 
@@ -59,12 +60,13 @@
 import MyNavigator from '@/components/header/Navigator.vue'
 import HeaderNav from '@/components/header/HeaderNav.vue'
 import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue'
+import Uploader from '@/views/file/Uploader'
 
 const smMatch = window.matchMedia('(max-width: 768px)')
 
 export default {
     name: 'App',
-    components: {HeaderNav, MyNavigator, HeaderBreadcrumb},
+    components: {Uploader, HeaderNav, MyNavigator, HeaderBreadcrumb},
     data() {
         return {
             collapseSide: smMatch.matches === true,
@@ -103,45 +105,45 @@ export default {
 @import "styles/global";
 
 html, body, #app, .full-height {
-    height: 100%;
+  height: 100%;
 }
 
 .full-height {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    color: rgba(0, 0, 0, 0.9);
+  margin: 0;
+  color: rgba(0, 0, 0, 0.9);
 }
 
 .my-shadow {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
 }
 
 
 .blank, .auto-size {
-    flex: 1 1 0;
+  flex: 1 1 0;
 }
 
 .color-primary {
-    color: @color-primary !important;
+  color: @color-primary !important;
 }
 
 .color-danger {
-    color: @color-danger !important;
+  color: @color-danger !important;
 }
 
 .color-success {
-    color: @color-success !important;
+  color: @color-success !important;
 }
 
 .color-info {
-    color: @color-info !important;
+  color: @color-info !important;
 }
 
 .color-warn {
-    color: @color-warn !important;
+  color: @color-warn !important;
 }
 
 

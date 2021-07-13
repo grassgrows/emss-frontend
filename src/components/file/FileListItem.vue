@@ -52,7 +52,7 @@
 
 <script>
 import utils from '@/utils'
-import { DateTime } from 'luxon'
+import {DateTime} from 'luxon'
 
 export default {
     name: 'FileListItem',
@@ -63,16 +63,10 @@ export default {
             default: false,
         },
     },
+    emits: ['update:selected'],
     computed: {
         isMobile() {
             return this.$store.isMobile
-        },
-        fileExt() {
-            const fileName = this.file.name
-            if (!fileName.includes('.')) {
-                return ''
-            }
-            return fileName.substr(fileName.lastIndexOf('.') + 1)
         },
         editTimeFormat() {
             const time = DateTime.fromJSDate(this.file.editTime)
@@ -82,16 +76,7 @@ export default {
             return time.toFormat('DD')
         },
         iconName() {
-            if (this.file.type === 'folder') {
-                return {
-                    class: 'iconfont',
-                    link: '#my-icon-folder',
-                }
-            }
-            return {
-                class: 'filefont',
-                link: utils.getIconName(this.fileExt),
-            }
+            return utils.getIconStyle(this.file)
         },
     },
     methods: {
@@ -102,7 +87,10 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style
+  scoped
+  lang="less"
+>
 
 .checkbox-container {
   position: absolute;
