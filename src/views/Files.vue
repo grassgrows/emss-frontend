@@ -9,6 +9,48 @@
       class="card"
     >
       <div class="card-header">
+        <div class="select">
+          <el-dropdown
+            trigger="click"
+            @command="handleSelect"
+          >
+            <span class="el-dropdown-link">
+              {{ `按${selectedType}排序` }}<i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <template
+                  v-for="item in selectTypesValue"
+                  :key="item"
+                >
+                  <el-dropdown-item
+                    v-if="item.name === selectedType"
+                    icon="el-icon-check"
+                    :command="item"
+                  >
+                    {{ item.name }}
+                  </el-dropdown-item>
+                  <el-dropdown-item
+                    v-else
+                    :command="item"
+                    icon="el-icon-check"
+                    class="hidden-icon"
+                  >
+                    {{ item.name }}
+                  </el-dropdown-item>
+                </template>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+        &nbsp; &nbsp;
+        <div class="ascend">
+          <el-switch
+            v-model="isAscend"
+            active-text="升序"
+            inactive-text="降序"
+          />
+        </div>
         <div class="blank" />
         <div class="operation-button">
           <transition name="el-zoom-in-center">
@@ -20,20 +62,19 @@
               />
             </div>
           </transition>
-            &nbsp; &nbsp;
-          <el-button 
-            icon="el-icon-search" 
+          &nbsp; &nbsp;
+          <el-button
+            icon="el-icon-search"
             circle
             @click="showSearch = !showSearch"
           />
-          <el-popover 
+          <el-popover
             placement="bottom"
-            :width="100"
-            trigger="click"
+            trigger="focus"
           >
             <template #reference>
-              <el-button 
-                type="primary" 
+              <el-button
+                type="primary"
                 icon="el-icon-plus"
                 circle
               />
@@ -42,15 +83,24 @@
               direction="vertical"
               class="operations"
             >
-              <el-link 
+              <el-link
                 :underline="false"
                 href="javascript:void(0);"
+                icon="el-icon-document-copy"
               >
                 复制
               </el-link>
               <el-link
                 :underline="false"
                 href="javascript:void(0);"
+                icon="el-icon-delete"
+              >
+                删除
+              </el-link>
+              <el-link
+                :underline="false"
+                href="javascript:void(0);"
+                icon="el-icon-document-add"
               >
                 粘贴
               </el-link>
@@ -59,46 +109,72 @@
         </div>
       </div>
       <div class="card-body">
-        <file-list :files="fileList" />
+        <file-list :files="displayFiles" />
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
-import file from '@/api/file'
 import FileList from '@/views/file/FileList.vue'
+import file from '@/api/file'
 
 export default {
     name: 'Files',
-    components: {
-        FileList
-    },
-    beforeRouteEnter(to, from, next){
-        next((vm)=> vm.refresh())
+    components: { FileList },
+
+    beforeRouteEnter(to, from, next) {
+        next((vm) => vm.refresh())
     },
     beforeRouteUpdate() {
         this.refresh()
     },
     data() {
         return {
-            fileList: [],
+            files: [],
+            searchInfo: '',
             showSearch: false,
-            searchInfo: ''
+            selectedType: '文件名',
+            selectTypesValue: [
+                {
+                    name: '文件名',
+                    key: 'filename',
+                },
+                {
+                    name: '修改时间',
+                    key: 'time',
+                },
+                {
+                    name: '文件大小',
+                    key: 'size',
+                },
+            ],
+            isAscend: true,
         }
+    },
+    computed: {
+        displayFiles() {
+            const result = this.files
+            result.filter((it) => it.type === 'folder').sort((a, b) => a.name.localeCompare(b.name))
+            return result
+        },
     },
     methods: {
         refresh() {
-            this.fileList = file.getFiles(this.$route.params.filePath).files
+            this.files = file.getFiles(this.$route.params.filePath).files
         },
         searchFile() {
-            console.log('search...')
-        }
-    }
+            console.log('searching...')
+        },
+        handleSelect(item) {
+            console.log(item.name)
+            this.selectedType = item.name
+        },
+    },
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .card {
   margin: 10px 0 20px;
 }
@@ -108,16 +184,24 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-end;
+  margin-bottom: 5vh;
 }
 
 .operations{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .operation-button{
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
+</style>
+
+<style>
+.hidden-icon> i{
+  color: #00000000
+}
+
 </style>
