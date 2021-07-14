@@ -10,7 +10,7 @@
         class="form"
         :model="dockerData"
         label-width="100px"
-        label-position="right"
+        label-position="left"
         :rules="rules"
         status-icon
       >
@@ -167,5 +167,10 @@ export default {
 
 button[name='submit'] {
     width: 84px;
+}
+
+/deep/ .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
+  width: 0px;
+  margin-left: -11px;
 }
 </style>

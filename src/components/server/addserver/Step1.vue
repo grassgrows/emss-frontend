@@ -9,7 +9,7 @@
         ref="form"
         :model="serverData"
         label-width="100px"
-        label-position="right"
+        label-position="left"
         :rules="rules"
         status-icon
       >
@@ -136,6 +136,11 @@ export default {
 
 .step1 .empty {
     flex: 1 1 0;
+}
+
+/deep/ .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
+  width: 0px;
+  margin-left: -11px;
 }
 
 </style>
