@@ -109,12 +109,28 @@
         </div>
       </div>
       <div class="card-body">
-        <file-list :files="displayFiles" v-loading="loading"/>
+        <file-list
+          v-loading="loading"
+          :files="displayFiles"
+        />
       </div>
       <div class="card-rooter">
         <div class="button-group">
-          <el-button type="text" icon="el-icon-upload" @click="uploadFile">上传文件</el-button>
-          <el-button type="text" icon="el-icon-folder-add" @click="newDirectory">新建文件夹</el-button>
+          <el-button
+            id="browseButton"
+            type="text"
+            icon="el-icon-upload"
+            @click="uploadFile"
+          >
+            上传文件
+          </el-button>
+          <el-button
+            type="text"
+            icon="el-icon-folder-add"
+            @click="newDirectory"
+          >
+            新建文件夹
+          </el-button>
         </div>
         <div class="blank" />
       </div>
@@ -128,13 +144,12 @@ import * as file from '@/api/file.ts'
 
 export default {
     name: 'Files',
-    components: { FileList },
+    components: {FileList},
 
     beforeRouteEnter(to, from, next) {
         next((vm) => vm.refresh())
     },
     beforeRouteUpdate(to) {
-        console.log(to.params.filePaths)
         this.refresh(to.params.filePaths)
     },
     data() {
@@ -201,7 +216,7 @@ export default {
         },
         searchFile() {
             // console.log('searching...')
-            this.$router.push({name:'file_search'})
+            this.$router.push({name: 'file_search'})
         },
         handleSelect(item) {
             console.log(item.name)
@@ -217,7 +232,10 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style
+  scoped
+  lang="less"
+>
 .card {
   margin: 10px 0 20px;
 }
@@ -229,7 +247,7 @@ export default {
   justify-content: flex-end;
   margin-bottom: 5vh;
 
-  .select,.ascend{
+  .select, .ascend {
     display: flex;
     align-items: center;
   }
@@ -242,20 +260,20 @@ export default {
   justify-content: flex-end;
 }
 
-.operations{
+.operations {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.operation-button{
+.operation-button {
   display: flex;
   flex-direction: row;
 }
 </style>
 
 <style>
-.hidden-icon> i{
-  color: #00000000
+.hidden-icon > i {
+    color: #00000000
 }
 </style>

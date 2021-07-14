@@ -1,5 +1,8 @@
 <template>
-  <div class="uploader-container">
+  <div
+    v-if="!hide"
+    class="uploader-container"
+  >
     <el-card body-style="padding: 0">
       <div>
         <div
@@ -7,30 +10,62 @@
           @click="toggleShrunk()"
         >
           <div class="content">
-            <span class="icon"><i class="el-icon-upload" /></span>
-            <span>正在上传</span>
-            <span class="divider"><el-divider direction="vertical" /></span>
-            <span>剩余1项</span>
+            <template v-if="isAllCompleted">
+              <span class="icon completed"><i class="el-icon-check" /></span>
+              <span>上传完成</span>
+              <span class="divider"><el-divider direction="vertical" /></span>
+              <span>累计{{ totalUpload }}个文件</span>
+            </template>
+            <template v-else-if="isAllPaused && hasError">
+              <span class="icon error"><i class="el-icon-upload" /></span>
+              <span>上传出现错误</span>
+              <span class="divider"><el-divider direction="vertical" /></span>
+              <span>共{{ files.length }}个文件上传失败</span>
+            </template>
+            <template v-else-if="isAllPaused">
+              <span class="icon"><i class="el-icon-upload" /></span>
+              <span>暂停上传</span>
+              <span class="divider"><el-divider direction="vertical" /></span>
+              <span>剩余{{ files.length }}个文件</span>
+            </template>
+            <template v-else>
+              <span class="icon"><i class="el-icon-upload" /></span>
+              <span>正在上传</span>
+              <span class="divider"><el-divider direction="vertical" /></span>
+              <span>剩余{{ files.length }}个文件</span>
+            </template>
           </div>
           <div class="upload-action">
-            <span>
-              <el-tooltip
-                effect="dark"
-                content="全部取消"
-                placement="top"
-              >
+            <el-tooltip
+              effect="dark"
+              content="全部取消"
+              placement="top"
+            >
+              <span @click.stop="cancel()">
                 <i class="el-icon-close" />
-              </el-tooltip>
-            </span>
-            <span>
-              <el-tooltip
-                effect="dark"
-                content="全部恢复"
-                placement="top"
-              >
+              </span>
+            </el-tooltip>
+
+            <el-tooltip
+              v-if="isAllPaused"
+              effect="dark"
+              content="全部恢复"
+              placement="top"
+            >
+              <span @click.stop="resume()">
                 <i class="el-icon-refresh" />
-              </el-tooltip>
-            </span>
+              </span>
+            </el-tooltip>
+            <el-tooltip
+              v-else
+              effect="dark"
+              content="全部暂停"
+              placement="top"
+            >
+              <span @click.stop="pause()">
+                <i class="el-icon- iconfont emss-icon-pause" />
+              </span>
+            </el-tooltip>
           </div>
         </div>
         <transition name="fade">
@@ -42,10 +77,13 @@
               <div>
                 <ul>
                   <li
-                    v-for="i in 10"
-                    :key="i"
+                    v-for="file in files"
+                    :key="file.uniqueIdentifier"
                   >
-                    <div class="upload-progress" />
+                    <div
+                      class="upload-progress"
+                      :style="{width:`${file.progress() * 100}%`}"
+                    />
                     <div class="upload-info">
                       <div class="image">
                         <svg
@@ -58,44 +96,49 @@
 
                       <div class="info">
                         <div class="title">
-                          EngiTech-1.5.7-server.zip
+                          {{ file.name }}
                         </div>
                         <div class="status">
-                          <span>10MB/100MB</span>
+                          <span>{{ formatProcess(file) }}</span>
                           <span class="divider"><el-divider direction="vertical" /></span>
-                          <span>上传中</span>
+                          <span :class="displayText(file).style">{{ displayText(file).msg }}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div class="upload-action">
-                      <span>
-                        <el-tooltip
-                          effect="dark"
-                          content="取消"
-                          placement="top"
-                        >
+                    <div
+                      v-if="!file.isComplete()"
+                      class="upload-action"
+                    >
+                      <el-tooltip
+                        effect="dark"
+                        content="取消"
+                        placement="top"
+                      >
+                        <span @click.stop="cancel(file)">
                           <i class="el-icon-close" />
-                        </el-tooltip>
-                      </span>
-                      <span>
-                        <el-tooltip
-                          v-if="i>3"
-                          effect="dark"
-                          content="恢复"
-                          placement="top"
-                        >
+                        </span>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-if="file.paused || file.error"
+                        effect="dark"
+                        content="恢复"
+                        placement="top"
+                      >
+                        <span @click.stop="resume(file)">
                           <i class="el-icon-refresh" />
-                        </el-tooltip>
-                        <el-tooltip
-                          v-else
-                          effect="dark"
-                          content="暂停"
-                          placement="top"
-                        >
+                        </span>
+                      </el-tooltip>
+                      <el-tooltip
+                        v-else
+                        effect="dark"
+                        content="暂停"
+                        placement="top"
+                      >
+                        <span @click.stop="pause(file)">
                           <i class="el-icon- iconfont emss-icon-pause" />
-                        </el-tooltip>
-                      </span>
+                        </span>
+                      </el-tooltip>
                     </div>
                   </li>
                 </ul>
@@ -113,6 +156,7 @@
         </transition>
         <div
           v-if="shrunk"
+          :style="{width: flow.progress()}"
           class="progress-total"
         />
       </div>
@@ -125,29 +169,106 @@ import {defineComponent} from 'vue'
 import {Flow, FlowFile} from 'flowjs'
 import {createFlow} from '@/utils/importUtils'
 
+
 export default defineComponent({
     name: 'Uploader',
     data() {
         return {
             shrunk: true,
             flow: {} as Flow,
-            uploadingFiles: new Map<String, FlowFile>(),
-
+            totalUpload: 0,
+        }
+    },
+    computed: {
+        isAllCompleted(): boolean {
+            return this.uploadRemain === 0
+        },
+        isAllPaused(): boolean {
+            return this.uploadRemain <= this.errorCount + this.pausedCount
+        },
+        hasError(): boolean {
+            return this.errorCount > 0
+        },
+        errorCount(): number {
+            return this.files.reduce((agg, file) => file.error ? agg + 1 : agg, 0)
+        },
+        pausedCount(): number {
+            return this.files.reduce((agg, file) => file.paused ? agg + 1 : agg, 0)
+        },
+        hide(): boolean {
+            return this.files.length <= 0
+        },
+        uploadRemain(): number {
+            return this.files.filter((file) => !file.isComplete()).length
+        },
+        files(): Array<FlowFile> {
+            if (typeof this.flow.files === 'undefined') {
+                return []
+            }
+            return this.flow.files
+        },
+    },
+    watch: {
+        hide(to) {
+            if (to === true) {
+                this.totalUpload = 0
+            }
+        },
+        '$route.path'() {
+            const browse = document.getElementById('browseButton')
+            if (browse) {
+                this.flow.assignBrowse([browse])
+            }
         }
     },
     mounted() {
         this.flow = createFlow({
-            target: '/photo/redeem-upload-token',
-            query: {upload_token: 'my_token'},
+            target: '/api/file/upload',
+            method: 'octet',
+            query(file: FlowFile) {
+                return {
+                    destinationPath: file.destinationPath
+                }
+            },
         })
-        if(!this.flow.support) {
+        if (!this.flow.support) {
             return
         }
 
+        const browse = document.getElementById('browseButton')
+        if (browse) {
+            this.flow.assignBrowse([browse])
+        }
+        this.flow.on('filesSubmitted', () => {
+            this.flow.upload()
+        })
+        this.flow.on('fileAdded', (file) => {
+            file.destinationPath = '/root'
+        })
+        this.flow.on('fileError', (file) => {
+            this.$notify({
+                title: '上传失败',
+                message: `文件 ${file.name} 上传失败，请重试`,
+                type: 'error'
+            })
+        })
+
+        this.flow.on('fileSuccess', (file) => {
+            this.$notify({
+                title: '上传成功',
+                message: `文件 ${file.name} 上传成功`,
+                type: 'success'
+            })
+
+            // eslint-disable-next-line no-self-assign
+            file.uniqueIdentifier = file.uniqueIdentifier
+
+            setTimeout(() => {
+                file.cancel()
+            }, 10000)
+        })
 
 
-
-        // flow.assignBrowse(document.getElementById('browseButton'))
         // flow.assignDrop(document.getElementById('dropTarget'))
     },
     methods: {
@@ -159,11 +280,79 @@ export default defineComponent({
             }
 
         },
-        pause(id: number | null = null) {
-            console.log(id)
+        formatSpeed(file: FlowFile) {
+            const speed = file.averageSpeed
+            if (speed > 1024 * 1024 * 1024) {
+                return `${(speed / 1024 / 1024 / 1024).toPrecision(3)} GB/s`
+            }
+            if (speed > 1024 * 1024) {
+                return `${(speed / 1024 / 1024).toPrecision(3)} MB/s`
+            }
+            if (speed > 1024) {
+                return `${(speed / 1024).toPrecision(3)} KB/s`
+            }
+            return '<1KB/s'
         },
-        resume(id: number | null = null) {
-            console.log(id)
+        formatSize(size: number) {
+            if (size > 1024 * 1024 * 1024) {
+                return `${(size / 1024 / 1024 / 1024).toPrecision(3)}GB`
+            }
+            if (size > 1024 * 1024) {
+                return `${(size / 1024 / 1024).toPrecision(3)}MB`
+            }
+            return `${(size / 1024).toPrecision(3)}KB`
+
+        },
+        formatProcess(file: FlowFile) {
+            return `${this.formatSize(file.sizeUploaded())}/${this.formatSize(file.size)}`
+        },
+
+        displayText(file: FlowFile): { msg: string; style: string } {
+            if (file.isComplete()) {
+                return {
+                    msg: '上传成功',
+                    style: 'success'
+                }
+            }
+            if (file.error) {
+                return {
+                    msg: '上传失败',
+                    style: 'error'
+                }
+            }
+            if (file.paused) {
+                return {
+                    msg: '暂停上传',
+                    style: ''
+                }
+            }
+            return {
+                msg: this.formatSpeed(file),
+                style: ''
+            }
+        },
+        cancel(file: FlowFile | null = null) {
+            if (file === null) {
+                this.flow.cancel()
+                //TODO: 加个动画效果
+                return
+            }
+        },
+        pause(file: FlowFile | null = null) {
+            if (file === null) {
+                this.flow.pause()
+                return
+            }
+            file.pause()
+        },
+        resume(file: FlowFile | null = null) {
+            if (file === null) {
+                this.flow.resume()
+                return
+            }
+            if (!file.isComplete()) {
+                file.resume()
+            }
         },
     }
 
@@ -213,6 +402,16 @@ export default defineComponent({
       .content-center();
       margin-right: 20px;
 
+      &.completed {
+        background-color: @color-success;
+        color: #FFF;
+      }
+
+      &.error {
+        background-color: @color-danger;
+        color: #FFF;
+      }
+
       i {
         font-size: 22px;
       }
@@ -230,6 +429,7 @@ export default defineComponent({
   span {
     margin-left: 16px;
     box-sizing: border-box;
+    display: block;
     background-color: @color-btn-bg-primary;
     width: 24px;
     height: 24px;
@@ -290,6 +490,14 @@ export default defineComponent({
   .status {
     font-size: 14px;
     color: rgba(0, 0, 0, .25);
+
+    .success {
+      color: @color-success
+    }
+
+    .error {
+      color: @color-danger
+    }
   }
 
 }
