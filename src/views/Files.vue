@@ -111,6 +111,13 @@
       <div class="card-body">
         <file-list :files="displayFiles" />
       </div>
+      <div class="card-rooter">
+        <div class="button-group">
+          <el-button type="text" icon="el-icon-upload" @click="uploadFile">上传文件</el-button>
+          <el-button type="text" icon="el-icon-folder-add" @click="newDirectory">新建文件夹</el-button>
+        </div>
+        <div class="blank" />
+      </div>
     </el-card>
   </div>
 </template>
@@ -206,6 +213,12 @@ export default {
             console.log(item.name)
             this.selectedType = item.name
         },
+        uploadFile() {
+
+        },
+        newDirectory() {
+          
+        }
     },
 }
 </script>
@@ -221,6 +234,18 @@ export default {
   flex-wrap: wrap;
   justify-content: flex-end;
   margin-bottom: 5vh;
+
+  .select,.ascend{
+    display: flex;
+    align-items: center;
+  }
+}
+
+.card-rooter {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .operations{
@@ -239,5 +264,4 @@ export default {
 .hidden-icon> i{
   color: #00000000
 }
-
 </style>
