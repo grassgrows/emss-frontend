@@ -13,8 +13,24 @@
             <span>剩余1项</span>
           </div>
           <div class="upload-action">
-            <span><i class="el-icon-close" /></span>
-            <span><i class="el-icon-refresh" /></span>
+            <span>
+              <el-tooltip
+                effect="dark"
+                content="全部取消"
+                placement="top"
+              >
+                <i class="el-icon-close" />
+              </el-tooltip>
+            </span>
+            <span>
+              <el-tooltip
+                effect="dark"
+                content="全部恢复"
+                placement="top"
+              >
+                <i class="el-icon-refresh" />
+              </el-tooltip>
+            </span>
           </div>
         </div>
         <transition name="fade">
@@ -53,8 +69,33 @@
                     </div>
 
                     <div class="upload-action">
-                      <span><i class="el-icon-close" /></span>
-                      <span><i class="el-icon-refresh" /></span>
+                      <span>
+                        <el-tooltip
+                          effect="dark"
+                          content="取消"
+                          placement="top"
+                        >
+                          <i class="el-icon-close" />
+                        </el-tooltip>
+                      </span>
+                      <span>
+                        <el-tooltip
+                          v-if="i>3"
+                          effect="dark"
+                          content="恢复"
+                          placement="top"
+                        >
+                          <i class="el-icon-refresh" />
+                        </el-tooltip>
+                        <el-tooltip
+                          v-else
+                          effect="dark"
+                          content="暂停"
+                          placement="top"
+                        >
+                          <i class="el-icon- iconfont emss-icon-pause" />
+                        </el-tooltip>
+                      </span>
                     </div>
                   </li>
                 </ul>
@@ -97,7 +138,13 @@ export default defineComponent({
                 this.shrunk = !this.shrunk
             }
 
-        }
+        },
+        pause(id: number | null = null) {
+            console.log(id)
+        },
+        resume(id: number | null = null) {
+            console.log(id)
+        },
     }
 
 })
