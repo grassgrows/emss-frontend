@@ -84,9 +84,11 @@ export default {
             this.$emit('update:selected', !this.selected)
         },
         open() {
-            if(this.file.isDirectory){
-                this.$router.push({name:'files', params:{ filePath:this.file.filePath.replace('\\','/') }})
-            }else{
+            const pathStr = this.file.filePath || ''
+            const paths = pathStr.substr(1).split('/')
+            if (this.file.isDirectory) {
+                this.$router.push({name: 'files', params: {filePaths: paths}})
+            } else {
                 //TODO: 预览
             }
         }

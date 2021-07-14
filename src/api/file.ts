@@ -17,10 +17,15 @@ export declare interface FileInfo {
     isDirectory: boolean
 }
 
-export async function getFiles(filePath: string): Promise<Array<FileInfo>> {
-    const resp = await axios.get(`/api/file/list/${filePath}`)
+export async function getFiles(filePath: Array<string> | null): Promise<Array<FileInfo>> {
+    const path: string = (filePath || []).join('/')
+    const resp = await axios.get('/api/file/list', {
+        params: {
+            path,
+        }
+    })
     const files = result.getData(resp.data, `无法打开文件夹${filePath}`)
-    if(!files) {
+    if (!files) {
         return []
     }
     return files.map((it: any) => {

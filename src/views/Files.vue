@@ -109,7 +109,7 @@
         </div>
       </div>
       <div class="card-body">
-        <file-list :files="displayFiles" />
+        <file-list :files="displayFiles" v-loading="loading"/>
       </div>
       <div class="card-rooter">
         <div class="button-group">
@@ -133,8 +133,9 @@ export default {
     beforeRouteEnter(to, from, next) {
         next((vm) => vm.refresh())
     },
-    beforeRouteUpdate() {
-        this.refresh()
+    beforeRouteUpdate(to) {
+        console.log(to.params.filePaths)
+        this.refresh(to.params.filePaths)
     },
     data() {
         return {
@@ -156,6 +157,7 @@ export default {
                     key: 'size',
                 },
             ],
+            loading: false,
             isAscend: true,
         }
     },
@@ -177,7 +179,7 @@ export default {
                 })
                 result = array1.concat(array2)
             } else {
-                array1 = array1.sort((a, b) => a.name.localeCompare(b.name))
+                array1 = array1.sort((a, b) => a.fileName.localeCompare(b.fileName))
                 array2 = array2.sort((a, b) => {
                     return a.size - b.size
                 })
@@ -191,9 +193,11 @@ export default {
         },
     },
     methods: {
-        async refresh() {
-            const paths = this.$route.params.filePaths || []
-            this.files = await file.getFiles(paths.join('/'))
+        async refresh(filePaths) {
+            const paths = typeof filePaths === 'undefined' ? this.$route.params.filePaths : filePaths
+            this.loading = true
+            this.files = await file.getFiles(paths)
+            this.loading = false
         },
         searchFile() {
             // console.log('searching...')
