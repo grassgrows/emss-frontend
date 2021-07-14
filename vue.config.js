@@ -11,16 +11,16 @@ module.exports = {
     },
     devServer: {
         proxy: {
-            // '/api': {
-            //     target: 'http://localhost:7777',
-            //     ws: true,
-            //     pathRewrite: { '^/api': '' },
-            // }
-            // 部署服务器
             '/api': {
-                target: 'https://emss.warmthdawn.top',
+                target: 'http://localhost:7777',
                 ws: true,
+                pathRewrite: { '^/api': '' },
             }
+            // 部署服务器
+            // '/api': {
+            //     target: 'https://emss.warmthdawn.top',
+            //     ws: true,
+            // }
         }
     },
 }

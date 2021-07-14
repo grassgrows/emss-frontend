@@ -58,7 +58,7 @@
       <el-button
         type="primary"
         class="button auto-size"
-        @click="$router.push({name:'files', params:{ filePath:id }})"
+        @click="$router.push({name:'files', params:{ filePath:[abbr] }})"
       >
         文件
       </el-button>
@@ -75,7 +75,7 @@ export default {
     name: 'ServerHeader',
     computed: {
         ...mapState(['currentServer']),
-        ...utils.mapData('currentServer', ['id', 'name', 'running', 'port', 'tps', 'lastRun', 'onlinePlayer', 'maxPlayer']),
+        ...utils.mapData('currentServer', ['id','abbr' , 'name', 'running', 'port', 'tps', 'lastRun', 'onlinePlayer', 'maxPlayer']),
     },
     methods: {
         closeServer() {

@@ -87,13 +87,13 @@ const routes = [
         component: FileSetting,
     },
     {
-        path: '/files/:filePath(.*)?',
+        path: '/files/:filePaths*',
         name: 'files',
         meta: {
             menuIndex: '/files',
             breadcrumb: (route) => {
-                const path = route.params.filePath
-                return ['工作台', '文件管理', ...path.split('/').filter((s) => Boolean(s))]
+                const paths = route.params.filePaths || []
+                return ['工作台', '文件管理', ...paths.filter((s) => Boolean(s))]
             },
         },
         component: Files

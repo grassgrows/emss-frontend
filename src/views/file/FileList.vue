@@ -10,10 +10,10 @@
     >
       <file-list-item
         v-for="f in files"
-        :key="f.name"
-        v-model:selected="selected[f.name]"
+        :key="f.fileName"
+        v-model:selected="selected[f.fileName]"
         class="item selection-item"
-        :data-filename="f.name"
+        :data-filename="f.fileName"
         :file="f"
       />
     </div>
@@ -23,12 +23,17 @@
 <script>
 import FileListItem from '@/components/file/FileListItem.vue'
 import SelectionArea from '@simonwep/selection-js'
+import {defineComponent} from 'vue'
 
-export default {
+export default defineComponent({
     name: 'FileList',
-    components: { FileListItem },
+    components: {FileListItem},
     props: {
-        files: Array,
+        files: {
+            type: Object,
+            require: true
+        }
+
     },
     data() {
         return {
@@ -37,7 +42,8 @@ export default {
             selectionMode: false,
             selection: {},
         }
-    },
+    }
+    ,
     computed: {
         isMobile() {
             return this.$store.isMobile
@@ -71,20 +77,29 @@ export default {
             selection
                 .on('start', (evt) => {
                     if (!evt.event.ctrlKey && !evt.event.metaKey) {
-                        this.selected = []
+                        this.selected = new Map()
                     } else {
                         // eslint-disable-next-line no-param-reassign
-                        evt.store.stored = [...window.document.getElementsByClassName('selection-item')]
-                            .filter((el) => this.selected[el.getAttribute('data-filename')] === true)
+                        evt.store.stored =
+                            [...window.document.getElementsByClassName('selection-item')]
+                                .filter((el) => {
+                                    const attr = el.getAttribute('data-filename')
+                                    if (attr == null)
+                                        return false
+
+                                    return this.selected.get(attr) === true
+                                })
                     }
                 })
                 .on('move', (evt) => {
-                    const { added, removed } = evt.store.changed
+                    const {added, removed} = evt.store.changed
                     added.forEach((it) => {
-                        this.selected[it.getAttribute('data-filename')] = true
+                        const attr = it.getAttribute('data-filename')
+                        this.selected.set(attr, true)
                     })
                     removed.forEach((it) => {
-                        this.selected[it.getAttribute('data-filename')] = false
+                        const attr = it.getAttribute('data-filename')
+                        this.selected.set(attr, true)
                     })
                 }).on('stop', () => {
                     selection.clearSelection()
@@ -92,11 +107,12 @@ export default {
 
             this.selection = selection
         }
-    },
-    methods: {
-    },
+    }
+    ,
+    methods: {}
+    ,
 
-}
+})
 </script>
 
 <style lang="less">
@@ -107,7 +123,10 @@ export default {
   border-radius: 0.1em;
 }
 </style>
-<style scoped lang="less">
+<style
+  scoped
+  lang="less"
+>
 .selection-container {
   min-height: 100%;
   user-select: none;

@@ -122,13 +122,33 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {Flow, FlowFile} from 'flowjs'
+import {createFlow} from '@/utils/importUtils'
 
 export default defineComponent({
     name: 'Uploader',
     data() {
         return {
-            shrunk: true
+            shrunk: true,
+            flow: {} as Flow,
+            uploadingFiles: new Map<String, FlowFile>(),
+
         }
+    },
+    mounted() {
+        this.flow = createFlow({
+            target: '/photo/redeem-upload-token',
+            query: {upload_token: 'my_token'},
+        })
+        if(!this.flow.support) {
+            return
+        }
+
+
+
+
+        // flow.assignBrowse(document.getElementById('browseButton'))
+        // flow.assignDrop(document.getElementById('dropTarget'))
     },
     methods: {
         toggleShrunk(shrunk: boolean | null = null) {

@@ -3,7 +3,7 @@
  * @Date: 2021/7/11
  -->
 <template>
-  <div>
+  <div @click="open">
     <div
       class="wrapper"
       :class="{selected}"
@@ -39,7 +39,7 @@
         </div>
         <div class="desc">
           <div class="filename">
-            {{ file.name }}
+            {{ file.fileName }}
           </div>
           <div class="time">
             {{ editTimeFormat }}
@@ -69,7 +69,7 @@ export default {
             return this.$store.isMobile
         },
         editTimeFormat() {
-            const time = DateTime.fromJSDate(this.file.editTime)
+            const time = this.file.lastModified
             if (time.startOf('day') >= DateTime.now().startOf('day')) {
                 return time.toFormat('tt')
             }
@@ -83,6 +83,13 @@ export default {
         select() {
             this.$emit('update:selected', !this.selected)
         },
+        open() {
+            if(this.file.isDirectory){
+                this.$router.push({name:'files', params:{ filePath:this.file.filePath.replace('\\','/') }})
+            }else{
+                //TODO: 预览
+            }
+        }
     },
 }
 </script>

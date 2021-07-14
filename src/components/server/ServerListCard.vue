@@ -129,7 +129,7 @@
           <el-button
             type="text"
             class="button auto-size color-primary"
-            @click="$router.push({name:'files', params:{ filePath:abbr }})"
+            @click="$router.push({name:'files', params:{ filePath:[abbr] }})"
           >
             文件
           </el-button>

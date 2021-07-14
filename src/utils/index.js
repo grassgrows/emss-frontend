@@ -47,10 +47,10 @@ function getFileExtension(fileName) {
 }
 
 function getIconStyle(file) {
-    if (file.type === 'folder') {
+    if (file.isDirectory) {
         return {
             class: 'iconfont',
-            link: '#my-icon-folder',
+            link: '#emss-icon-folder',
         }
     }
     return {

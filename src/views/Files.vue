@@ -124,8 +124,7 @@
 
 <script>
 import FileList from '@/views/file/FileList.vue'
-import file from '@/api/file'
-import { DateTime } from 'luxon'
+import * as file from '@/api/file.ts'
 
 export default {
     name: 'Files',
@@ -162,35 +161,25 @@ export default {
     },
     computed: {
         displayFiles() {
-            let array1 = this.files.filter((it) => it.type === 'folder')
-            let array2 = this.files.filter((it) => it.type === 'file')
+            let array1 = this.files.filter((it) => it.isDirectory)
+            let array2 = this.files.filter((it) => !it.isDirectory)
             let result
             if (this.selectedType === '文件名') {
-                array1 = array1.sort((a, b) => a.name.localeCompare(b.name))
-                array2 = array2.filter((it) => it.type === 'file').sort((a, b) => a.name.localeCompare(b.name))
+                array1 = array1.sort((a, b) => a.fileName.localeCompare(b.fileName))
+                array2 = array2.sort((a, b) => a.fileName.localeCompare(b.fileName))
                 result = array1.concat(array2)
             } else if (this.selectedType === '修改时间') {
                 array1 = array1.sort((a, b) => {
-                    const atime = DateTime.fromJSDate(a.editTime)
-                    const btime = DateTime.fromJSDate(b.editTime)
-                    if (atime > btime) return 1
-                    if (atime < btime) return -1
-                    return 0
+                    return a.lastModified - b.lastModified
                 })
                 array2 = array2.sort((a, b) => {
-                    const atime = DateTime.fromJSDate(a.editTime)
-                    const btime = DateTime.fromJSDate(b.editTime)
-                    if (atime > btime) return 1
-                    if (atime < btime) return -1
-                    return 0
+                    return a.lastModified - b.lastModified
                 })
                 result = array1.concat(array2)
             } else {
                 array1 = array1.sort((a, b) => a.name.localeCompare(b.name))
                 array2 = array2.sort((a, b) => {
-                    if (a.size > b.size) return -1
-                    if (a.size < b.size) return 1
-                    return 0
+                    return a.size - b.size
                 })
                 result = array1.concat(array2)
             }
@@ -202,8 +191,9 @@ export default {
         },
     },
     methods: {
-        refresh() {
-            this.files = file.getFiles(this.$route.params.filePath).files
+        async refresh() {
+            const paths = this.$route.params.filePaths || []
+            this.files = await file.getFiles(paths.join('/'))
         },
         searchFile() {
             // console.log('searching...')
