@@ -9,9 +9,8 @@
         ref="form"
         :model="serverData"
         label-width="100px"
-        label-position="left"
+        label-position="right"
         :rules="rules"
-        hide-required-asterisk="true"
         status-icon
       >
         <el-form-item

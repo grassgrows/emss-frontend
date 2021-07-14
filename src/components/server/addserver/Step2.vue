@@ -10,9 +10,8 @@
         class="form"
         :model="dockerData"
         label-width="100px"
-        label-position="left"
+        label-position="right"
         :rules="rules"
-        hide-required-asterisk="true"
         status-icon
       >
         <el-form-item
@@ -24,7 +23,7 @@
             v-model="dockerData.selectedDocker"
             placeholder="请选择..."
             style="width: 100%;"
-            no-data-text="无可用docker镜像"
+            no-data-text="无可用docker镜像，请去设置中下载"
           >
             <el-option
               v-for="docker in dockerImageList"
@@ -102,15 +101,6 @@ export default {
         dockerImageList: Array
     },
     data() {
-        var checkDockerList = (rule, value, callback) => {
-            if (this.dockerImageList.length === 0) {
-                return callback(new Error('当前列表为空，请先去设置中下载镜像'))
-            }
-            if (!value) {
-                return callback(new Error('请选择docker容器'))
-            }
-            callback()
-        }
         return {
             dockerData: {
                 selectedDocker: '',
@@ -120,8 +110,7 @@ export default {
                 containerPort: '25565'
             },
             rules: {
-                selectedDocker: [{ required: true, message: '请选择docker容器', trigger: 'blur' },
-                    {validator: checkDockerList, trigger: 'change'}],
+                selectedDocker: [{ required: true, message: '请选择docker容器', trigger: 'change' }],
                 serverPosition: [{required: true, message: '请输入服务器位置', trigger: 'blur'}],
                 startCommand: [{required: true, message: '请输入启动命令', trigger: 'blur'}]
             }
