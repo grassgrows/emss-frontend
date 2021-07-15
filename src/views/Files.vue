@@ -87,22 +87,33 @@
                 :underline="false"
                 href="javascript:void(0);"
                 icon="el-icon-document-copy"
+                @click="copyFile"
               >
                 复制
               </el-link>
               <el-link
                 :underline="false"
                 href="javascript:void(0);"
-                icon="el-icon-delete"
+                icon="el-icon-scissors"
+                @click="cutFile"
               >
-                删除
+                剪切
               </el-link>
               <el-link
                 :underline="false"
                 href="javascript:void(0);"
                 icon="el-icon-document-add"
+                @click="parseFile"
               >
                 粘贴
+              </el-link>
+              <el-link
+                :underline="false"
+                href="javascript:void(0);"
+                icon="el-icon-delete"
+                @click="deleteFile"
+              >
+                删除
               </el-link>
             </el-space>
           </el-popover>
@@ -112,6 +123,7 @@
         <file-list
           v-loading="loading"
           :files="displayFiles"
+          :selected="selectedFiles"
         />
       </div>
       <div class="card-rooter">
@@ -172,6 +184,7 @@ export default {
                     key: 'size',
                 },
             ],
+            selectedFiles: new Map(),
             loading: false,
             isAscend: true,
         }
@@ -219,8 +232,30 @@ export default {
             this.$router.push({name: 'file_search'})
         },
         handleSelect(item) {
-            console.log(item.name)
+            // console.log(item.name)
             this.selectedType = item.name
+        },
+        copyFile() {
+            const select = this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
+            this.$store.commit('copyFile',select)
+        },
+        cutFile() {
+            const select = this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
+            this.$store.commit('cutFile',select)
+        },
+        async parseFile() {
+            const select = this.$store.state.selectedFiles
+            const path = this.$route.params.filePaths
+            const isCopy = this.$route.state.isCopy
+            if(isCopy){
+                await file.copyAndParseFiles(select, path)
+            } else {
+                await file.cutAndParseFiles(select, path)
+            }
+        },
+        async deleteFile() {
+            const select = this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
+            await file.deleteFiles(select)
         },
         uploadFile() {
 
@@ -233,8 +268,8 @@ export default {
 </script>
 
 <style
-  scoped
-  lang="less"
+    scoped
+    lang="less"
 >
 .card {
   margin: 10px 0 20px;

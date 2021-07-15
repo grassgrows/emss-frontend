@@ -14,6 +14,8 @@ const store = createStore({
             currentServer: {},
             addState: false,
             isMobile: false,
+            selectedFileList: [],
+            isCopy: Boolean
         }
     },
     mutations: {
@@ -28,7 +30,15 @@ const store = createStore({
         },
         setIsMobile(state, val) {
             state.isMobile = val
-        }
+        },
+        copyFile(state,val) {
+            state.isCopy = true
+            state.selectedFileList = val
+        },
+        cutFile(state, val) {
+            state.isCopy = false
+            state.selectedFileList = val
+        },
     },
     actions: {
         async refreshServerList({ commit }) {

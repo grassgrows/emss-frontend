@@ -23,27 +23,29 @@
 <script>
 import FileListItem from '@/components/file/FileListItem.vue'
 import SelectionArea from '@simonwep/selection-js'
-import {defineComponent} from 'vue'
 
-export default defineComponent({
+export default{
     name: 'FileList',
     components: {FileListItem},
     props: {
         files: {
             type: Object,
             require: true
+        },
+        selected: {
+            type: Map,
+            default: new Map()
         }
 
     },
     data() {
         return {
             view: 'grid',
-            selected: {},
+            // selected: new Map(),
             selectionMode: false,
             selection: {},
         }
-    }
-    ,
+    },
     computed: {
         isMobile() {
             return this.$store.isMobile
@@ -77,7 +79,7 @@ export default defineComponent({
             selection
                 .on('start', (evt) => {
                     if (!evt.event.ctrlKey && !evt.event.metaKey) {
-                        this.selected = new Map()
+                        this.selected.clear()
                     } else {
                         // eslint-disable-next-line no-param-reassign
                         evt.store.stored =
@@ -87,7 +89,7 @@ export default defineComponent({
                                     if (attr == null)
                                         return false
 
-                                    return this.selected.get(attr) === true
+                                    return this.selected.set(attr, true)
                                 })
                     }
                 })
@@ -99,7 +101,7 @@ export default defineComponent({
                     })
                     removed.forEach((it) => {
                         const attr = it.getAttribute('data-filename')
-                        this.selected.set(attr, true)
+                        this.selected.set(attr, false)
                     })
                 }).on('stop', () => {
                     selection.clearSelection()
@@ -112,7 +114,7 @@ export default defineComponent({
     methods: {}
     ,
 
-})
+}
 </script>
 
 <style lang="less">

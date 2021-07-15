@@ -34,3 +34,40 @@ export async function getFiles(filePath: Array<string> | null): Promise<Array<Fi
     })
 }
 
+export async function copyAndParseFiles(files: Array<FileInfo>, filePath: Array<string> | null) {
+    const path: string = (filePath || []).join('/')
+    const paths = files.map((to)=>{
+        return to.filePath
+    })
+    await axios.post('/api/file/copy', {
+        params: {
+            path,
+        },
+        data: paths
+    })
+}
+
+export async function cutAndParseFiles(files: Array<FileInfo>, filePath: Array<string> | null) {
+    const path: string = (filePath || []).join('/')
+    const paths = files.map((to)=>{
+        return to.filePath
+    })
+    await axios.post('/api/file/cut', {
+        params: {
+            path,
+        },
+        data: paths
+    })
+}
+
+export async function deleteFiles(files: Array<FileInfo>) {
+    const paths = files.map((to) =>{
+        return to.filePath
+    })
+    await axios.post('api/file/delete', {
+        data: paths
+    })
+}
+
+
+
