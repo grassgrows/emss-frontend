@@ -119,7 +119,10 @@
           </el-popover>
         </div>
       </div>
-      <div class="card-body">
+      <div
+        class="card-body"
+        @drop.prevent="onDrop"
+      >
         <file-list
           v-loading="loading"
           :files="displayFiles"
@@ -189,6 +192,11 @@ export default {
             isAscend: true,
         }
     },
+    mounted() {
+        this.$bus.on('refresh-file', ()=>{
+            this.refresh()
+        })
+    },
     computed: {
         displayFiles() {
             let array1 = this.files.filter((it) => it.isDirectory)
@@ -226,6 +234,8 @@ export default {
             this.loading = true
             this.files = await file.getFiles(paths)
             this.loading = false
+            this.selectedFiles.clear()
+
         },
         searchFile() {
             // console.log('searching...')
@@ -252,13 +262,18 @@ export default {
             } else {
                 await file.cutAndParseFiles(select, path)
             }
+            await this.refresh()
         },
         async deleteFile() {
             const select = this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
             await file.deleteFiles(select)
+            await this.refresh()
         },
         uploadFile() {
-
+            this.$bus.emit('show-browse')
+        },
+        onDrop(event) {
+            this.$bus.emit('add-upload-drop', event)
         },
         newDirectory() {
 

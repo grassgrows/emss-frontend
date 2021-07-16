@@ -11,10 +11,11 @@
       <file-list-item
         v-for="f in files"
         :key="f.fileName"
-        v-model:selected="selected[f.fileName]"
-        class="item selection-item"
+        :selected="selected.get(f.fileName) === true"
         :data-filename="f.fileName"
         :file="f"
+        class="item selection-item"
+        @update:selected="selected.set(f.fileName, $event)"
       />
     </div>
   </div>

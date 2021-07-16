@@ -159,6 +159,7 @@ export default {
     computed: {
         ...utils.mapData('serverData', ['id', 'abbr', 'name', 'running', 'port', 'tps', 'lastRun', 'onlinePlayer', 'maxPlayer']),
         showPop() {
+            this.$router
             return this.name.gblen() > 20
         },
 

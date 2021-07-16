@@ -39,11 +39,10 @@ export async function copyAndParseFiles(files: Array<FileInfo>, filePath: Array<
     const paths = files.map((to)=>{
         return to.filePath
     })
-    await axios.post('/api/file/copy', {
+    await axios.post('/api/file/copy', paths, {
         params: {
             path,
         },
-        data: paths
     })
 }
 
@@ -52,11 +51,10 @@ export async function cutAndParseFiles(files: Array<FileInfo>, filePath: Array<s
     const paths = files.map((to)=>{
         return to.filePath
     })
-    await axios.post('/api/file/cut', {
+    await axios.post('/api/file/cut', paths, {
         params: {
             path,
         },
-        data: paths
     })
 }
 
@@ -64,9 +62,7 @@ export async function deleteFiles(files: Array<FileInfo>) {
     const paths = files.map((to) =>{
         return to.filePath
     })
-    await axios.post('api/file/delete', {
-        data: paths
-    })
+    await axios.post('api/file/delete', paths)
 }
 
 

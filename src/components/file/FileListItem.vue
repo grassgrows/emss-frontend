@@ -14,7 +14,7 @@
       >
         <div
           class="outline"
-          @click="select"
+          @click.stop="select"
         >
           <i
             v-if="selected"
