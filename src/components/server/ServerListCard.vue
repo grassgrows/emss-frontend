@@ -202,15 +202,25 @@ export default {
             return dateObj.toFormat('D T')
         },
         async closeServer() {
+            this.$notify({
+                title: '开始关闭',
+                message: '服务器正在关闭',
+                type: 'info'
+            })
             await api.server.stop(this.id)
             this.$notify({
                 title: '关闭成功',
-                message: '服务器正在关闭',
+                message: '服务器正在已经',
                 type: 'success'
             })
             await this.$store.dispatch('refreshServerList')
         },
         async startServer() {
+            this.$notify({
+                title: '正在开启',
+                message: '服务器正在开启',
+                type: 'info'
+            })
             try {
                 await api.server.start(this.id)
             } catch (e) {
@@ -231,14 +241,24 @@ export default {
             await this.$store.dispatch('refreshServerList')
         },
         async restartServer() {
+            this.$notify({
+                title: '正在重启',
+                message: '服务器正在重启',
+                type: 'info'
+            })
             await api.server.restart(this.id)
+            this.$notify({
+                title: '启动成功',
+                message: '服务器已经启动',
+                type: 'success'
+            })
             this.$store.dispatch('refreshServerList')
         },
         async removeServer() {
             await api.server.remove(this.id)
             this.$notify({
                 title: '删除成功',
-                message: '正在删除服务器',
+                message: '已经删除服务器',
                 type: 'success'
             })
             await this.$store.dispatch('refreshServerList')

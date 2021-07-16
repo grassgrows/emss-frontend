@@ -6,8 +6,10 @@
  */
 import server from '@/api/server'
 import setting from '@/api/setting'
+import * as file from '@/api/file'
+import * as command from '@/api/command'
 
 
 export default {
-    server, setting
+    server, setting, file, command
 }

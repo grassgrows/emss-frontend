@@ -9,7 +9,13 @@
           label="模拟终端"
           name="first"
         >
-          <xterm class="terminal" />
+          <div class="terminal-wrapper">
+            <xterm
+              ref="xterm"
+              class="terminal"
+            />
+          </div>
+          <term-input />
         </el-tab-pane>
         <el-tab-pane
           label="聊天窗口"
@@ -31,31 +37,63 @@
 <script lang="ts">
 import Xterm from '@/components/common/Xterm.vue'
 import {defineComponent} from 'vue'
+import {attachServer} from '@/api/command'
+import {runCatching} from '@/utils/functionUtils'
 
 export default defineComponent({
     name: 'Terminal',
-    components: {Xterm},
+    components: { Xterm},
+    props: {},
     data() {
         return {
             selected: 'first',
+            ws: undefined as WebSocket | undefined,
         }
     },
-    methods: {},
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        '$route.name'(to: string) {
+            if (to === 'terminal') {
+                this.initTerminal()
+            } else {
+                runCatching(() => {
+                    this.ws?.close()
+                })
+            }
+        }
+    },
+    created() {
+        this.initTerminal()
+    },
+    methods: {
+        async initTerminal() {
+            this.ws && this.ws.close()
+            this.ws = await attachServer(this.$store.state.currentServer.id)
+            const xterm = this.$refs.xterm as any
+            xterm.initTerm(this.ws)
+        }
+    }
+
 })
 </script>
 
-<style scoped>
+<style
+  scoped
+  lang="less"
+>
 .container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .wrapper {
-    padding: 8px 0;
+  padding: 8px 0;
 }
 
+
 .terminal {
-    height: 72vh;
+  height: 72vh;
 }
+
 
 </style>

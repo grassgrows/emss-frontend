@@ -13,6 +13,7 @@ const store = createStore({
             serverList: [],
             currentServer: {},
             addState: false,
+            serverSetting: false,
             isMobile: false,
             selectedFileList: [],
             isCopy: Boolean
@@ -28,10 +29,13 @@ const store = createStore({
         changeAddState(state, val) {
             state.addState = val
         },
+        changeServerSetting(state, val) {
+            state.serverSetting = val
+        },
         setIsMobile(state, val) {
             state.isMobile = val
         },
-        copyFile(state,val) {
+        copyFile(state, val) {
             state.isCopy = true
             state.selectedFileList = val
         },
@@ -41,9 +45,11 @@ const store = createStore({
         },
     },
     actions: {
-        async refreshServerList({ commit }) {
+        async refreshServerList({commit, state}) {
             const serverList = await api.server.list()
             commit('setServerList', serverList)
+            const curr = serverList.find((it) => it.id === state.currentServer.id)
+            commit('setServer', curr)
         },
     },
     modules: {},
