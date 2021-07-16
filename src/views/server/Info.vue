@@ -11,7 +11,11 @@
       :lg="8"
       :xl="6"
     >
-      <settings-inspect :id="id" />
+      <settings-inspect
+        :id="id"
+        @showSetting="showSetting"
+      />
+      <server-setting/>
     </el-col>
     <el-col
       :span="8"
@@ -68,6 +72,7 @@ import FileIo from '@/components/server/info/chart/FileIo.vue'
 import NetworkIo from '@/components/server/info/chart/NetworkIo'
 import OnlineNumber from '@/components/server/info/chart/OnlineNumber'
 import Tps from '@/components/server/info/chart/Tps.vue'
+import ServerSetting from '@/views/ServerSetting'
 
 export default {
     name: 'Info',
@@ -77,9 +82,15 @@ export default {
         CpuUsage,
         FileIo,
         OnlineNumber,
-        Tps
+        Tps,
+        ServerSetting
     },
     props: ['id'],
+    methods: {
+        showSetting() {
+            this.$store.commit('changeServerSetting', true)
+        },
+    }
 }
 </script>
 

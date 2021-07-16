@@ -7,7 +7,7 @@
     <el-dialog
       v-model="dialogAdd"
       custom-class="add-dialog"
-      top="10vh"
+      top="2vh"
       title="添加服务器"
       @open="openDialog"
       @close="closeDialog"
@@ -50,6 +50,7 @@
           <step2
             :clear-data="dialogAdd"
             :docker-image-list="dockerImageList"
+            :abbr="abbr"
             @back="back"
             @submit="submit"
             @sendData="receiveData2"
@@ -101,6 +102,7 @@ export default {
             dockerData: Object,
             completeData: {},
             dockerImageList: [],
+            abbr: ''
         }
     },
     computed: {
@@ -142,6 +144,7 @@ export default {
 
         receiveData1(data) {
             this.serverData = data
+            this.abbr = data.shortName
             console.log(data)
         },
         receiveData2(data) {
@@ -181,7 +184,7 @@ export default {
 
 <style scoped lang="less">
 .dialog-content {
-    height: 66vh;
+    height: 75vh;
     overflow: auto;
     display: flex;
     flex-direction: column;

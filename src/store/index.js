@@ -13,6 +13,7 @@ const store = createStore({
             serverList: [],
             currentServer: {},
             addState: false,
+            serverSetting: false,
             isMobile: false,
             selectedFileList: [],
             isCopy: Boolean
@@ -27,6 +28,9 @@ const store = createStore({
         },
         changeAddState(state, val) {
             state.addState = val
+        },
+        changeServerSetting(state, val) {
+            state.serverSetting = val
         },
         setIsMobile(state, val) {
             state.isMobile = val

@@ -6,7 +6,7 @@
   <common-info-card
     header="服务器设置"
     icon="el-icon-setting"
-    @click="$emit('click')"
+    @show="$emit('showSetting')"
   >
     <el-descriptions
       border

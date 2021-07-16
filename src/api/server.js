@@ -39,14 +39,23 @@ async function list() {
  * 开服 关服 重启
  */
 async function create(val) {
+    const portBindings = new Map()
+    val.portBindings.forEach((it)=>{
+        portBindings.set(it.hostPort, it.containerPort)
+    })
+    const volumeBind = new Map()
+    val.volumeBind.forEach((it)=>{
+        volumeBind.set(it.hostVolume, it.containerVolume)
+    })
     const req = {
         name: val.name,
         aliasName: val.anotherName,
         abbr: val.shortName,
         location: val.serverPosition,
         startCommand: val.startCommand,
-        containerPort: val.containerPort,
-        hostPort: val.hostPort,
+        workingDir: val.workingDir,
+        portBindings: val.portBindings,
+        volumeBind: val.volumeBind,
         imageId: val.selectedDocker,
     }
 
@@ -73,6 +82,11 @@ async function remove(id) {
 
 }
 
+async function updateSetting(server) {
+    const resp = await axios.post('/api/server/edit',server)
+    result.getData(resp.data, '保存设置失败')
+}
+
 async function info(id) {
     return {
 
@@ -80,5 +94,5 @@ async function info(id) {
 }
 
 export default {
-    monitor, list, start, stop, restart, create,
+    monitor, list, start, stop, restart, create, updateSetting
 }

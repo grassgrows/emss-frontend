@@ -9,11 +9,15 @@
   >
     <div class="card-container">
       <div class="card-header">
-        <div>{{ header }}</div>
+        <div class="header-text">{{ header }}</div>
         <template v-if="typeof icon !== 'undefined'">
           <div class="blank" />
           <div class="header-icon">
-            <i :class="icon" />
+            <el-button
+              type="text"
+              :icon="icon"
+              @click="$emit('show')"
+            />
           </div>
         </template>
       </div>
@@ -43,12 +47,17 @@ export default {
 .card-header {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   display: flex;
 }
 
 .card-header .header-icon {
   margin-right: 4px;
+}
+
+.card-header .header-text {
+    display: flex;
+    align-items: center;
 }
 
 .card-subheader {
@@ -59,6 +68,6 @@ export default {
 
 .card-content {
   flex: 1 1 0;
-  padding-top: 8px;
+  padding-top: 4px;
 }
 </style>
