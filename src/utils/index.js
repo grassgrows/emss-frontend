@@ -4,7 +4,7 @@
  * @date ：2021/7/6
  *
  */
-import { random } from 'lodash'
+import {random} from 'lodash'
 import fileIconMap from '@/assets/fileIconMaps.json'
 import iconfont from '@/assets/icon-file/iconfont.json'
 import promise from '@/utils/promise'
@@ -39,7 +39,28 @@ function getIconName(ext) {
     return `#icon-f-${ext}`
 }
 
+function getFileExtension(fileName) {
+    if (!fileName.includes('.')) {
+        return ''
+    }
+    return fileName.substr(fileName.lastIndexOf('.') + 1)
+}
+
+function getIconStyle(file) {
+    if (file.isDirectory) {
+        return {
+            class: 'iconfont',
+            link: '#emss-icon-folder',
+        }
+    }
+    return {
+        class: 'filefont',
+        link: getIconName(getFileExtension(file.fileName)),
+    }
+}
+
 
 export default {
-    wait, mapData, getIconName, promise, result
+    wait, mapData, getIconName, promise, result,
+    getFileExtension, getIconStyle
 }

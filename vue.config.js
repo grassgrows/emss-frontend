@@ -16,7 +16,7 @@ module.exports = {
                 ws: true,
                 pathRewrite: { '^/api': '' },
             }
-            //部署服务器
+            // 部署服务器
             // '/api': {
             //     target: 'https://emss.warmthdawn.top',
             //     ws: true,

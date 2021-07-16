@@ -129,7 +129,7 @@
           <el-button
             type="text"
             class="button auto-size color-primary"
-            @click="$router.push({name:'files', params:{ filePath:abbr }})"
+            @click="$router.push({name:'files', params:{ filePath:[abbr] }})"
           >
             文件
           </el-button>
@@ -159,6 +159,7 @@ export default {
     computed: {
         ...utils.mapData('serverData', ['id', 'abbr', 'name', 'running', 'port', 'tps', 'lastRun', 'onlinePlayer', 'maxPlayer']),
         showPop() {
+            this.$router
             return this.name.gblen() > 20
         },
 

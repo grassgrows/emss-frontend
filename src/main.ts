@@ -6,6 +6,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import mitt from '@/plugins/mitt'
 import installElementPlus from './plugins/element'
 import './plugins/utils'
 import 'chartjs-adapter-luxon'
@@ -20,4 +21,5 @@ const app = createApp(App)
 installElementPlus(app)
 app.use(store)
     .use(router)
+    .use(mitt)
     .mount('#app')

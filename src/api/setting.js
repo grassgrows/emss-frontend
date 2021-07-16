@@ -41,6 +41,9 @@ async function cancelDownloadImage(imageId) {
     await axios.post(`/api/settings/image/${imageId}/cancelDownload`)
 }
 
+async function deleteImage(imageId) {
+    await axios.delete(`/api/settings/image/${imageId}`)
+}
 
 async function baseSetting() {
     const resp = await axios.get('/api/settings/base')
@@ -53,5 +56,5 @@ async function updateSetting(setting) {
 }
 
 export default {
-    images, imageInfo, imageStatus, createImage, downloadImage, baseSetting, updateSetting, cancelDownloadImage
+    images, imageInfo, imageStatus, createImage, downloadImage, deleteImage, baseSetting, updateSetting, cancelDownloadImage
 }

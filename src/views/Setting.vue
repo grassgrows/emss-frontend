@@ -86,12 +86,19 @@
               >
                 取消
               </el-link>
-              <el-link
+              <el-popconfirm
                 v-else-if="image.statusObj && image.statusObj.status === 'Downloaded'"
-                href="javascript:void(0);"
+                title="确认删除该镜像？"
+                @confirm="deleteImage(image)"
               >
-                删除
-              </el-link>
+                <template #reference>
+                  <el-link
+                    href="javascript:void(0);"
+                  >
+                    删除
+                  </el-link>
+                </template>
+              </el-popconfirm>
             </div>
           </div>
           <span
@@ -212,12 +219,21 @@ export default {
                     title: '服务端路径',
                     description: '这里缺一段文案，balabalabala',
                 },
-
+                serverBackupDirectory: {
+                    title: '备份文件夹',
+                    description: 'xxxxxxxx'
+                },
+                temporaryFolder: {
+                    title: '临时文件夹',
+                    description: 'xxxxxx'
+                }
             },
             imageStatuses: {},
             baseSetting: {
                 name: '',
                 serverRootDirectory: '',
+                serverBackupDirectory: '',
+                temporaryFolder: ''
             },
 
             imageSetting: [],
@@ -336,6 +352,32 @@ export default {
             }
 
 
+        },
+        async deleteImage(image) {
+            //TODO:判断该镜像中是否还剩余容器，若有(根据错误码code)则提示错误
+            // noinspection ES6MissingAwait
+            api.setting.deleteImage(image.id)
+            for(; ;) {
+                const status = await this.updateImageStatus(image)
+                if(status !== 'Downloading' && status !== 'Downloaded' ) {
+                    if(status === 'Ready') {
+                        this.$notify({
+                            title: '删除成功',
+                            message: `镜像: ${image.name} 已被删除`,
+                            type: 'success'
+                        })
+                    } else {
+                        this.$notify({
+                            title: '删除失败',
+                            message: `镜像: ${image.name} 删除失败`,
+                            type: 'error'
+                        })
+                        image.statusObj.status = 'Downloaded'
+                    }
+                    break
+                }
+                await delay(500)
+            }
         },
         edit(key) {
             this.editor.editingName = key

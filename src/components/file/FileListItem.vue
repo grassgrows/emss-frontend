@@ -1,9 +1,9 @@
 <!--
- * @Author: smq
+ * @Author: WarmthDawn
  * @Date: 2021/7/11
  -->
 <template>
-  <div>
+  <div @click="open">
     <div
       class="wrapper"
       :class="{selected}"
@@ -14,7 +14,7 @@
       >
         <div
           class="outline"
-          @click="select"
+          @click.stop="select"
         >
           <i
             v-if="selected"
@@ -39,7 +39,7 @@
         </div>
         <div class="desc">
           <div class="filename">
-            {{ file.name }}
+            {{ file.fileName }}
           </div>
           <div class="time">
             {{ editTimeFormat }}
@@ -52,7 +52,7 @@
 
 <script>
 import utils from '@/utils'
-import { DateTime } from 'luxon'
+import {DateTime} from 'luxon'
 
 export default {
     name: 'FileListItem',
@@ -63,46 +63,43 @@ export default {
             default: false,
         },
     },
+    emits: ['update:selected'],
     computed: {
         isMobile() {
             return this.$store.isMobile
         },
-        fileExt() {
-            const fileName = this.file.name
-            if (!fileName.includes('.')) {
-                return ''
-            }
-            return fileName.substr(fileName.lastIndexOf('.') + 1)
-        },
         editTimeFormat() {
-            const time = DateTime.fromJSDate(this.file.editTime)
+            const time = this.file.lastModified
             if (time.startOf('day') >= DateTime.now().startOf('day')) {
                 return time.toFormat('tt')
             }
             return time.toFormat('DD')
         },
         iconName() {
-            if (this.file.type === 'folder') {
-                return {
-                    class: 'iconfont',
-                    link: '#my-icon-folder',
-                }
-            }
-            return {
-                class: 'filefont',
-                link: utils.getIconName(this.fileExt),
-            }
+            return utils.getIconStyle(this.file)
         },
     },
     methods: {
         select() {
             this.$emit('update:selected', !this.selected)
         },
+        open() {
+            const pathStr = this.file.filePath || ''
+            const paths = pathStr.substr(1).split('/')
+            if (this.file.isDirectory) {
+                this.$router.push({name: 'files', params: {filePaths: paths}})
+            } else {
+                //TODO: 预览
+            }
+        }
     },
 }
 </script>
 
-<style scoped lang="less">
+<style
+  scoped
+  lang="less"
+>
 
 .checkbox-container {
   position: absolute;

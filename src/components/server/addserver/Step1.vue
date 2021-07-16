@@ -6,13 +6,17 @@
   <div class="step1">
     <div>
       <el-form
-        v-model="serverData"
+        ref="form"
+        :model="serverData"
         label-width="100px"
         label-position="left"
+        :rules="rules"
+        status-icon
       >
         <el-form-item
           label="服务器名称"
           class="input-style"
+          prop="name"
         >
           <el-input v-model="serverData.name" />
         </el-form-item>
@@ -25,6 +29,7 @@
         <el-form-item
           label="服务器缩写"
           class="input-style"
+          prop="shortName"
         >
           <el-input v-model="serverData.shortName" />
         </el-form-item>
@@ -55,7 +60,7 @@
       </el-button>
       <el-button
         type="primary"
-        @click="$emit('next');$emit('sendData',serverData)"
+        @click="validAndSendData"
       >
         下一步
       </el-button>
@@ -81,7 +86,13 @@ export default {
                 anotherName: '',
                 selectedManager: []
             },
-            managerList: ['1','2','3']
+            managerList: ['1','2','3'],
+            rules: {
+                name: [{required: true, message: '请输入服务器名称', trigger: 'blur'}],
+                shortName: [{required: true, message: '请输入服务器名称', trigger: 'blur'},
+                    {pattern: /^[a-z_0-9]+$/, message: '只允许由小写字母、下划线、数字组成', trigger: 'blur'}
+                ],
+            }
         }
     },
     watch: {
@@ -90,6 +101,7 @@ export default {
             this.serverData.shortName = '',
             this.serverData.anotherName = '',
             this.serverData.selectedManager = []
+            this.$refs['form'].resetFields()
         }
     },
     methods: {
@@ -97,6 +109,16 @@ export default {
             this.serverData.selectedManager[index] = checked
             // console.log(this.selectedManager)
         },
+        validAndSendData() {
+            this.$refs['form'].validate((valid) => {
+                if(valid) {
+                    this.$emit('sendData',this.serverData)
+                    this.$emit('next')
+                } else {
+                    return false
+                }
+            })
+        }
     }
 }
 </script>
@@ -114,6 +136,11 @@ export default {
 
 .step1 .empty {
     flex: 1 1 0;
+}
+
+/deep/ .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
+  width: 0px;
+  margin-left: -11px;
 }
 
 </style>

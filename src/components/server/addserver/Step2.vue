@@ -6,19 +6,24 @@
   <div class="step2">
     <div>
       <el-form
+        ref="form"
         class="form"
         :model="dockerData"
         label-width="100px"
         label-position="left"
+        :rules="rules"
+        status-icon
       >
         <el-form-item
           label="Docker镜像"
           class="input-style"
+          prop="selectedDocker"
         >
           <el-select
             v-model="dockerData.selectedDocker"
             placeholder="请选择..."
             style="width: 100%;"
+            no-data-text="无可用docker镜像，请去设置中下载"
           >
             <el-option
               v-for="docker in dockerImageList"
@@ -31,12 +36,14 @@
         <el-form-item
           label="服务器位置"
           class="input-style"
+          prop="serverPosition"
         >
           <el-input v-model="dockerData.serverPosition" />
         </el-form-item>
         <el-form-item
           label="启动命令"
           class="input-style"
+          prop="startCommand"
         >
           <el-input v-model="dockerData.startCommand" />
         </el-form-item>
@@ -74,7 +81,7 @@
       <el-button
         name="submit"
         type="primary"
-        @click="$emit('submit');$emit('sendData',dockerData)"
+        @click="validAndSendData"
       >
         完成
       </el-button>
@@ -99,18 +106,45 @@ export default {
                 selectedDocker: '',
                 serverPosition: '',
                 startCommand: '',
-                hostPort: '',
-                containerPort: ''
+                hostPort: '25565',
+                containerPort: '25565'
+            },
+            rules: {
+                selectedDocker: [{ required: true, message: '请选择docker容器', trigger: 'change' }],
+                serverPosition: [{required: true, message: '请输入服务器位置', trigger: 'blur'}],
+                startCommand: [{required: true, message: '请输入启动命令', trigger: 'blur'}]
             }
         }
     },
     watch: {
         clearData: function () {
-            this.selectedDocker = '',
-            this.serverPosition = '',
-            this.startCommand = '',
-            this.hostPort = '',
-            this.containerPort = ''
+            this.dockerData.selectedDocker = '',
+            this.dockerData.serverPosition = '',
+            this.dockerData.startCommand = '',
+            this.dockerData.hostPort = '25565',
+            this.dockerData.containerPort = '25565'
+            this.$refs['form'].resetFields()
+        }
+    },
+    methods: {
+        validAndSendData() {
+            this.$refs['form'].validate((valid) => {
+                if(valid){
+                    this.$emit('sendData',this.dockerData)
+                    this.$emit('submit')
+                }
+            })
+        },
+        isListNull(callback) {
+            if (callback) {
+                if (this.dockerImageList.length === 0) {
+                    this.$notify({
+                        title: '警告',
+                        message: '当前无可选docker容器',
+                        type: 'warning',
+                    })
+                }
+            }
         }
     }
 }
@@ -133,5 +167,10 @@ export default {
 
 button[name='submit'] {
     width: 84px;
+}
+
+/deep/ .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
+  width: 0px;
+  margin-left: -11px;
 }
 </style>
