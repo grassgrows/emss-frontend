@@ -212,7 +212,7 @@ import {defineComponent} from 'vue'
 import {Flow, FlowFile} from 'flowjs'
 import {createFlow} from '@/utils/importUtils'
 import '@/utils/arrayUtils'
-import {runCatching} from "@/utils/functionUtils";
+import {runCatching} from '@/utils/functionUtils'
 
 export interface UploadItem {
     status: 'uploading' | 'paused' | 'error' | 'success'
