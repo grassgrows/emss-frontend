@@ -8,121 +8,120 @@
       shadow="always"
       class="card"
     >
-      <div class="card-header">
-        <div class="select">
-          <el-dropdown
-            trigger="click"
-            @command="handleSelect"
-          >
-            <span class="el-dropdown-link">
-              {{ `按${selectedType}排序` }}<i class="el-icon-arrow-down el-icon--right" />
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <template
-                  v-for="item in selectTypesValue"
-                  :key="item"
-                >
-                  <el-dropdown-item
-                    v-if="item.name === selectedType"
-                    icon="el-icon-check"
-                    :command="item"
-                  >
-                    {{ item.name }}
-                  </el-dropdown-item>
-                  <el-dropdown-item
-                    v-else
-                    :command="item"
-                    icon="el-icon-check"
-                    class="hidden-icon"
-                  >
-                    {{ item.name }}
-                  </el-dropdown-item>
-                </template>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-        &nbsp; &nbsp;
-        <div class="ascend">
-          <el-switch
-            v-model="isAscend"
-            active-text="升序"
-            inactive-text="降序"
-          />
-        </div>
-        <div class="blank" />
-        <div class="operation-button">
-          <transition name="el-zoom-in-center">
-            <div v-show="showSearch">
-              <el-input
-                v-model="searchInfo"
-                clearable
-                @keyup.enter="searchFile"
-              />
-            </div>
-          </transition>
-          &nbsp; &nbsp;
-          <el-button
-            icon="el-icon-search"
-            circle
-            @click="showSearch = !showSearch"
-          />
-          <el-popover
-            placement="bottom"
-            trigger="focus"
-          >
-            <template #reference>
-              <el-button
-                type="primary"
-                icon="el-icon-plus"
-                circle
-              />
-            </template>
-            <el-space
-              direction="vertical"
-              class="operations"
+      <el-affix target=".card" :offset="80">
+        <div class="card-header">
+          <div class="select">
+            <el-dropdown
+              trigger="click"
+              @command="handleSelect"
             >
-              <el-link
-                :underline="false"
-                href="javascript:void(0);"
-                icon="el-icon-document-copy"
-                @click="copyFile"
+              <span class="el-dropdown-link">
+                {{ `按${selectedType}排序` }}<i class="el-icon-arrow-down el-icon--right" />
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <template
+                    v-for="item in selectTypesValue"
+                    :key="item"
+                  >
+                    <el-dropdown-item
+                      v-if="item.name === selectedType"
+                      icon="el-icon-check"
+                      :command="item"
+                    >
+                      {{ item.name }}
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                      v-else
+                      :command="item"
+                      icon="el-icon-check"
+                      class="hidden-icon"
+                    >
+                      {{ item.name }}
+                    </el-dropdown-item>
+                  </template>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+          &nbsp; &nbsp;
+          <div class="ascend">
+            <el-switch
+              v-model="isAscend"
+              active-text="升序"
+              inactive-text="降序"
+            />
+          </div>
+          <div class="blank" />
+          <div class="operation-button">
+            <transition name="el-zoom-in-center">
+              <div v-show="showSearch">
+                <el-input
+                  v-model="searchInfo"
+                  clearable
+                  @keyup.enter="searchFile"
+                />
+              </div>
+            </transition>
+            &nbsp; &nbsp;
+            <el-button
+              icon="el-icon-search"
+              circle
+              @click="showSearch = !showSearch"
+            />
+            <el-popover
+              placement="bottom"
+              trigger="focus"
+            >
+              <template #reference>
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  circle
+                />
+              </template>
+              <el-space
+                direction="vertical"
+                class="operations"
               >
-                复制
-              </el-link>
-              <el-link
-                :underline="false"
-                href="javascript:void(0);"
-                icon="el-icon-scissors"
-                @click="cutFile"
-              >
-                剪切
-              </el-link>
-              <el-link
-                :underline="false"
-                href="javascript:void(0);"
-                icon="el-icon-document-add"
-                @click="parseFile"
-              >
-                粘贴
-              </el-link>
-              <el-link
-                :underline="false"
-                href="javascript:void(0);"
-                icon="el-icon-delete"
-                @click="deleteFile"
-              >
-                删除
-              </el-link>
-            </el-space>
-          </el-popover>
+                <el-link
+                  :underline="false"
+                  href="javascript:void(0);"
+                  icon="el-icon-document-copy"
+                  @click="copyFile"
+                >
+                  复制
+                </el-link>
+                <el-link
+                  :underline="false"
+                  href="javascript:void(0);"
+                  icon="el-icon-scissors"
+                  @click="cutFile"
+                >
+                  剪切
+                </el-link>
+                <el-link
+                  :underline="false"
+                  href="javascript:void(0);"
+                  icon="el-icon-document-add"
+                  @click="parseFile"
+                >
+                  粘贴
+                </el-link>
+                <el-link
+                  :underline="false"
+                  href="javascript:void(0);"
+                  icon="el-icon-delete"
+                  @click="deleteFile"
+                >
+                  删除
+                </el-link>
+              </el-space>
+            </el-popover>
+          </div>
         </div>
-      </div>
-      <div
-        class="card-body"
-        @drop.prevent="onDrop"
-      >
+      </el-affix>
+      <div class="card-body">
         <file-list
           v-loading="loading"
           :files="displayFiles"
