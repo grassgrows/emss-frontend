@@ -212,6 +212,7 @@ import {defineComponent} from 'vue'
 import {Flow, FlowFile} from 'flowjs'
 import {createFlow} from '@/utils/importUtils'
 import '@/utils/arrayUtils'
+import {runCatching} from "@/utils/functionUtils";
 
 export interface UploadItem {
     status: 'uploading' | 'paused' | 'error' | 'success'
@@ -279,6 +280,11 @@ export default defineComponent({
         this.flow = createFlow({
             target: '/api/file/upload',
             method: 'octet',
+            maxChunkRetries: 5,
+            chunkRetryInterval: 1000,
+            allowDuplicateUploads: true,
+            simultaneousUploads: 5,
+
             query(file: FlowFile) {
                 return {
                     destinationPath: file.destinationPath
@@ -294,11 +300,11 @@ export default defineComponent({
             this.flow.assignBrowse([browse])
         }
         this.flow.on('filesSubmitted', () => {
-            console.log('Submitted')
-            this.flow.upload()
+            runCatching(() => {
+                this.flow.upload()
+            })
         })
         this.flow.on('fileAdded', (file) => {
-            console.log(`Added ${file.name}`)
             const paths = (this.$route.params.filePaths || []) as Array<string>
             file.destinationPath = paths.join('/')
 
@@ -367,7 +373,9 @@ export default defineComponent({
         })
 
         this.$bus.on('add-upload-drop', (event: MouseEvent) => {
-            (this.flow as any).onDrop(event)
+            runCatching(() => {
+                (this.flow as any).onDrop(event)
+            })
         })
 
         this.$bus.on('show-browse', () => {
@@ -376,7 +384,6 @@ export default defineComponent({
         this.$bus.on('show-browse-folder', () => {
             document.getElementById('uploader-input-folder')!.click()
         })
-
 
 
         // flow.assignDrop(document.getElementById('dropTarget'))
@@ -446,7 +453,9 @@ export default defineComponent({
         },
         cancel(id: string | null = null) {
             if (id === null) {
-                this.flow.cancel()
+                runCatching(() => {
+                    this.flow.cancel()
+                })
                 this.uploadMap.clear()
                 return
             }
@@ -455,7 +464,9 @@ export default defineComponent({
         },
         pause(id: string | null = null) {
             if (id === null) {
-                this.flow.pause()
+                runCatching(() => {
+                    this.flow.pause()
+                })
                 this.uploadMap.forEach((it) => {
                     it.status = 'paused'
                 })
@@ -469,11 +480,13 @@ export default defineComponent({
                 this.flow.files.forEach((it) => {
                     const upload = this.uploadMap.get(it.uniqueIdentifier)
                     if (upload && upload.status !== 'success') {
-                        if (it.paused) {
-                            it.resume()
-                        } else {
-                            it.retry()
-                        }
+                        runCatching(() => {
+                            if (it.paused) {
+                                it.resume()
+                            } else {
+                                it.retry()
+                            }
+                        })
                         upload.status = 'uploading'
                     }
                 })
@@ -484,11 +497,13 @@ export default defineComponent({
             const upload = this.uploadMap.get(id)
             const file = this.getFile(id)
             if (upload && upload.status !== 'success') {
-                if (file.paused) {
-                    file.resume()
-                } else {
-                    file.retry()
-                }
+                runCatching(() => {
+                    if (file.paused) {
+                        file.resume()
+                    } else {
+                        file.retry()
+                    }
+                })
                 upload.status = 'uploading'
             }
         },
