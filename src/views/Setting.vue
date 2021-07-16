@@ -219,12 +219,21 @@ export default {
                     title: '服务端路径',
                     description: '这里缺一段文案，balabalabala',
                 },
-
+                serverBackupDirectory: {
+                    title: '备份文件夹',
+                    description: 'xxxxxxxx'
+                },
+                temporaryFolder: {
+                    title: '临时文件夹',
+                    description: 'xxxxxx'
+                }
             },
             imageStatuses: {},
             baseSetting: {
                 name: '',
                 serverRootDirectory: '',
+                serverBackupDirectory: '',
+                temporaryFolder: ''
             },
 
             imageSetting: [],
