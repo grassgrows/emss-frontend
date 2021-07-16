@@ -54,8 +54,8 @@ async function create(val) {
         location: val.serverPosition,
         startCommand: val.startCommand,
         workingDir: val.workingDir,
-        portBindings: val.portBindings,
-        volumeBind: val.volumeBind,
+        portBindings,
+        volumeBind,
         imageId: val.selectedDocker,
     }
 
