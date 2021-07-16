@@ -10,46 +10,49 @@
       :rules="rules"
       @open="openDialog"
     >
-      <el-form :model="currentServer">
+      <el-form
+        v-loading="loading"
+        :model="server"
+      >
         <el-form-item
           label="服务器名称"
           prop="name"
         >
-          <el-input v-model="name" />
+          <el-input v-model="server.name" />
         </el-form-item>
         <el-form-item label="服务器别名">
-          <el-input v-model="aliasName" />
+          <el-input v-model="server.aliasName" />
         </el-form-item>
         <el-form-item
           label="服务器缩写"
           prop="abbr"
         >
-          <el-input v-model="abbr" />
+          <el-input v-model="server.abbr" />
         </el-form-item>
         <el-form-item
           label="服务器位置"
           prop="location"
         >
-          <el-input v-model="location" />
+          <el-input v-model="server.location" />
         </el-form-item>
         <el-form-item
           label="启动命令"
           prop="startCommand"
         >
-          <el-input v-model="startCommand" />
+          <el-input v-model="server.startCommand" />
         </el-form-item>
         <el-form-item
           label="工作目录"
           prop="workingDir"
         >
-          <el-input v-model="workingDir" />
+          <el-input v-model="server.workingDir" />
         </el-form-item>
         <el-form-item
           label="端口映射"
           prop="portBindings"
         >
           <div
-            v-for="(item, index) in currentServer.portBindings"
+            v-for="(item, index) in server.portBindings"
             :key="item"
             class="port-container"
           >
@@ -97,7 +100,7 @@
         </el-form-item>
         <el-form-item label="目录映射">
           <div
-            v-for="(item, index) in currentServer.volumeBind"
+            v-for="(item, index) in server.volumeBind"
             :key="item"
             class="port-container"
           >
@@ -129,12 +132,12 @@
             </el-button>
           </div>
         </el-form-item>
-        <el-form-item 
-          label="Docker镜像" 
+        <el-form-item
+          label="Docker镜像"
           prop="imageId"
         >
           <el-select
-            v-model="imageId"
+            v-model="server.imageId"
             placeholder="请选择..."
             style="width: 100%;"
             no-data-text="无可用docker镜像，请去设置中下载"
@@ -153,7 +156,7 @@
           <el-button @click="close">取 消</el-button>
           <el-button
             type="primary"
-            @click="confirm(currentServer)"
+            @click="confirm(server)"
           >确 定</el-button>
         </span>
       </template>
@@ -162,8 +165,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import utils from '@/utils'
 import api from '@/api'
 
 export default {
@@ -175,19 +176,18 @@ export default {
                 abbr: [{required: true, message: '请输入服务器名称', trigger: 'blur'},
                     {pattern: /^[a-z_0-9]+$/, message: '只允许由小写字母、下划线、数字组成', trigger: 'blur'}
                 ],
-                imageId: [{ required: true, message: '请选择docker容器', trigger: 'change' }],
+                imageId: [{required: true, message: '请选择docker容器', trigger: 'change'}],
                 location: [{required: true, message: '请输入服务器位置', trigger: 'blur'}],
                 startCommand: [{required: true, message: '请输入启动命令', trigger: 'blur'}],
                 workingDir: [{required: true, message: '请输入工作目录', trigger: 'blur'}],
                 portBindings: [{required: true, message: '请输入端口映射', trigger: 'blur'}],
                 volumeBind: [{required: true, message: '请输入目录映射', trigger: 'blur'}]
-            }
+            },
+            server: {},
+            loading: false
         }
     },
     computed: {
-        ...mapState(['currentServer']),
-        ...utils.mapData('currentServer', ['name', 'aliasName', 'abbr', 'location',
-            'startCommand', 'workingDir', 'portBindings', 'volumeBind', 'imageId']),
         serverSetting: {
             get() {
                 return this.$store.state.serverSetting
@@ -199,7 +199,7 @@ export default {
     },
     methods: {
         async confirm(server) {
-            await api.server.monitor.updateSetting(server)
+            await api.server.updateSetting(server)
             this.$store.commit('changeServerSetting', false)
             await this.$store.dispatch('refreshServerList')
         },
@@ -207,7 +207,24 @@ export default {
             this.$store.commit('changeServerSetting', false)
         },
         async openDialog() {
+            this.loading = true
             const images = await api.setting.images()
+            const server = await api.server.serverInfo(this.$store.state.currentServer.id)
+            const newServer = {}
+            Object.assign(newServer, server)
+            newServer.portBindings = Object.entries(server.portBindings).map((it) => {
+                return {
+                    hostPort: it[0],
+                    containerPort: it[1],
+                }
+            })
+            newServer.volumeBind = Object.entries(server.volumeBind).map((it) => {
+                return {
+                    hostVolume: it[0],
+                    containerVolume: it[1],
+                }
+            })
+            this.server = newServer
             const result = []
             for (const image of images) {
                 const s = await api.setting.imageStatus(image.id)
@@ -219,6 +236,7 @@ export default {
                 }
             }
             this.dockerImageList = result
+            this.loading = false
         },
         addPortBinding() {
             this.currentServer.portBindings.push({

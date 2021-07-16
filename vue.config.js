@@ -15,6 +15,11 @@ module.exports = {
                 target: 'http://localhost:7777',
                 ws: true,
                 pathRewrite: { '^/api': '' },
+            },
+            '/socket': {
+                target: 'ws://localhost:7777',
+                ws: true,
+                pathRewrite: { '^/socket': '' },
             }
             // 部署服务器
             // '/api': {

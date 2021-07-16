@@ -134,6 +134,7 @@ export default {
         async waitCreate() {
             await api.server.create(this.completeData)
             this.loading = false
+            await this.$store.dispatch('refreshServerList')
         },
         submit() {
             this.next()

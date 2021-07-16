@@ -51,9 +51,9 @@
         >
           <el-input v-model="dockerData.startCommand" />
         </el-form-item>
-        <el-form-item 
-          label="工作目录" 
-          class="input-style" 
+        <el-form-item
+          label="工作目录"
+          class="input-style"
           prop="workingDir"
         >
           <el-input v-model="dockerData.workingDir" />
@@ -110,12 +110,12 @@
             </el-button>
           </div>
         </el-form-item>
-        <el-form-item 
-          label="目录映射" 
-          class="input-style" 
+        <el-form-item
+          label="目录映射"
+          class="input-style"
           prop="volumeBind"
         >
-          <div 
+          <div
             v-for="(item, index) in dockerData.volumeBind"
             :key="item"
             class="port-container"
@@ -190,7 +190,7 @@ export default {
                 selectedDocker: '',
                 serverPosition: '',
                 startCommand: '',
-                workingDir: 'emss',
+                workingDir: '/emss',
                 portBindings: [{
                     hostPort: '25565',
                     containerPort: '25565'
