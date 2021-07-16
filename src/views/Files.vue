@@ -132,12 +132,18 @@
       <div class="card-rooter">
         <div class="button-group">
           <el-button
-            id="browseButton"
             type="text"
             icon="el-icon-upload"
             @click="uploadFile"
           >
             上传文件
+          </el-button>
+          <el-button
+            type="text"
+            icon="el-icon-upload"
+            @click="uploadFolder"
+          >
+            上传文件夹
           </el-button>
           <el-button
             type="text"
@@ -254,9 +260,9 @@ export default {
             this.$store.commit('cutFile',select)
         },
         async parseFile() {
-            const select = this.$store.state.selectedFiles
+            const select = this.$store.state.selectedFileList
             const path = this.$route.params.filePaths
-            const isCopy = this.$route.state.isCopy
+            const isCopy = this.$store.state.isCopy
             if(isCopy){
                 await file.copyAndParseFiles(select, path)
             } else {
@@ -271,6 +277,9 @@ export default {
         },
         uploadFile() {
             this.$bus.emit('show-browse')
+        },
+        uploadFolder() {
+            this.$bus.emit('show-browse-folder')
         },
         onDrop(event) {
             this.$bus.emit('add-upload-drop', event)
