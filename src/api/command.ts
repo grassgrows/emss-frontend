@@ -10,7 +10,7 @@ export async function attachServer(id: number): Promise<WebSocket> {
         uri = 'ws:'
     }
     uri += '//' + loc.host
-    uri += `socket/command/attach/${id}`
+    uri += `/socket/command/attach/${id}`
     const ws = new WebSocket(uri)
 
     return await new Promise((resolve, reject) => {
