@@ -48,8 +48,10 @@ const store = createStore({
         async refreshServerList({commit, state}) {
             const serverList = await api.server.list()
             commit('setServerList', serverList)
-            const curr = serverList.find((it) => it.id === state.currentServer.id)
-            commit('setServer', curr)
+            if (state.currentServer) {
+                const curr = serverList.find((it) => it.id === state.currentServer.id)
+                commit('setServer', curr)
+            }
         },
     },
     modules: {},
