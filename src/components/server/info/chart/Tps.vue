@@ -26,6 +26,12 @@ export default {
     components: {
         CommonChartCard
     },
+    props: {
+        id: {
+            type: Number,
+            default: -1
+        }
+    },
     data() {
         return {
             options: {

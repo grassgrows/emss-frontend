@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
 import api from '@/api'
 import utils from '@/utils'
 
@@ -75,20 +75,70 @@ export default {
     name: 'ServerHeader',
     computed: {
         ...mapState(['currentServer']),
-        ...utils.mapData('currentServer', ['id','abbr' , 'name', 'running', 'port', 'tps', 'lastRun', 'onlinePlayer', 'maxPlayer']),
+        ...utils.mapData('currentServer', ['id', 'abbr', 'name', 'running', 'port', 'tps', 'lastRun', 'onlinePlayer', 'maxPlayer']),
     },
     methods: {
-        closeServer() {
-            api.server.stop(this.id)
+        async closeServer() {
+            this.$notify({
+                title: '开始关闭',
+                message: '服务器正在关闭',
+                type: 'info'
+            })
+            await api.server.stop(this.id)
+            this.$notify({
+                title: '关闭成功',
+                message: '服务器已经关闭',
+                type: 'success'
+            })
+            await this.$store.dispatch('refreshServerList')
         },
-        startServer() {
-            api.server.start(this.id)
+        async startServer() {
+            this.$notify({
+                title: '正在开启',
+                message: '服务器正在开启',
+                type: 'info'
+            })
+            try {
+                await api.server.start(this.id)
+            } catch (e) {
+                this.$notify({
+                    title: '启动服务器失败',
+                    message: e.message,
+                    type: 'error'
+                })
+                this.$store.dispatch('refreshServerList')
+                return
+            }
+
+            this.$notify({
+                title: '启动成功',
+                message: '服务器已经启动',
+                type: 'success'
+            })
+            await this.$store.dispatch('refreshServerList')
         },
-        restartServer() {
-            api.server.restart(this.id)
+        async restartServer() {
+            this.$notify({
+                title: '正在重启',
+                message: '服务器正在重启',
+                type: 'info'
+            })
+            await api.server.restart(this.id)
+            this.$notify({
+                title: '启动成功',
+                message: '服务器已经启动',
+                type: 'success'
+            })
+            this.$store.dispatch('refreshServerList')
         },
-        removeServer() {
-            api.server.remove(this.id)
+        async removeServer() {
+            await api.server.remove(this.id)
+            this.$notify({
+                title: '删除成功',
+                message: '已经删除服务器',
+                type: 'success'
+            })
+            await this.$store.dispatch('refreshServerList')
         }
     },
 }
@@ -96,13 +146,13 @@ export default {
 
 <style scoped>
 h1 {
-  margin: 5px 0;
+    margin: 5px 0;
 }
 
 .extra-header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 </style>

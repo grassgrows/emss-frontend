@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { round } from 'lodash'
+import {round} from 'lodash'
 import CommonChartCard from '@/components/server/info/common/CommonChartCard.vue'
 import api from '@/api'
 
@@ -27,6 +27,12 @@ export default {
     name: 'FileIo',
     components: {
         CommonChartCard,
+    },
+    props: {
+        id: {
+            type: Number,
+            default: -1
+        }
     },
     data() {
         return {
@@ -47,7 +53,7 @@ export default {
             },
             // 组件创建完后获取数据，
             // 此时 data 已经被 observed 了
-            { immediate: true },
+            {immediate: true},
         )
         setInterval(this.fetchData, 1000 * 60)
     },

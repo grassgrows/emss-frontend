@@ -210,7 +210,7 @@ export default {
             await api.server.stop(this.id)
             this.$notify({
                 title: '关闭成功',
-                message: '服务器正在已经',
+                message: '服务器已经关闭',
                 type: 'success'
             })
             await this.$store.dispatch('refreshServerList')

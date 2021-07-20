@@ -33,6 +33,15 @@
       :lg="8"
       :xl="6"
     >
+      <memory-usage :id="id" />
+    </el-col>
+    <el-col
+      :span="8"
+      :xs="24"
+      :sm="12"
+      :lg="8"
+      :xl="6"
+    >
       <file-io :id="id" />
     </el-col>
     <el-col
@@ -72,11 +81,13 @@ import FileIo from '@/components/server/info/chart/FileIo.vue'
 import NetworkIo from '@/components/server/info/chart/NetworkIo'
 import OnlineNumber from '@/components/server/info/chart/OnlineNumber'
 import Tps from '@/components/server/info/chart/Tps.vue'
+import MemoryUsage from '@/components/server/info/chart/MemoryUsage'
 import ServerSetting from '@/views/ServerSetting'
 
 export default {
     name: 'Info',
     components: {
+        MemoryUsage,
         NetworkIo,
         SettingsInspect,
         CpuUsage,
@@ -85,7 +96,11 @@ export default {
         Tps,
         ServerSetting
     },
-    props: ['id'],
+    computed: {
+        id() {
+            return this.$store.state.currentServer.id
+        }
+    },
     methods: {
         showSetting() {
             this.$store.commit('changeServerSetting', true)

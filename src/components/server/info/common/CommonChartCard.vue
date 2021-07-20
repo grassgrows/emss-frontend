@@ -123,6 +123,7 @@ export default {
                     ticks: {
                         color: '#909399AA',
                     },
+                    min: 0,
                 },
             },
         }
