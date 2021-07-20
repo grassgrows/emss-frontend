@@ -114,10 +114,10 @@
         <i class="el-icon- iconfont emss-icon-books " />
         <span>文件管理</span>
       </template>
-      <el-menu-item index="/file/setting">
+      <el-menu-item index="/file/edit">
         <i class="el-icon-set-up" />
         <template #title>
-          文件系统设置
+          文件编辑
         </template>
       </el-menu-item>
       <el-menu-item index="/files">

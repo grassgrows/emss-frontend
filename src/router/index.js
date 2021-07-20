@@ -15,8 +15,8 @@ import Server from '@/views/Server'
 import ServerHeader from '@/components/server/ServerHeader'
 import Info from '@/views/server/Info.vue'
 import Terminal  from '@/views/server/Terminal.vue'
-import FileSetting from '@/views/FileSetting.vue'
 import Files from '@/views/Files.vue'
+import FileEditor from '@/views/FileEditor'
 
 const routes = [
     {
@@ -78,13 +78,13 @@ const routes = [
         ],
     },
     {
-        path: '/file/setting',
-        name: 'file_setting',
+        path: '/file/edit',
+        name: 'file_edit',
         meta: {
-            menuIndex: '/file/setting',
-            breadcrumb: ['工作台', '文件设置'],
+            menuIndex: '/file/edit',
+            breadcrumb: ['工作台', '文件编辑'],
         },
-        component: FileSetting,
+        component: FileEditor,
     },
     {
         path: '/files/:filePaths*',

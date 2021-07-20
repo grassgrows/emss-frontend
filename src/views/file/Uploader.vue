@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <div class="uploader-hide">
       <input
         id="uploader-input-file"
@@ -525,6 +525,11 @@ export default defineComponent({
   lang="less"
 >
 @import "../../styles/global";
+.wrapper {
+  width: 0;
+  height: 0;
+  position: absolute;
+}
 
 .uploader-container {
   position: fixed;
