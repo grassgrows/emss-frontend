@@ -16,6 +16,8 @@ import ServerHeader from '@/components/server/ServerHeader'
 import Info from '@/views/server/Info.vue'
 import Terminal  from '@/views/server/Terminal.vue'
 import Files from '@/views/Files.vue'
+import UserGroupList from '@/views/UserGroupList'
+import GroupListHeader from '@/components/user/GroupListHeader'
 import FileEditor from '@/views/FileEditor'
 
 const routes = [
@@ -102,6 +104,18 @@ const routes = [
         path: '/file/search/:keyword',
         name: 'file_search',
         component: Files
+    },
+    {
+        path: '/system/users',
+        name: 'users',
+        meta: {
+            menuIndex: '/system/users',
+            breadcrumb: ['工作台', '用户管理'],
+        },
+        components: {
+            default: UserGroupList,
+            extra: GroupListHeader
+        }
     },
     {
         path: '/system/setting',
