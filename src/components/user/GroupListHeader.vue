@@ -19,7 +19,7 @@
         type="success"
         plain
         icon="el-icon-plus"
-        @click="addGroup"
+        @click="showAddGroup=true"
       >
         创建管理员组
       </el-button>
@@ -55,7 +55,10 @@
       <el-button @click="showAddUser=false">
         取消
       </el-button>
-      <el-button @click="createUser">
+      <el-button 
+        type="primary"
+        @click="createUser"
+      >
         确认
       </el-button>
     </template>
@@ -72,6 +75,27 @@
       <el-form-item label="组名">
         <el-input v-model="newGroup.groupName" />
       </el-form-item>
+      <el-form-item label="最大权限">
+        <el-select v-model="newGroup.maxPermissionLevel">
+          <el-option
+            v-for="level in permissionList"
+            :key="level"
+            :label="level"
+            :value="level"
+          />
+        </el-select>
+      </el-form-item>
+      <template #footer>
+        <el-button @click="showAddGroup=false">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="createGroup"
+        >
+          确认
+        </el-button>
+      </template>
     </el-form>
   </el-dialog>
 </template>
@@ -89,7 +113,8 @@ export default {
         }
     },
     methods: {
-        addGroup() {
+        createGroup() {
+            this.showAddGroup = false
             console.log('add group')
         },
         createUser() {

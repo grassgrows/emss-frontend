@@ -14,11 +14,11 @@
       <div class="server-group">
         <el-space wrap>
           <el-tag
-            v-for="server in userGroup.serverName"
-            :key="server"
+            v-for="serverAbbr in userGroup.serverName"
+            :key="serverAbbr"
             closable
-            @close="removeServer(server)"
-            @click="$router.push({name:'server', params:{abbr}})"
+            @close="removeServer(serverAbbr)"
+            @click="$router.push({name:'server', params:{serverAbbr}})"
           >
             {{ server.resizeTo(8, '..') }}
           </el-tag>
@@ -27,10 +27,10 @@
             v-model="newServer"
           >
             <el-option
-              v-for="server in serverList"
-              :key="server"
-              :label="server"
-              :value="server"
+              v-for="serverAbbr in serverAbbrList"
+              :key="serverAbbr"
+              :label="serverAbbr"
+              :value="serverAbbr"
             />
           </el-select>
           <el-button
@@ -146,10 +146,14 @@ export default {
             type: Object,
             default: () => ({}),
         },
-        serverList: {
+        serverAbbrList: {
             type: Array,
             default: () => [],
         },
+        userList: {
+            type: Array,
+            default: () => [],
+        }
     },
     data() {
         const getUserIds = () => {
@@ -165,28 +169,6 @@ export default {
             members: this.userGroup.members,
             editing: new Set(),
             showManagerUser: false,
-            userList: [
-                {
-                    id: 1,
-                    username: '张三',
-                    permissionLevel: '1',
-                },
-                {
-                    id: 2,
-                    username: '李四',
-                    permissionLevel: '2',
-                },
-                {
-                    id: 3,
-                    username: '王五',
-                    permissionLevel: '3',
-                },
-                {
-                    id: 4,
-                    username: 'mary',
-                    permissionLevel: '3',
-                },
-            ],
             userIds: getUserIds(),
         }
     },
@@ -198,7 +180,7 @@ export default {
             this.selectVisible = false
             // eslint-disable-next-line vue/no-mutating-props
             // this.serverList.push(this.newServer);
-            this.$emit('update:serverList', this.serverList)
+            this.$emit('update:serverList', this.serverAbbrList)
         },
         toggleEditing(id, value) {
             if (value) {
