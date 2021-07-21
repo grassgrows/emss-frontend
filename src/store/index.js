@@ -16,7 +16,8 @@ const store = createStore({
             serverSetting: false,
             isMobile: false,
             selectedFileList: [],
-            isCopy: Boolean
+            isCopy: Boolean,
+            authToken: null
         }
     },
     mutations: {
@@ -43,6 +44,9 @@ const store = createStore({
             state.isCopy = false
             state.selectedFileList = val
         },
+        setToken(state, val) {
+            state.authToken = val
+        }
     },
     actions: {
         async refreshServerList({commit, state}) {

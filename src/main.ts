@@ -9,6 +9,7 @@ import store from './store'
 import mitt from '@/plugins/mitt'
 import installElementPlus from './plugins/element'
 import './plugins/utils'
+import './plugins/axios'
 import 'chartjs-adapter-luxon'
 
 import '@/assets/icon-file/iconfont'

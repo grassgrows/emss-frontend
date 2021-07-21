@@ -1,67 +1,116 @@
+<!--
+ * @Author: smq
+ * @Date: 2021/7/20
+ -->
 <template>
   <div class="log-in">
-    <div class="logo">
-      <el-card>
-        <template #header>
-          xxx
-        </template>
-      </el-card>
-    </div>
+    <div class="blank" />
     <div class="login-form">
-      <div class="form">
-        <h2>登录</h2>
-        <el-form
-          :model="user"
-          label-width="50px"
+      <el-card shadow="always">
+        <template #header>
+          <h2>登录</h2>
+        </template>
+        <el-form 
+          ref="form" 
+          :model="user" 
           label-position="left"
+          label-width="60px"
+          :rules="rules"
+          hide-required-asterisk
         >
-          <el-form-item label="账号">
-            <el-input 
-              v-model="user.username"
-              clearable
-            />
+          <el-form-item 
+            label="账号" 
+            prop="username"
+          >
+            <el-input v-model="user.username" />
           </el-form-item>
-          <el-form-item label="密码">
-            <el-input 
-              v-model="user.password"
-              show-password
-              clearable
-            />
+          <el-form-item
+            label="密码"
+            prop="password"
+          >
+            <el-input v-model="user.password" />
           </el-form-item>
         </el-form>
-        <div class="button">
-          <el-button
-            round
-            @click="login;$router.push({name:'workbench'})"
-          >
-            登录
-          </el-button>
-        </div>
-      </div>
+        <button
+          type="submit"
+          class="btn btn-secondary"
+          onclick="login()"
+        >
+          登录
+        </button>
+        <p>
+          <label>
+            <input
+              v-model="isRemembered"
+              type="checkbox"
+            >记住密码
+          </label>
+        </p>
+      </el-card>
     </div>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
     name: 'LogIn',
+    beforeRouteEnter(to, from, next) {
+        next((vm) => vm.autoLogin())
+    },
     data() {
         return {
             user: {
                 username: '',
                 password: ''
+            },
+            isRemembered: false,
+            rules: {
+                username: [{required: true, message: '账户不可为空', trigger: 'blur'}],
+                password: [{required: true, message: '密码不可为空', trigger: 'blur'}]
             }
         }
     },
     methods: {
-        login() {
-            console.log('...')
+        autoLogin() {
+            this.user.username = localStorage.getItem('username')
+            if(!localStorage.getItem('isRemembered')) {
+                this.user.password = localStorage.getItem('password')
+                this.login()
+            }
+        },
+        async login() {
+            if(typeof this.user.username === 'undefined' || this.user.username === null) {
+                return
+            }
+            if(typeof this.user.password === 'undefined' || this.user.password === null) {
+                return
+            }
+            const tokenMap = await api.login.login(this.user)
+            if(tokenMap.code === 'E101') {
+                this.$notify.error({
+                    title: '错误',
+                    message: '账号或密码不正确！'
+                })
+                localStorage.setItem('username', this.user.username)
+                return
+            }
+            // 用户密码正确
+            localStorage.setItem('username', this.user.username)
+            this.$store.commit('setToken', tokenMap.data.get('token'))
+            if(this.isRemembered) {
+                localStorage.setItem('isRemembered', 'true')
+                localStorage.setItem('password', this.user.password)
+            }
+            await this.$router.push({name: 'workbench'})
+            // this.$refs['form'].resetFields()
         }
     }
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .log-in {
     background-image: url("../../public/bg.png");
     background-size: cover;
@@ -73,68 +122,58 @@ export default {
     align-items: center;
     justify-content: center;
 }
-.logo {
-    width: 100%;
-    margin: 0 0 0 100px;
-}
+
 .login-form {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin:0 150px 0 200px;
+    width: 400px;
+    height: 450px;
+    margin: 0 100px;
+    .el-card {
+      height: 100%;
+      width: 100%;
+    }
 }
-.form {
-    position: relative;
-    width: 80%;
-    height: 80%;
-    padding: 50px;
+</style>
+
+<style scoped lang="scss">
+
+.btn:not(:disabled):not(.disabled) {
+  cursor: pointer;
 }
-.form h2 {
-    position: relative;
-    color: #fff;
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 5px;
-    margin-bottom: 30px;
-    cursor: pointer;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 0;
+  z-index: 1;
+  user-select: none;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  white-space: unset;
+  padding: .8rem 1.5rem;
+  text-decoration: none;
+  transition: color .15s
+  ease-in-out,background-color .15s
+  ease-in-out,border-color .15s
+  ease-in-out,box-shadow .15s
+  ease-in-out;
+  font-weight: 500;
+  border-radius: 0;
+  color: #313131;
 }
-.button {
-    margin-top: 40px;
+.btn-secondary {
+  color: #fff!important;
+  background-color: #757575;
+  border-color: #757575;
+  text-shadow: 0 2px 0 rgb(0 0 0 / 25%);
 }
 </style>
 
 <style lang="less">
-.form .el-input__inner {
-    width: 100%;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.2);
-    outline: none;
-    border-radius: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 16px;
-    letter-spacing: 1px;
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-.form .el-button{
-  background: #fff;
-  color: #666;
-  max-width: 100px;
-  margin-bottom: 20px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.form .el-form-item__label {
+.login-form .el-form-item__label {
   font-size: 17px;
+}
+.login-form .el-input__inner {
+  border-radius: 0;
 }
 </style>
