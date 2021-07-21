@@ -36,12 +36,12 @@
         <el-form-item label="服务器管理员">
           <el-space wrap>
             <el-check-tag
-              v-for="(manager,index) in managerList"
-              :key="index"
-              :checked="serverData.selectedManager[index] === true"
-              @change="onChange(index, $event)"
+              v-for="g in userGroupList"
+              :key="g.id"
+              :checked="serverData.permittedGroup.has(g.id)"
+              @change="onChange(g.id, $event)"
             >
-              管理员{{ index + 1 }}
+              {{ g.groupName }}
             </el-check-tag>
           </el-space>
         </el-form-item>
@@ -76,6 +76,10 @@ export default {
         clearData: {
             type: Boolean,
             default: false
+        },
+        userGroupList: {
+            type: Array,
+            default: () => [],
         }
     },
     data() {
@@ -84,9 +88,8 @@ export default {
                 name: '',
                 shortName: '',
                 anotherName: '',
-                selectedManager: []
+                permittedGroup: new Set()
             },
-            managerList: ['1','2','3'],
             rules: {
                 name: [{required: true, message: '请输入服务器名称', trigger: 'blur'}],
                 shortName: [{required: true, message: '请输入服务器名称', trigger: 'blur'},
@@ -97,22 +100,26 @@ export default {
     },
     watch: {
         clearData: function () {
-            this.serverData.name = '',
-            this.serverData.shortName = '',
-            this.serverData.anotherName = '',
+            this.serverData.name = ''
+            this.serverData.shortName = ''
+            this.serverData.anotherName = ''
             this.serverData.selectedManager = []
             this.$refs['form'].resetFields()
         }
     },
     methods: {
-        onChange(index,checked) {
-            this.serverData.selectedManager[index] = checked
+        onChange(id, checked) {
+            if(checked) {
+                this.serverData.permittedGroup.add(id)
+            }else{
+                this.serverData.permittedGroup.delete(id)
+            }
             // console.log(this.selectedManager)
         },
         validAndSendData() {
             this.$refs['form'].validate((valid) => {
-                if(valid) {
-                    this.$emit('sendData',this.serverData)
+                if (valid) {
+                    this.$emit('sendData', this.serverData)
                     this.$emit('next')
                 } else {
                     return false
@@ -124,11 +131,11 @@ export default {
 </script>
 
 <style scoped>
-.input-style{
+.input-style {
     width: 90%;
 }
 
-.step1{
+.step1 {
     display: flex;
     flex-direction: column;
     flex: 1 1 0;
@@ -138,9 +145,9 @@ export default {
     flex: 1 1 0;
 }
 
-/deep/ .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before {
-  width: 0px;
-  margin-left: -11px;
+/deep/ .el-form-item.is-required:not(.is-no-asterisk) > .el-form-item__label:before {
+    width: 0px;
+    margin-left: -11px;
 }
 
 </style>

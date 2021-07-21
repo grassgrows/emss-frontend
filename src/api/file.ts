@@ -13,30 +13,42 @@ export declare interface FileInfo {
     fileName: string,
     filePath: string,
     size: number,
-    lastModified: DateTime,
+    lastModified: string | DateTime,
     isDirectory: boolean
 }
 
-export async function getFiles(filePath: Array<string> | null): Promise<Array<FileInfo>> {
+export declare interface Result<T> {
+    code: String,
+    data: T,
+    msg: String
+}
+
+export async function getFiles(filePath: Array<string> | null): Promise<Result<Array<FileInfo>>> {
     const path: string = (filePath || []).join('/')
-    const resp = await axios.get('/api/file/list', {
-        params: {
-            path,
+    try {
+        const resp = await axios.get('/api/file/list', {
+            params: {
+                path,
+            }
+        })
+
+        return resp.data
+    } catch (err) {
+        if (err.response && err.response.data) {
+            return err.response.data
         }
-    })
-    const files = result.getData(resp.data, `无法打开文件夹${filePath}`)
-    if (!files) {
-        return []
+        return {
+            code: 'C910',
+            msg: '未知错误',
+            data: [],
+        }
     }
-    return files.map((it: any) => {
-        it.lastModified = DateTime.fromISO(it.lastModified)
-        return it
-    })
+
 }
 
 export async function copyAndParseFiles(files: Array<FileInfo>, filePath: Array<string> | null) {
     const path: string = (filePath || []).join('/')
-    const paths = files.map((to)=>{
+    const paths = files.map((to) => {
         return to.filePath
     })
     await axios.post('/api/file/copy', paths, {
@@ -48,7 +60,7 @@ export async function copyAndParseFiles(files: Array<FileInfo>, filePath: Array<
 
 export async function cutAndParseFiles(files: Array<FileInfo>, filePath: Array<string> | null) {
     const path: string = (filePath || []).join('/')
-    const paths = files.map((to)=>{
+    const paths = files.map((to) => {
         return to.filePath
     })
     await axios.post('/api/file/cut', paths, {
@@ -59,11 +71,16 @@ export async function cutAndParseFiles(files: Array<FileInfo>, filePath: Array<s
 }
 
 export async function deleteFiles(files: Array<FileInfo>) {
-    const paths = files.map((to) =>{
+    const paths = files.map((to) => {
         return to.filePath
     })
     await axios.post('api/file/delete', paths)
 }
 
+export async function createFolder(name: String, filePath: Array<string> | null) {
+    const path: string = (filePath || []).join('/')
+
+    await axios.post('api/file/newFolder', `${path}/${name}`)
+}
 
 

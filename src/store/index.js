@@ -15,9 +15,8 @@ const store = createStore({
             addState: false,
             serverSetting: false,
             isMobile: false,
-            selectedFileList: [],
-            isCopy: Boolean,
-            authToken: null
+
+            authToken: sessionStorage.getItem('token')
         }
     },
     mutations: {
@@ -36,16 +35,9 @@ const store = createStore({
         setIsMobile(state, val) {
             state.isMobile = val
         },
-        copyFile(state, val) {
-            state.isCopy = true
-            state.selectedFileList = val
-        },
-        cutFile(state, val) {
-            state.isCopy = false
-            state.selectedFileList = val
-        },
         setToken(state, val) {
             state.authToken = val
+            sessionStorage.setItem('token', val)
         }
     },
     actions: {
@@ -58,7 +50,36 @@ const store = createStore({
             }
         },
     },
-    modules: {},
+    modules: {
+        file: {
+            namespaced: true,
+            state() {
+                return {
+                    selectedFileList: [],
+                    isCopy: true,
+
+                    sortMethod: 'filename',
+                    sortAscend: true,
+                }
+            },
+            mutations: {
+                copyFile(state, val) {
+                    state.isCopy = true
+                    state.selectedFileList = val
+                },
+                cutFile(state, val) {
+                    state.isCopy = false
+                    state.selectedFileList = val
+                },
+                setSortMethod(state, val) {
+                    state.sortMethod = val
+                },
+                setSortAscend(state, val) {
+                    state.sortAscend = val
+                }
+            },
+        }
+    },
 })
 
 export default store

@@ -7,125 +7,18 @@
     <el-card
       shadow="always"
       class="card"
+      :class="dropping > 0 ? 'modal' : ''"
+      @dragover.prevent
+      @dragenter.prevent="dropping++"
+      @dragleave.prevent="dropping--"
+      @drop.prevent="onDrop"
     >
-      <el-affix target=".card" :offset="80">
-        <div class="card-header">
-          <div class="select">
-            <el-dropdown
-              trigger="click"
-              @command="handleSelect"
-            >
-              <span class="el-dropdown-link">
-                {{ `按${selectedType}排序` }}<i class="el-icon-arrow-down el-icon--right" />
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <template
-                    v-for="item in selectTypesValue"
-                    :key="item"
-                  >
-                    <el-dropdown-item
-                      v-if="item.name === selectedType"
-                      icon="el-icon-check"
-                      :command="item"
-                    >
-                      {{ item.name }}
-                    </el-dropdown-item>
-                    <el-dropdown-item
-                      v-else
-                      :command="item"
-                      icon="el-icon-check"
-                      class="hidden-icon"
-                    >
-                      {{ item.name }}
-                    </el-dropdown-item>
-                  </template>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
-          &nbsp; &nbsp;
-          <div class="ascend">
-            <el-switch
-              v-model="isAscend"
-              active-text="升序"
-              inactive-text="降序"
-            />
-          </div>
-          <div class="blank" />
-          <div class="operation-button">
-            <transition name="el-zoom-in-center">
-              <div v-show="showSearch">
-                <el-input
-                  v-model="searchInfo"
-                  clearable
-                  @keyup.enter="searchFile"
-                />
-              </div>
-            </transition>
-            &nbsp; &nbsp;
-            <el-button
-              icon="el-icon-search"
-              circle
-              @click="showSearch = !showSearch"
-            />
-            <el-popover
-              placement="bottom"
-              trigger="focus"
-            >
-              <template #reference>
-                <el-button
-                  type="primary"
-                  icon="el-icon-plus"
-                  circle
-                />
-              </template>
-              <el-space
-                direction="vertical"
-                class="operations"
-              >
-                <el-link
-                  :underline="false"
-                  href="javascript:void(0);"
-                  icon="el-icon-document-copy"
-                  @click="copyFile"
-                >
-                  复制
-                </el-link>
-                <el-link
-                  :underline="false"
-                  href="javascript:void(0);"
-                  icon="el-icon-scissors"
-                  @click="cutFile"
-                >
-                  剪切
-                </el-link>
-                <el-link
-                  :underline="false"
-                  href="javascript:void(0);"
-                  icon="el-icon-document-add"
-                  @click="parseFile"
-                >
-                  粘贴
-                </el-link>
-                <el-link
-                  :underline="false"
-                  href="javascript:void(0);"
-                  icon="el-icon-delete"
-                  @click="deleteFile"
-                >
-                  删除
-                </el-link>
-              </el-space>
-            </el-popover>
-          </div>
-        </div>
-      </el-affix>
       <div class="card-body">
         <file-list
           v-loading="loading"
           :files="displayFiles"
           :selected="selectedFiles"
+          :empty-message="message"
         />
       </div>
       <div class="card-rooter">
@@ -161,6 +54,8 @@
 <script>
 import FileList from '@/views/file/FileList.vue'
 import * as file from '@/api/file.ts'
+import {DateTime} from 'luxon'
+import {mapState} from 'vuex'
 
 export default {
     name: 'Files',
@@ -175,43 +70,26 @@ export default {
     data() {
         return {
             files: [],
-            searchInfo: '',
-            showSearch: false,
-            selectedType: '文件名',
-            selectTypesValue: [
-                {
-                    name: '文件名',
-                    key: 'filename',
-                },
-                {
-                    name: '修改时间',
-                    key: 'time',
-                },
-                {
-                    name: '文件大小',
-                    key: 'size',
-                },
-            ],
+            message: '',
             selectedFiles: new Map(),
             loading: false,
-            isAscend: true,
+            dropping: 0,
         }
     },
-    mounted() {
-        this.$bus.on('refresh-file', ()=>{
-            this.refresh()
-        })
-    },
     computed: {
+        ...mapState({
+            sortMethod: (state) => state.file.sortMethod,
+            sortAscend: (state) => state.file.sortAscend,
+        }),
         displayFiles() {
             let array1 = this.files.filter((it) => it.isDirectory)
             let array2 = this.files.filter((it) => !it.isDirectory)
             let result
-            if (this.selectedType === '文件名') {
+            if (this.sortMethod === 'filename') {
                 array1 = array1.sort((a, b) => a.fileName.localeCompare(b.fileName))
                 array2 = array2.sort((a, b) => a.fileName.localeCompare(b.fileName))
                 result = array1.concat(array2)
-            } else if (this.selectedType === '修改时间') {
+            } else if (this.sortMethod === 'time') {
                 array1 = array1.sort((a, b) => {
                     return a.lastModified - b.lastModified
                 })
@@ -227,17 +105,56 @@ export default {
                 result = array1.concat(array2)
             }
 
-            if (!this.isAscend) {
+            if (!this.sortAscend) {
                 result.reverse()
             }
             return result
         },
     },
+    mounted() {
+        this.$bus.on('refresh-file', () => {
+            this.refresh()
+        })
+
+
+        this.$bus.on('copy-file', () => {
+            this.$store.commit('copyFile', this.getSelectedFile())
+        })
+        this.$bus.on('cut-file', () => {
+            this.$store.commit('cutFile', this.getSelectedFile())
+        })
+        this.$bus.on('parse-file', async () => {
+            const select = this.$store.state.selectedFileList
+            const path = this.$route.params.filePaths
+            const isCopy = this.$store.state.isCopy
+            if (isCopy) {
+                await file.copyAndParseFiles(select, path)
+            } else {
+                await file.cutAndParseFiles(select, path)
+            }
+            await this.refresh()
+        })
+        this.$bus.on('delete-file', async () => {
+            await file.deleteFiles(this.getSelectedFile())
+            await this.refresh()
+        })
+
+    },
     methods: {
         async refresh(filePaths) {
             const paths = typeof filePaths === 'undefined' ? this.$route.params.filePaths : filePaths
             this.loading = true
-            this.files = await file.getFiles(paths)
+            const result = await file.getFiles(paths)
+            this.message = ''
+            if (result.code === '0000') {
+                this.files = result.data.map((it) => {
+                    it.lastModified = DateTime.fromISO(it.lastModified)
+                    return it
+                })
+            } else {
+                this.files = []
+                this.message = result.msg
+            }
             this.loading = false
             this.selectedFiles.clear()
 
@@ -246,33 +163,8 @@ export default {
             // console.log('searching...')
             this.$router.push({name: 'file_search'})
         },
-        handleSelect(item) {
-            // console.log(item.name)
-            this.selectedType = item.name
-        },
-        copyFile() {
-            const select = this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
-            this.$store.commit('copyFile',select)
-        },
-        cutFile() {
-            const select = this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
-            this.$store.commit('cutFile',select)
-        },
-        async parseFile() {
-            const select = this.$store.state.selectedFileList
-            const path = this.$route.params.filePaths
-            const isCopy = this.$store.state.isCopy
-            if(isCopy){
-                await file.copyAndParseFiles(select, path)
-            } else {
-                await file.cutAndParseFiles(select, path)
-            }
-            await this.refresh()
-        },
-        async deleteFile() {
-            const select = this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
-            await file.deleteFiles(select)
-            await this.refresh()
+        getSelectedFile() {
+            return this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
         },
         uploadFile() {
             this.$bus.emit('show-browse')
@@ -281,35 +173,31 @@ export default {
             this.$bus.emit('show-browse-folder')
         },
         onDrop(event) {
+            this.dropping = 0
             this.$bus.emit('add-upload-drop', event)
         },
         newDirectory() {
-
+            this.$prompt('请输入文件夹名字', '新建文件夹', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputPattern: /^[^\\\\/:*?"<>|]+$/,
+                inputErrorMessage: '文件夹名含有非法字符'
+            }).then(({value}) => {
+                file.createFolder(value, this.$route.params.filePaths)
+            })
         }
     },
 }
 </script>
 
 <style
-    scoped
-    lang="less"
+  scoped
+  lang="less"
 >
 .card {
   margin: 10px 0 20px;
 }
 
-.card-header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  margin-bottom: 5vh;
-
-  .select, .ascend {
-    display: flex;
-    align-items: center;
-  }
-}
 
 .card-rooter {
   display: flex;
@@ -318,16 +206,26 @@ export default {
   justify-content: flex-end;
 }
 
-.operations {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.modal {
+  position: relative;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    //opacity: 0.1;
+    background-color: rgba(195, 236, 98, 0.2);
+  }
+
+  * {
+    pointer-events: none;
+  }
 }
 
-.operation-button {
-  display: flex;
-  flex-direction: row;
-}
 </style>
 
 <style>

@@ -21,6 +21,7 @@ import Files from '@/views/Files.vue'
 import UserGroupList from '@/views/UserGroupList'
 import GroupListHeader from '@/components/user/GroupListHeader'
 import FileEditor from '@/views/FileEditor'
+import FileListHeader from '@/components/file/FileListHeader'
 
 const routes = [
     {
@@ -109,12 +110,10 @@ const routes = [
                         return ['工作台', '文件管理', ...paths.filter((s) => Boolean(s))]
                     },
                 },
-                component: Files
-            },
-            {
-                path: '/file/search/:keyword',
-                name: 'file_search',
-                component: Files
+                components: {
+                    default: Files,
+                    extra: FileListHeader,
+                }
             },
             {
                 path: '/system/users',

@@ -10,16 +10,16 @@
         <template #header>
           <h2>登录</h2>
         </template>
-        <el-form 
-          ref="form" 
-          :model="user" 
+        <el-form
+          ref="form"
+          :model="user"
           label-position="left"
           label-width="60px"
           :rules="rules"
           hide-required-asterisk
         >
-          <el-form-item 
-            label="账号" 
+          <el-form-item
+            label="账号"
             prop="username"
           >
             <el-input v-model="user.username" />
@@ -34,7 +34,7 @@
         <button
           type="submit"
           class="btn btn-secondary"
-          onclick="login()"
+          @click="login()"
         >
           登录
         </button>
@@ -75,7 +75,7 @@ export default {
     methods: {
         autoLogin() {
             this.user.username = localStorage.getItem('username')
-            if(!localStorage.getItem('isRemembered')) {
+            if(localStorage.getItem('isRemembered')) {
                 this.user.password = localStorage.getItem('password')
                 this.login()
             }
@@ -87,8 +87,8 @@ export default {
             if(typeof this.user.password === 'undefined' || this.user.password === null) {
                 return
             }
-            const tokenMap = await api.login.login(this.user)
-            if(tokenMap.code === 'E101') {
+            const result = await api.login.login(this.user)
+            if(result.code === 'E101') {
                 this.$notify.error({
                     title: '错误',
                     message: '账号或密码不正确！'
@@ -98,7 +98,7 @@ export default {
             }
             // 用户密码正确
             localStorage.setItem('username', this.user.username)
-            this.$store.commit('setToken', tokenMap.data.get('token'))
+            this.$store.commit('setToken', result.data.token)
             if(this.isRemembered) {
                 localStorage.setItem('isRemembered', 'true')
                 localStorage.setItem('password', this.user.password)

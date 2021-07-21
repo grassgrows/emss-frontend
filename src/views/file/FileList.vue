@@ -3,7 +3,22 @@
  * @Date: 2021/7/11
  -->
 <template>
-  <div class="selection-container">
+  <div v-if="files.length <= 0">
+    <el-empty
+      v-if="!emptyMessage"
+      description="啊偶，这个文件夹是空的耶~"
+    />
+    <el-result
+      v-else
+      icon="error"
+      title="文件夹打不开qwq"
+      :sub-title="emptyMessage"
+    />
+  </div>
+  <div
+    v-else
+    class="selection-container"
+  >
     <div
       v-if="view === 'grid'"
       class="list"
@@ -19,19 +34,24 @@
       />
     </div>
   </div>
+
 </template>
 
 <script>
 import FileListItem from '@/components/file/FileListItem.vue'
 import SelectionArea from '@simonwep/selection-js'
 
-export default{
+export default {
     name: 'FileList',
     components: {FileListItem},
     props: {
         files: {
             type: Object,
-            require: true
+            required: true
+        },
+        emptyMessage: {
+            type: String,
+            default: ''
         },
         selected: {
             type: Map,
@@ -104,7 +124,8 @@ export default{
                         const attr = it.getAttribute('data-filename')
                         this.selected.set(attr, false)
                     })
-                }).on('stop', () => {
+                })
+                .on('stop', () => {
                     selection.clearSelection()
                 })
 

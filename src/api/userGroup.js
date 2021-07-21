@@ -14,7 +14,7 @@ async function getGroupList() {
 }
 async function getAbbrList() {
     const resp = await axios.get('/api/servers')
-    let groups = result.getData(resp, '获取服务器失败')
+    const groups = result.getData(resp.data, '获取服务器失败')
     return groups.map(g => {
         return {
             abbr: g.abbr
@@ -22,7 +22,7 @@ async function getAbbrList() {
     })
 }
 async function getUserList() {
-    const resp = await axios.get('/api/user')
+    const resp = await axios.get('/api/permission/user')
     return result.getData(resp.data, '获取用户失败')
 }
 
