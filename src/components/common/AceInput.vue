@@ -13,7 +13,11 @@ export default {
     props: {
         value: {
             type: String,
-            default: () => ''
+            default: ''
+        },
+        readOnly: {
+            type: Boolean,
+            default: true
         }
     },
     emits: ['update:value'],
@@ -23,6 +27,9 @@ export default {
         }
     },
     watch: {
+        readOnly(to) {
+            this.editor.setReadOnly(to)
+        }
     },
     mounted() {
         const editor = ace.edit(this.$refs.ace, {
@@ -31,8 +38,13 @@ export default {
             theme: 'ace/theme/github', // 默认设置的主题
             tabSize: 4 // 制表符设置为 4 个空格大小
         })
+        editor.setReadOnly(this.readOnly)
+        editor.setValue(this.value)
+
         this.editor = editor
         this.editor.on('input', ()=>this.$emit('update:value', this.editor.getValue()))
+
+
     }
 }
 </script>

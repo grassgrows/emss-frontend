@@ -1,49 +1,30 @@
 <!--
- * @Author: Neko-pararo
+ * @Author: Neko-pararo, WarmthDawn
  * @Date: 2021/7/17
  -->
 
 <template>
-  <!--  TODO:实现文件名导入在“输入文件名”中-->
-
-  <el-button
-      type="text"
-      @click="outerVisible = true"
-  >
-    这是一个文件名 Dialog
-  </el-button>
-  <!--外层dialog-->
   <el-dialog
-      v-model="outerVisible"
-      title="这是一个文件名"
-      custom-class="file-editor-dialog"
+    v-model="visible"
+    title="这是一个文件名"
+    custom-class="file-editor-dialog"
   >
     <!-- 输入框放在body -->
 
     <div class="outer">
       <div class="input-container">
-        <!--        <el-input-->
-        <!--            type="textarea"-->
-        <!--            placeholder="请输入内容"-->
-        <!--            class="textarea"-->
-        <!--            resize="none"-->
-        <!--            :disabled="true"-->
-        <!--            rows="50"-->
-        <!--        >-->
-        <!--        </el-input>-->
-        <ace-input class="textarea"/>
-
+        <ace-input class="textarea" />
         <div class="toolbox">
           <div class="button-edit">
             <el-button
-                icon="el-icon-edit"
-                circle
+              icon="el-icon-edit"
+              circle
             />
           </div>
           <div class="button-download">
             <el-button
-                icon="el-icon-download"
-                circle
+              icon="el-icon-download"
+              circle
             />
           </div>
         </div>
@@ -61,8 +42,9 @@ export default {
     data() {
         return {
             value: '',
-            outerVisible: false,
-            innerVisible: false
+            visible: false,
+            editing: true,
+            fileName: '',
         }
     },
     mounted() {
@@ -91,7 +73,10 @@ export default {
 
 
 </style>
-<style scoped lang="less">
+<style
+  scoped
+  lang="less"
+>
 .input-container {
   position: relative;
   height: 100%;
