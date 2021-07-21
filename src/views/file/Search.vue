@@ -1,5 +1,5 @@
 <!--
- * @Author: smq
+ * @Author: WarmthDawn
  * @Date: 2021/7/11
  -->
 <template>
@@ -7,45 +7,20 @@
     <el-card
       shadow="always"
       class="card"
-      :class="dropping > 0 ? 'modal' : ''"
-      @dragover.prevent
-      @dragenter.prevent="dropping++"
-      @dragleave.prevent="dropping--"
-      @drop.prevent="onDrop"
     >
-      <div class="card-body">
+      <div v-if="$route.query.keyword === ''">
+        <el-empty
+          description="输入关键词来搜索"
+        />
+      </div>
+      <div v-else>
         <file-list
           v-loading="loading"
           :files="displayFiles"
           :selected="selectedFiles"
           :empty-message="message"
+          empty-desc="没有找到你想搜索的文件耶~"
         />
-      </div>
-      <div class="card-rooter">
-        <div class="button-group">
-          <el-button
-            type="text"
-            icon="el-icon-upload"
-            @click="uploadFile"
-          >
-            上传文件
-          </el-button>
-          <el-button
-            type="text"
-            icon="el-icon-upload"
-            @click="uploadFolder"
-          >
-            上传文件夹
-          </el-button>
-          <el-button
-            type="text"
-            icon="el-icon-folder-add"
-            @click="newDirectory"
-          >
-            新建文件夹
-          </el-button>
-        </div>
-        <div class="blank" />
       </div>
     </el-card>
   </div>
@@ -58,14 +33,14 @@ import {DateTime} from 'luxon'
 import {mapState} from 'vuex'
 
 export default {
-    name: 'Files',
+    name: 'Search',
     components: {FileList},
 
     beforeRouteEnter(to, from, next) {
         next((vm) => vm.refresh())
     },
     beforeRouteUpdate(to) {
-        this.refresh(to.params.filePaths)
+        this.refresh(to.params.filePaths, to.query.keyword)
     },
     data() {
         return {
@@ -73,7 +48,6 @@ export default {
             message: '',
             selectedFiles: new Map(),
             loading: false,
-            dropping: 0,
         }
     },
     computed: {
@@ -81,6 +55,7 @@ export default {
             sortMethod: (state) => state.file.sortMethod,
             sortAscend: (state) => state.file.sortAscend,
         }),
+
         displayFiles() {
             let array1 = this.files.filter((it) => it.isDirectory)
             let array2 = this.files.filter((it) => !it.isDirectory)
@@ -124,15 +99,10 @@ export default {
             this.$store.commit('cutFile', this.getSelectedFile())
         })
         this.$bus.on('parse-file', async () => {
-            const select = this.$store.state.selectedFileList
-            const path = this.$route.params.filePaths
-            const isCopy = this.$store.state.isCopy
-            if (isCopy) {
-                await file.copyAndParseFiles(select, path)
-            } else {
-                await file.cutAndParseFiles(select, path)
-            }
-            await this.refresh()
+            this.$message({
+                type: 'error',
+                message: '当前位置不支持粘贴',
+            })
         })
         this.$bus.on('delete-file', async () => {
             await file.deleteFiles(this.getSelectedFile())
@@ -140,11 +110,16 @@ export default {
         })
 
     },
+
     methods: {
-        async refresh(filePaths) {
+        async refresh(filePaths, keywordIn) {
             const paths = typeof filePaths === 'undefined' ? this.$route.params.filePaths : filePaths
+            const keyword = typeof keywordIn === 'undefined' ? this.$route.query.keyword : keywordIn
+            if (typeof keyword === 'undefined') {
+                return
+            }
             this.loading = true
-            const result = await file.getFiles(paths)
+            const result = await file.searchFiles(paths, keyword)
             this.message = ''
             if (result.code === '0000') {
                 this.files = result.data.map((it) => {
@@ -159,33 +134,9 @@ export default {
             this.selectedFiles.clear()
 
         },
-        searchFile() {
-            // console.log('searching...')
-            this.$router.push({name: 'file_search'})
-        },
         getSelectedFile() {
             return this.files.filter((it) => this.selectedFiles.get(it.fileName) === true)
         },
-        uploadFile() {
-            this.$bus.emit('show-browse')
-        },
-        uploadFolder() {
-            this.$bus.emit('show-browse-folder')
-        },
-        onDrop(event) {
-            this.dropping = 0
-            this.$bus.emit('add-upload-drop', event)
-        },
-        newDirectory() {
-            this.$prompt('请输入文件夹名字', '新建文件夹', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                inputPattern: /^[^\\\\/:*?"<>|]+$/,
-                inputErrorMessage: '文件夹名含有非法字符'
-            }).then(({value}) => {
-                file.createFolder(value, this.$route.params.filePaths)
-            })
-        }
     },
 }
 </script>

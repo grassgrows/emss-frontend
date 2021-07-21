@@ -6,7 +6,7 @@
   <div v-if="files.length <= 0">
     <el-empty
       v-if="!emptyMessage"
-      description="啊偶，这个文件夹是空的耶~"
+      :description="emptyDesc"
     />
     <el-result
       v-else
@@ -56,6 +56,10 @@ export default {
         selected: {
             type: Map,
             default: new Map()
+        },
+        emptyDesc: {
+            type: String,
+            default: '啊偶，这个文件夹是空的耶~'
         }
 
     },

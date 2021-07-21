@@ -149,8 +149,16 @@ export default {
     },
     methods: {
         searchFile() {
-
-        }
+            this.$router.push({
+                name: 'file-search',
+                params: {
+                    filePaths: this.$route.params.filePaths,
+                },
+                query: {
+                    keyword: this.searchKeyword,
+                }
+            })
+        },
     }
 }
 </script>

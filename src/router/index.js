@@ -4,7 +4,7 @@
  * @date ：2021/7/5
  *
  */
-import { createRouter, createWebHashHistory } from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import store from '@/store'
 import Layout from '@/views/Layout'
 import LogIn from '@/views/LogIn'
@@ -16,12 +16,13 @@ import Setting from '@/views/Setting'
 import Server from '@/views/Server'
 import ServerHeader from '@/components/server/ServerHeader'
 import Info from '@/views/server/Info.vue'
-import Terminal  from '@/views/server/Terminal.vue'
-import Files from '@/views/Files.vue'
+import Terminal from '@/views/server/Terminal.vue'
+import Files from '@/views/file/Files.vue'
 import UserGroupList from '@/views/UserGroupList'
 import GroupListHeader from '@/components/user/GroupListHeader'
 import FileEditor from '@/views/FileEditor'
 import FileListHeader from '@/components/file/FileListHeader'
+import Search from '@/views/file/Search'
 
 const routes = [
     {
@@ -72,7 +73,7 @@ const routes = [
                     default: Server,
                     extra: ServerHeader,
                 },
-                redirect: (to) => ({ name: 'info', params: to.params }),
+                redirect: (to) => ({name: 'info', params: to.params}),
                 children: [
                     {
                         path: 'info',
@@ -116,6 +117,22 @@ const routes = [
                 }
             },
             {
+                path: '/file/search/:filePaths*',
+                name: 'file-search',
+                meta: {
+                    menuIndex: '/files',
+                    breadcrumb: (route) => {
+                        return ['工作台', '文件搜索', `${route.query.keyword}的搜索结果`]
+                    },
+
+                },
+                components: {
+                    default: Search,
+                    extra: FileListHeader,
+                },
+                props: route => ({keyword: route.query.keyword}),
+            },
+            {
                 path: '/system/users',
                 name: 'users',
                 meta: {
@@ -150,7 +167,7 @@ const routes = [
             },
             {
                 path: '/:pathMatch(.*)*',
-                redirect: { name: 'not_found' },
+                redirect: {name: 'not_found'},
             },
         ]
     },
@@ -163,10 +180,10 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (to.meta.noLogin !== true && !store.state.authToken) {
-    // TODO: 跳转到登录
+        // TODO: 跳转到登录
         await store.dispatch('refreshServerList')
         next()
-    // next({ name: 'Login' });
+        // next({ name: 'Login' });
     } else {
         next()
     }
