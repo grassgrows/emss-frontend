@@ -46,7 +46,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .user-group-list {
     display: flex;
     flex-direction: row;
@@ -54,5 +54,8 @@ export default {
 }
 .list-container {
     width: 50%;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
 }
 </style>

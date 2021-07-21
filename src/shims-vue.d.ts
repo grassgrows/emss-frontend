@@ -3,7 +3,7 @@
 import { ComponentCustomProperties } from 'vue'
 import { FlowFile } from 'flowjs'
 import { Store } from "vuex";
-import { ElNotification } from 'element-plus';
+import { ElNotification, ElMessage } from 'element-plus';
 import 'vue-router'
 import {Emitter, EventType} from "mitt";
 
@@ -27,6 +27,7 @@ declare module '@vue/runtime-core' {
     interface ComponentCustomProperties {
         $store: Store<any> | any
         $notify: ElNotification
+        $message: ElMessage
         $bus: Emitter<Record<EventType, any>>
     }
 
