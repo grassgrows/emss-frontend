@@ -240,17 +240,17 @@
   >
     <div class="file-list">
       <div
-        v-for="(loc,index) in dialogData.permittedLocation"
+        v-for="loc in dialogData.permittedLocation"
         :key="loc"
         class="file-edit"
       >
         <el-input
-          v-model="dialogData.permittedLocation[index]"
+          v-model="loc.value"
           size="small "
         />
         <el-popconfirm
           title="确认要删除吗？"
-          @confirm="dialogData.permittedLocation.splice(index, 1)"
+          @confirm="removePermittedLocationInEditor(loc)"
         >
           <template #reference>
             <el-button type="text">删除</el-button>
@@ -260,7 +260,7 @@
       <div style="text-align: center">
         <el-button
           type="text"
-          @click="dialogData.permittedLocation.push('')"
+          @click="dialogData.permittedLocation.push({value:''})"
         >
           添加一个新的路径
         </el-button>
@@ -312,11 +312,18 @@
     </el-form>
 
     <div style="text-align: center">
-      <el-button
-        type="text"
+      <el-popconfirm
+        title="确定要删除吗？"
+        @confirm="removeUser(dialogData.editingUser.id)"
       >
-        删除这个用户
-      </el-button>
+        <template #reference>
+          <el-button
+            type="text"
+          >
+            删除这个用户
+          </el-button>
+        </template>
+      </el-popconfirm>
     </div>
     <template #footer>
       <span class="dialog-footer">
@@ -338,30 +345,24 @@ import {nextTick} from 'vue'
 export default {
     name: 'UserGroupListItem',
     props: {
-        userGroup: {
+        data: {
             type: Object,
-            default: () => ({}),
+            default: () => {
+                return {
+                    id: -1,
+                    groupName: '默认分组',
+                    maxPermissionLevel: -1,
+                    members: [],
+                    servers: [],
+                    permittedLocation: []
+                }
+            },
         },
-        serverAbbrList: {
-            type: Array,
-            default: () => [],
-        },
-        userList: {
-            type: Array,
-            default: () => [],
-        }
     },
     emits: ['refresh'],
     data() {
         return {
             active: 'user',
-            servers: [
-                {id: 0, name: 'EngiTech2', abbr: 'et2'},
-                {id: 1, name: 'FTB Interations', abbr: 'ftbi'},
-                {id: 2, name: 'Trail of God', abbr: 'tog'},
-                {id: 3, name: 'Dove\'s Home', abbr: 'dove'},
-                {id: 4, name: 'Mana Metal', abbr: 'mt'},
-            ],
             addLoading: false,
             serverToAdd: undefined,
             //对话框的显示状态
@@ -388,41 +389,45 @@ export default {
                     },
 
             },
-            data: {
-                id: 1,
-                groupName: '默认分组',
-                maxPermissionLevel: -1,
-                members: [
-                    {id: 0, username: 'warmthdawn', groupPermissionLevel: 0},
-                    {id: 1, username: 'szy', groupPermissionLevel: 1},
-                ],
-                servers: [
-                    {id: 0, name: 'EngiTech2', abbr: 'et2'},
-                    {id: 1, name: 'FTB Interations', abbr: 'ftbi'},
-                    {id: 2, name: 'Trail of God', abbr: 'tog'},
-                ],
-                permittedLocation: [
-                    '/backup/et2',
-                    '/backup/ftbi',
-                    '/backup/tog',
-                    '/root/common',
-                ]
-
-            }
+            // data: {
+            //     id: 1,
+            //     groupName: '默认分组',
+            //     maxPermissionLevel: -1,
+            //     members: [
+            //         {id: 0, username: 'warmthdawn', groupPermissionLevel: 0},
+            //         {id: 1, username: 'szy', groupPermissionLevel: 1},
+            //     ],
+            //     servers: [
+            //         {id: 0, name: 'EngiTech2', abbr: 'et2'},
+            //         {id: 1, name: 'FTB Interations', abbr: 'ftbi'},
+            //         {id: 2, name: 'Trail of God', abbr: 'tog'},
+            //     ],
+            //     permittedLocation: [
+            //         '/backup/et2',
+            //         '/backup/ftbi',
+            //         '/backup/tog',
+            //         '/root/common',
+            //     ]
+            //
+            // }
         }
     },
     computed: {
         availableServers() {
-            return this.servers.filter((it) => {
+            const servers = this.$store.state.serverList
+            return servers.filter((it) => {
                 return !this.data.servers.some((has) => has.id === it.id)
             })
         },
+
     },
     methods: {
         //用户编辑列表显示
         userListSelection(selection) {
             const selectionMap = new Set(selection.map((it) => it.id))
+            console.log(selectionMap)
             this.dialogData.userListEditor.selection = selectionMap
+            console.log(this.dialogData.userListEditor.selection)
             this.dialogData.userListEditor.users.sort((a, b) => {
                 const selA = selectionMap.has(a.id)
                 const selB = selectionMap.has(b.id)
@@ -437,48 +442,60 @@ export default {
 
         //用户
         async updateUser() {
+            await api.userGroup.updateUser(this.dialogData.editingUser, this.data.id)
+            this.dialogs.userEditor = false
             this.$emit('refresh', this.data.id)
             await this.refreshUserList()
         },
         editUser(id) {
-            console.log(id)
+            let user = this.data.members.find((it) => it.id === id)
+            if(typeof user === 'undefined') {
+                user = this.dialogData.userListEditor.users.find((it) => it.id === id)
+            }
+            this.dialogData.editingUser = user
             this.dialogs.userEditor = true
         },
         async removeUser(id) {
-            console.log(id)
+            await api.userGroup.removeUser(id)
+            this.dialogs.userEditor = false
             this.$emit('refresh', this.data.id)
+            await this.refreshUserList()
         },
 
         //服务器
         async addServer() {
             this.addLoading = true
-            //todo: 添加服务器
-
-            this.dialogs.serverSelector = false
-            //TODO: 添加服务器
+            await api.userGroup.addServerToGroup(this.serverToAdd, this.data.id)
             this.serverToAdd = undefined
             this.addLoading = false
+            this.dialogs.serverSelector = false
+            this.$emit('refresh', this.data.id)
         },
         async removeServer(server) {
-            console.log(server)
+            await api.userGroup.removeServerFromGroup(server, this.data.id)
             this.$emit('refresh', this.data.id)
         },
 
 
         //权限地址
         editPermittedLocation() {
-            this.dialogData.permittedLocation = [...this.data.permittedLocation]
+            this.dialogData.permittedLocation = this.data.permittedLocation.map((value) => ({value}))
             this.dialogs.permittedLocationEditor = true
         },
-        updatePermittedLocation() {
-            //TODO: 更新
+        async updatePermittedLocation() {
+            const locations = this.dialogData.permittedLocation.map((it) => it.value)
+            await api.userGroup.updateLocation(this.data.id, locations)
             this.dialogs.permittedLocationEditor = false
             this.$emit('refresh', this.data.id)
         },
-        removePermittedLocation(location) {
-            console.log(location)
-            //TODO: 删除
+        async removePermittedLocation(location) {
+            await api.userGroup.deleteLocation(this.data.id, location)
             this.$emit('refresh', this.data.id)
+        },
+
+        removePermittedLocationInEditor(location) {
+            const index = this.dialogData.permittedLocation.indexOf(location)
+            this.dialogData.permittedLocation.splice(index, 1)
         },
 
         //用户列表
@@ -505,8 +522,8 @@ export default {
                 })
             }
         },
-        updateUserList() {
-            //TODO: 更新
+        async updateUserList() {
+            await api.userGroup.updateUserGroup(this.data.id, [...this.dialogData.userListEditor.selection])
             this.$emit('refresh', this.data.id)
             this.dialogs.userListEditor = false
         }
@@ -620,17 +637,16 @@ export default {
 
 </style>
 
-<style>
+<style lang="less">
+
 .el-card__body {
-    padding-top: 8px;
+  padding-top: 8px;
 }
 
 div.el-collapse-item__content {
-    padding-bottom: 0;
+  padding-bottom: 0;
 }
-</style>
 
-<style lang="less">
 div.my-dialog.el-dialog {
   .el-dialog__body {
     padding: 16px;

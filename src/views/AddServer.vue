@@ -147,6 +147,8 @@ export default {
             this.next()
         },
         close() {
+            this.active = 0
+            this.clearData = true
             this.$store.commit('changeAddState', false)
         },
 

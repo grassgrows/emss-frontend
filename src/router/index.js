@@ -26,7 +26,7 @@ import Search from '@/views/file/Search'
 
 const routes = [
     {
-        path: '/',
+        path: '/login',
         name: 'login',
         meta: {
             noLogin: true,
@@ -180,11 +180,9 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (to.meta.noLogin !== true && !store.state.authToken) {
-        // TODO: 跳转到登录
-        await store.dispatch('refreshServerList')
-        next()
-        // next({ name: 'Login' });
+        next({ name: 'login' })
     } else {
+        await store.dispatch('refreshServerList')
         next()
     }
 })

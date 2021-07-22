@@ -6,13 +6,12 @@
   <div class="user-group-list">
     <div
       v-for="u in userGroupList"
-      :key="u"
+      :key="u.id"
       class="list-container"
     >
       <user-group-list-item
-        v-model:server-list="serverAbbrList"
-        :user-group="u"
-        :user-list="userList"
+        @refresh="refresh"
+        :data="u"
       />
     </div>
   </div>
@@ -27,20 +26,24 @@ export default {
         UserGroupListItem,
     },
     beforeRouteEnter(to, from, next) {
-        next((vm) => vm.refresh())
+        next((vm) => vm.refreshAll())
     },
     data() {
         return {
-            serverAbbrList: [],
             userGroupList: [],
-            userList: [],
         }
     },
     methods: {
-        async refresh() {
+        async refreshAll() {
             this.userGroupList = await api.userGroup.getGroupList()
-            this.serverAbbrList = await api.userGroup.getAbbrList()
-            this.userList = await api.userGroup.getUserList()
+        },
+        async refresh(id) {
+            for(let i=0;i<this.userGroupList.length;i++){
+                if(this.userGroupList[i].id === id){
+                    this.userGroupList[i] = await api.userGroup.getGroupInfo(id)
+                    break
+                }
+            }
         }
     }
 }

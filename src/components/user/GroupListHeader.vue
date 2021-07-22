@@ -38,7 +38,10 @@
         <el-input v-model="newUser.username" />
       </el-form-item>
       <el-form-item label="密码">
-        <el-input v-model="newUser.password" />
+        <el-input
+          v-model="newUser.password"
+          type="password"
+        />
       </el-form-item>
       <el-form-item label="权限等级">
         <el-select v-model="newUser.permissionLevel">
@@ -55,7 +58,7 @@
       <el-button @click="showAddUser=false">
         取消
       </el-button>
-      <el-button 
+      <el-button
         type="primary"
         @click="createUser"
       >
@@ -101,6 +104,8 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
     name: 'GroupListHeader',
     data() {
@@ -117,9 +122,10 @@ export default {
             this.showAddGroup = false
             console.log('add group')
         },
-        createUser() {
+        async createUser() {
+            await api.userGroup.createUser(this.newUser)
+            this.newUser = {}
             this.showAddUser = false
-            console.log('add user')
         },
     },
 }
