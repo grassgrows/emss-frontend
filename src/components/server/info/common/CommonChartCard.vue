@@ -4,8 +4,7 @@
  -->
 <template>
   <el-card
-    shadow="always"
-    :body-style="{ padding: '0px' }"
+    :body-style="{ padding: '0px', borderRadius: '0px' }"
   >
     <div class="common-card">
       <div class="card-header">

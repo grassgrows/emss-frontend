@@ -1,6 +1,9 @@
 <template>
   <div class="edit-container">
-    <div class="editor" ref="ace"></div>
+    <div
+      ref="ace"
+      class="editor"
+    />
   </div>
 </template>
 

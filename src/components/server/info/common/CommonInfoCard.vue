@@ -9,7 +9,9 @@
   >
     <div class="card-container">
       <div class="card-header">
-        <div class="header-text">{{ header }}</div>
+        <div class="header-text">
+          {{ header }}
+        </div>
         <template v-if="typeof icon !== 'undefined'">
           <div class="blank" />
           <div class="header-icon">

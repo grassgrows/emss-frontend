@@ -10,8 +10,8 @@
       class="list-container"
     >
       <user-group-list-item
-        @refresh="refresh"
         :data="u"
+        @refresh="refresh"
       />
     </div>
   </div>

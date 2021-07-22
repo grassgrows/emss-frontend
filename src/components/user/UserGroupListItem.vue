@@ -253,7 +253,9 @@
           @confirm="removePermittedLocationInEditor(loc)"
         >
           <template #reference>
-            <el-button type="text">删除</el-button>
+            <el-button type="text">
+              删除
+            </el-button>
           </template>
         </el-popconfirm>
       </div>
@@ -290,7 +292,7 @@
         <el-input
           v-model="dialogData.editingUser.username"
           autocomplete="off"
-        ></el-input>
+        />
       </el-form-item>
       <el-form-item
         label="用户权限"
@@ -298,7 +300,7 @@
         <el-input
           v-model="dialogData.editingUser.groupPermissionLevel"
           autocomplete="off"
-        ></el-input>
+        />
       </el-form-item>
       <el-form-item
         label="密码"
@@ -307,7 +309,7 @@
           v-model="dialogData.editingUser.password"
           type="password"
           autocomplete="off"
-        ></el-input>
+        />
       </el-form-item>
     </el-form>
 
@@ -335,7 +337,6 @@
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script>

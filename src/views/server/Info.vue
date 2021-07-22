@@ -15,7 +15,7 @@
         :id="id"
         @showSetting="showSetting"
       />
-      <server-setting/>
+      <server-setting />
     </el-col>
     <el-col
       :span="8"

@@ -11,18 +11,16 @@
     :before-close="handleClose"
     custom-class="file-editor-dialog"
   >
-
     <div
       v-loading="loading"
       class="outer"
     >
       <div class="input-container">
-
         <div
           v-if="!supported"
           class="empty"
         >
-          <el-empty description="暂不支持当前文件的预览"></el-empty>
+          <el-empty description="暂不支持当前文件的预览" />
         </div>
         <ace-input
           v-else

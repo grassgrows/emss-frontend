@@ -141,11 +141,6 @@ import api from '@/api'
 
 export default {
     name: 'MyNavigator',
-    beforeRouteEnter(from, to, next) {
-        next(vm => {
-            vm.getSystemName()
-        })
-    },
     props: {
         isDrawer: {
             type: Boolean,
@@ -156,6 +151,7 @@ export default {
             default: false,
         },
     },
+    emits: ['select'],
     data() {
         return {
             backgroundColor: '#545c64',
@@ -182,6 +178,12 @@ export default {
             return this.$store.state.serverList?.filter((s) => !s.running) || []
         },
     },
+    mounted() {
+        this.getSystemName()
+        this.$bus.on('systemName', () => {
+            this.getSystemName()
+        })
+    },
     methods: {
         menuSelect(e) {
             if (this.isDrawer) {
@@ -189,7 +191,7 @@ export default {
             }
         },
         async getSystemName() {
-            this.systemName = await api.setting.baseSetting().name
+            this.systemName = (await api.setting.baseSetting()).name
         }
     },
 }
