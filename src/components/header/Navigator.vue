@@ -108,24 +108,12 @@
       </el-submenu>
     </el-submenu>
 
-    <el-submenu index="/file">
+    <el-menu-item index="/files">
+      <i class="el-icon- iconfont emss-icon-books " />
       <template #title>
-        <i class="el-icon- iconfont emss-icon-books " />
         <span>文件管理</span>
       </template>
-      <el-menu-item index="/file/edit">
-        <i class="el-icon-set-up" />
-        <template #title>
-          文件编辑
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/files">
-        <i class="el-icon-folder" />
-        <template #title>
-          文件列表
-        </template>
-      </el-menu-item>
-    </el-submenu>
+    </el-menu-item>
 
     <el-submenu index="/system">
       <template #title>
