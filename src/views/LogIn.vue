@@ -33,7 +33,7 @@
         </el-form>
         <button
           type="submit"
-          class="btn btn-secondary"
+          class="btn btn-secondary btn-block"
           @click="login()"
         >
           登录
@@ -135,37 +135,66 @@ export default {
 </style>
 
 <style scoped lang="scss">
-
-.btn:not(:disabled):not(.disabled) {
-  cursor: pointer;
+button {
+    overflow: visible;
+    text-indent: 0;
+    font: 400 13.3333px Arial;
 }
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  border: 0;
-  z-index: 1;
-  user-select: none;
-  text-transform: uppercase;
-  letter-spacing: -1px;
-  white-space: unset;
-  padding: .8rem 1.5rem;
-  text-decoration: none;
-  transition: color .15s
-  ease-in-out,background-color .15s
-  ease-in-out,border-color .15s
-  ease-in-out,box-shadow .15s
-  ease-in-out;
-  font-weight: 500;
-  border-radius: 0;
-  color: #313131;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 0;
+    z-index: 1;
+    user-select: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: unset;
+    padding: .8rem 1.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1rem;
+    border-radius: 0;
 }
 .btn-secondary {
-  color: #fff!important;
-  background-color: #757575;
-  border-color: #757575;
-  text-shadow: 0 2px 0 rgb(0 0 0 / 25%);
+    color: #fff;
+    background-color: #008542;
+    border-color: #008542;
+    text-shadow: 0 2px 0 rgb(0 0 0 / 25%);
+    transition: color .15s ease-in-out,
+    background-color .15s ease-in-out,
+    border-color .15s ease-in-out,
+    box-shadow .15s ease-in-out;
+}
+.btn-secondary::before {
+    background-color: #008542;
+    box-shadow: inset 0 -4px rgb(0 0 0 / 25%),
+    inset 0 4px hsl(0deg 0% 100% / 35%),
+    inset -4px 0 hsl(0deg 0% 100% / 35%),
+    inset 4px 0 rgb(0 0 0 / 25%);
+    z-index: -1;
+}
+.btn-secondary::before, .btn-secondary::after {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    content: "";
+    transition: .10s cubic-bezier(0,.8,.26,.99);
+}
+.btn-secondary::after {
+    box-shadow: 0 4px 0 0 rgb(0 0 0 / 15%);
+}
+.btn-secondary:hover::before {
+    background-color: #313131;
+}
+.btn-block {
+    display: block;
+    width: 50%;
 }
 </style>
 

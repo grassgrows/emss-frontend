@@ -19,9 +19,9 @@
     <template v-if="isDrawer">
       <div
         class="el-menu-item title is-disabled"
-        :style="{backgroundColor, opacity:1, textAlign: 'center'}"
+        :style="{opacity:1, textAlign: 'center'}"
       >
-        <span>GrassGrows</span>
+        <span>{{ systemName }}</span>
       </div>
       <el-menu-item-group>
         <template #title>
@@ -32,11 +32,10 @@
     <template v-else>
       <div
         class="el-menu-item title"
-        :style="{backgroundColor}"
         @click="$emit('update:collapsed', !collapsed)"
       >
         <i :class="icon" />
-        <span v-if="!collapsed">GrassGrows</span>
+        <span v-if="!collapsed">{{ systemName }}</span>
       </div>
       <el-menu-item-group>
         <template
@@ -150,9 +149,15 @@
 </template>
 
 <script>
+import api from '@/api'
 
 export default {
     name: 'MyNavigator',
+    beforeRouteEnter(from, to, next) {
+        next(vm => {
+            vm.getSystemName()
+        })
+    },
     props: {
         isDrawer: {
             type: Boolean,
@@ -168,6 +173,7 @@ export default {
             backgroundColor: '#545c64',
             textColor: '#fff',
             activeTextColor: '#ffd04b',
+            systemName: ''
         }
     },
     computed: {
@@ -194,6 +200,9 @@ export default {
                 this.$emit('select', e)
             }
         },
+        async getSystemName() {
+            this.systemName = await api.setting.baseSetting().name
+        }
     },
 }
 </script>
@@ -202,6 +211,20 @@ export default {
 .my-menu:not(.el-menu--collapse) {
   width: 250px;
   min-height: 400px;
+}
+.my-menu .el-menu {
+    background-color: rgba(0,0,0,0);
+}
+.my-menu {
+    background-image: url("../../../public/menubg.png");
+    background-size: cover;
+}
+.my-menu .el-submenu__title:hover, .my-menu .el-menu-item:hover {
+    background-color: #303133!important;
+}
+
+.my-menu .el-submenu__title:focus, .my-menu .el-menu-item:focus {
+    background-color: #313131!important;
 }
 </style>
 <style scoped>
@@ -222,4 +245,10 @@ export default {
   text-overflow: ellipsis;
 }
 
+.title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 10px;
+}
 </style>

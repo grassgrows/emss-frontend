@@ -160,7 +160,8 @@ body {
 .main-content {
     display: flex;
     flex-direction: column;
-    background-color: #f2f2f2;
+    background-image: url("../../public/bodybg.png");
+    background-size: cover;
     padding: 0;
 }
 

@@ -83,6 +83,6 @@ export default {
 }
 
 .el-col div {
-  border-radius: 8px;
+  border-radius: 0;
 }
 </style>
