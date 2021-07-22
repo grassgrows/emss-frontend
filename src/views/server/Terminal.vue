@@ -9,13 +9,15 @@
           label="模拟终端"
           name="first"
         >
-          <div class="terminal-wrapper">
+          <div
+            v-loading="loading"
+            class="terminal-wrapper"
+          >
             <xterm
               ref="xterm"
               class="terminal"
             />
           </div>
-          <term-input />
         </el-tab-pane>
         <el-tab-pane
           label="聊天窗口"
@@ -42,12 +44,13 @@ import {runCatching} from '@/utils/functionUtils'
 
 export default defineComponent({
     name: 'Terminal',
-    components: { Xterm},
+    components: {Xterm},
     props: {},
     data() {
         return {
             selected: 'first',
             ws: undefined as WebSocket | undefined,
+            loading: false
         }
     },
     watch: {
@@ -57,6 +60,8 @@ export default defineComponent({
                 this.initTerminal()
             } else {
                 runCatching(() => {
+                    this.ws && (this.ws.onclose = () => {
+                    })
                     this.ws?.close()
                 })
             }
@@ -67,10 +72,22 @@ export default defineComponent({
     },
     methods: {
         async initTerminal() {
+            this.loading = true
             this.ws && this.ws.close()
             this.ws = await attachServer(this.$store.state.currentServer.id)
+            this.ws.onclose = () => {
+                this.$notify({
+                    type: 'info',
+                    title: '连接断开',
+                    message: '终端断开连接，请稍后刷新重试'
+                })
+                this.$store.dispatch('refreshServerList')
+            }
             const xterm = this.$refs.xterm as any
             xterm.initTerm(this.ws)
+
+            this.loading = false
+
         }
     }
 

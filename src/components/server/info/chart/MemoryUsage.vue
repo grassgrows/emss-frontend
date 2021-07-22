@@ -18,12 +18,18 @@
 </template>
 
 <script>
-import CommonChartCard from '@/components/server/info/common/CommonInfoCard'
+import CommonChartCard from '@/components/server/info/common/CommonChartCard.vue'
 import { round } from 'lodash'
 import api from '@/api'
 export default {
     name: 'MemoryUsage',
     components: { CommonChartCard },
+    props: {
+        id: {
+            type: Number,
+            default: -1,
+        }
+    },
     data() {
         return {
             options: {
@@ -33,7 +39,7 @@ export default {
                     },
                 },
             },
-        
+
             loading: true,
             current: 0,
             labels: [],

@@ -1,6 +1,6 @@
 {
   "name": "emss-frontend",
-  "version": "0.2.4",
+  "version": "0.3.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,6 +11,7 @@
     "@flowjs/flow.js": "^2.14.1",
     "@simonwep/selection-js": "^2.1.0",
     "@types/flowjs": "^2.13.6",
+    "ace-builds": "^1.4.12",
     "animate.css": "^4.1.1",
     "axios": "^0.21.1",
     "chart.js": "^3.4.1",

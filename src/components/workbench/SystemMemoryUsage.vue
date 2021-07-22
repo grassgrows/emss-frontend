@@ -1,35 +1,35 @@
 <!--
- * @Author: smq
+ * @Author: WarmthDawn
  * @Date: 2021/7/9
  -->
 <template>
   <common-chart-card
     v-loading="loading"
-    tooltip-prefix="TPS: "
+    tooltip-prefix="系统内存"
     :labels="labels"
     :datasets="datasets"
     :value-precision="2"
+    value-suffix=" GB"
     :custom-config="options"
-    header="服务器TPS"
+    header="系统内存"
   >
-    当前：{{ current }}
+    当前：{{ current }} GB/ {{ max }} GB
   </common-chart-card>
 </template>
 
 <script>
-import CommonChartCard from '@/components/server/info/common/CommonChartCard'
-import { round } from 'lodash'
+import CommonChartCard from '@/components/server/info/common/CommonChartCard.vue'
+import {round} from 'lodash'
 import api from '@/api'
 
+const GB = 1024.0 * 1024 * 1024
 export default {
-    name: 'Tps',
-    components: {
-        CommonChartCard
-    },
+    name: 'SystemMemoryUsage',
+    components: {CommonChartCard},
     props: {
         id: {
             type: Number,
-            default: -1
+            default: -1,
         }
     },
     data() {
@@ -38,16 +38,16 @@ export default {
                 scales: {
                     y: {
                         min: 0,
-                        max: 20,
-                    }
-                }
+                    },
+                },
             },
 
             loading: true,
             current: 0,
+            max: 0,
             labels: [],
             count: 0,
-            datasets: []
+            datasets: [],
         }
     },
     created() {
@@ -57,29 +57,29 @@ export default {
                 this.loading = true
                 this.fetchData()
             },
-            { immediate: true}
+            {immediate: true},
         )
-        setInterval(this.fetchData,1000*60)
+        setInterval(this.fetchData, 1000 * 5)
     },
     methods: {
         async fetchData() {
-            const data = await api.server.monitor.tpses(this.id)
+            const data = await api.system.info()
             this.datasets = [
                 {
-                    name: 'Tps',
+                    name: 'Memory',
                     backgroundColor: '#87CDf944',
                     borderColor: '#409EFFAA',
                     tension: 0.4,
                     fill: true,
-                    data: data.values,
-                },
+                    data: data.memorys.map((it) => it / GB),
+                }
             ]
-            this.current = round(data.current, 2)
+            this.current = round(data.currentMemory / GB, 2)
+            this.max = round(data.maxMemory / GB, 2)
             this.labels = data.timestamps
             this.loading = false
-        },
+        }
     }
-
 }
 </script>
 

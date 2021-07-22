@@ -23,6 +23,7 @@ const pathMaps = new Map()
     .set('服务器', '/server/list')
     .set('用户管理', '/system/users/')
     .set('文件管理', '/files')
+    .set('文件搜索', '/file/search')
 export default {
     name: 'HeaderBreadcrumb',
     props: {

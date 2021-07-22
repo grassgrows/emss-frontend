@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <div class="uploader-hide">
       <input
         id="uploader-input-file"
@@ -284,7 +284,9 @@ export default defineComponent({
             chunkRetryInterval: 1000,
             allowDuplicateUploads: true,
             simultaneousUploads: 5,
-
+            headers: {
+                Authorization: `Bearer ${this.$store.state.authToken}`
+            },
             query(file: FlowFile) {
                 return {
                     destinationPath: file.destinationPath
@@ -350,8 +352,7 @@ export default defineComponent({
             console.log(`Error ${file.name}`)
             if (this.uploadMap.has(file.uniqueIdentifier))
                 this.uploadMap.get(file.uniqueIdentifier)!.status = 'error'
-            this.$notify({
-                title: '上传失败',
+            this.$message({
                 message: `文件 ${file.name} 上传失败，请重试`,
                 type: 'error'
             })
@@ -359,8 +360,7 @@ export default defineComponent({
 
         this.flow.on('fileSuccess', (file) => {
             console.log(`Success ${file.name}`)
-            this.$notify({
-                title: '上传成功',
+            this.$message({
                 message: `文件 ${file.name} 上传成功`,
                 type: 'success'
             })
@@ -525,6 +525,11 @@ export default defineComponent({
   lang="less"
 >
 @import "../../styles/global";
+.wrapper {
+  width: 0;
+  height: 0;
+  position: absolute;
+}
 
 .uploader-container {
   position: fixed;

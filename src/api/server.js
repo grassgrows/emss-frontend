@@ -64,6 +64,7 @@ async function create(val) {
         portBindings,
         volumeBind,
         imageId: val.selectedDocker,
+        permissionGroup: [...val.permittedGroup],
     }
 
     const resp = await axios.post('/api/servers', req)

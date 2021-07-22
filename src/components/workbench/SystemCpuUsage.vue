@@ -5,26 +5,25 @@
 <template>
   <common-chart-card
     v-loading="loading"
+    tooltip-prefix="系统CPU占用："
     :labels="labels"
     :datasets="datasets"
-    :value-precision="3"
-    value-suffix=" KB/s"
-    header="磁盘IO （KB/s）"
+    :value-precision="2"
+    value-suffix="%"
+    :custom-config="options"
+    header="系统CPU使用率 (%)"
   >
-    <span>当前：</span>
-    <span style="color: #409EFF">读 {{ currentRead }} KB/s</span>
-    <span>&nbsp;&nbsp;</span>
-    <span style="color: #67C23A">写 {{ currentWrite }} KB/s</span>
+    当前： {{ current }}%
   </common-chart-card>
 </template>
 
 <script>
-import {round} from 'lodash'
 import CommonChartCard from '@/components/server/info/common/CommonChartCard.vue'
 import api from '@/api'
+import {round} from 'lodash'
 
 export default {
-    name: 'FileIo',
+    name: 'SystemCpuUsage',
     components: {
         CommonChartCard,
     },
@@ -36,12 +35,19 @@ export default {
     },
     data() {
         return {
+            options: {
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                    },
+                },
+            },
+            loading: true,
+            current: 0,
             labels: [],
             count: 0,
             datasets: [],
-            loading: true,
-            currentRead: 0,
-            currentWrite: 0,
         }
     },
     created() {
@@ -55,33 +61,22 @@ export default {
             // 此时 data 已经被 observed 了
             {immediate: true},
         )
-        setInterval(this.fetchData, 1000 * 60)
+        setInterval(this.fetchData, 1000 * 5)
     },
     methods: {
         async fetchData() {
-            const data = await api.server.monitor.disks(this.id)
+            const data = await api.system.info()
             this.datasets = [
                 {
-                    name: 'Read',
-                    label: '读',
+                    name: 'CPU',
                     backgroundColor: '#87CDf944',
                     borderColor: '#409EFFAA',
                     tension: 0.4,
                     fill: true,
-                    data: data.reads,
-                },
-                {
-                    name: 'Write',
-                    label: '写',
-                    backgroundColor: 'rgba(121,186,86,0.27)',
-                    borderColor: '#67C23AAA',
-                    tension: 0.4,
-                    fill: true,
-                    data: data.writes,
+                    data: data.cpus.map((it)=>it * 100),
                 },
             ]
-            this.currentWrite = round(data.current.write, 2)
-            this.currentRead = round(data.current.read, 2)
+            this.current = round(data.currentCpu * 100, 2)
             this.labels = data.timestamps
             this.loading = false
         },
@@ -90,4 +85,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

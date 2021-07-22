@@ -393,6 +393,7 @@ export default {
             await api.setting.updateSetting(editSetting)
             this.baseSetting[this.editor.editingName] = this.editor.value
             await this.updateSetting()
+            this.$bus.emit('systemName')
         },
         imageOkClick() {
             this.imageCreating = false

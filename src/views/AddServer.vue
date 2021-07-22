@@ -9,10 +9,14 @@
       custom-class="add-dialog"
       top="2vh"
       title="添加服务器"
+      :close-on-click-modal="false"
+      :before-close="closeDialog"
       @open="openDialog"
-      @close="closeDialog"
     >
-      <div class="dialog-content">
+      <div
+        v-loading="loadingData"
+        class="dialog-content"
+      >
         <el-steps
           :active="active"
           finish-status="success"
@@ -38,6 +42,7 @@
         >
           <step1
             :clear-data="dialogAdd"
+            :user-group-list="userGroupList"
             @next="next"
             @back="back"
             @sendData="receiveData1"
@@ -102,7 +107,9 @@ export default {
             dockerData: Object,
             completeData: {},
             dockerImageList: [],
-            abbr: ''
+            userGroupList: [],
+            abbr: '',
+            loadingData: false,
         }
     },
     computed: {
@@ -140,6 +147,8 @@ export default {
             this.next()
         },
         close() {
+            this.active = 0
+            this.clearData = true
             this.$store.commit('changeAddState', false)
         },
 
@@ -159,6 +168,7 @@ export default {
 
 
         async openDialog() {
+            this.loadingData = true
             const images = await api.setting.images()
             const result = []
             for (const image of images) {
@@ -171,58 +181,68 @@ export default {
                 }
             }
             this.dockerImageList = result
+            this.userGroupList = await api.userGroup.getGroupList()
+            this.loadingData = false
         },
-
-        closeDialog() {
-            setTimeout(() => {
-                this.active = 0
-                this.clearData = true
-            }, 200)
+        closeDialog(done) {
+            this.$confirm('确认关闭？')
+                .then(() => {
+                    setTimeout(() => {
+                        this.active = 0
+                        this.clearData = true
+                    }, 200)
+                    done()
+                })
+                .catch(() => {})
         }
     }
 }
 </script>
 
-<style scoped lang="less">
+<style
+  scoped
+  lang="less"
+>
 .dialog-content {
-    height: 75vh;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
+  height: 75vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 button[name='submit'] {
-    width: 84px;
+  width: 84px;
 }
 
 .step-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  padding: 20px 6vh 0;
+  @media screen and (max-width: 768px) {
+    padding: 20px 0 0;
+  }
+
+  .empty {
     flex: 1 1 0;
-    padding: 20px 6vh 0;
-    @media screen and (max-width: 768px) {
-        padding: 20px 0 0;
-    }
-    .empty {
-        flex: 1 1 0;
-    }
+  }
 }
 
 
 .step-list-container {
-    padding: 0 6vh;
-    @media screen and (max-width: 768px) {
-        padding: 0 5px;
-    }
+  padding: 0 6vh;
+  @media screen and (max-width: 768px) {
+    padding: 0 5px;
+  }
 }
 
 
 </style>
 <style lang="less">
 .el-dialog.add-dialog {
-    @media screen and (max-width: 768px) {
-        width: auto !important;
-        margin: 0 20px;
-    }
+  @media screen and (max-width: 768px) {
+    width: auto !important;
+    margin: 0 20px;
+  }
 }
 </style>

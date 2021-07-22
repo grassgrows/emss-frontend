@@ -19,9 +19,9 @@
     <template v-if="isDrawer">
       <div
         class="el-menu-item title is-disabled"
-        :style="{backgroundColor, opacity:1, textAlign: 'center'}"
+        :style="{opacity:1, textAlign: 'center'}"
       >
-        <span>GrassGrows</span>
+        <span>{{ systemName }}</span>
       </div>
       <el-menu-item-group>
         <template #title>
@@ -32,11 +32,10 @@
     <template v-else>
       <div
         class="el-menu-item title"
-        :style="{backgroundColor}"
         @click="$emit('update:collapsed', !collapsed)"
       >
         <i :class="icon" />
-        <span v-if="!collapsed">GrassGrows</span>
+        <span v-if="!collapsed">{{ systemName }}</span>
       </div>
       <el-menu-item-group>
         <template
@@ -49,7 +48,7 @@
           v-else
           #title
         >
-&nbsp;
+          &nbsp;
         </template>
       </el-menu-item-group>
     </template>
@@ -109,24 +108,12 @@
       </el-submenu>
     </el-submenu>
 
-    <el-submenu index="/file">
+    <el-menu-item index="/files">
+      <i class="el-icon- iconfont emss-icon-books " />
       <template #title>
-        <i class="el-icon- iconfont emss-icon-books " />
         <span>文件管理</span>
       </template>
-      <el-menu-item index="/file/setting">
-        <i class="el-icon-set-up" />
-        <template #title>
-          文件系统设置
-        </template>
-      </el-menu-item>
-      <el-menu-item index="/files">
-        <i class="el-icon-folder" />
-        <template #title>
-          文件列表
-        </template>
-      </el-menu-item>
-    </el-submenu>
+    </el-menu-item>
 
     <el-submenu index="/system">
       <template #title>
@@ -150,6 +137,7 @@
 </template>
 
 <script>
+import api from '@/api'
 
 export default {
     name: 'MyNavigator',
@@ -163,11 +151,13 @@ export default {
             default: false,
         },
     },
+    emits: ['select'],
     data() {
         return {
             backgroundColor: '#545c64',
             textColor: '#fff',
             activeTextColor: '#ffd04b',
+            systemName: ''
         }
     },
     computed: {
@@ -175,7 +165,7 @@ export default {
             return this.collapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'
         },
         menuIndex() {
-            const { menuIndex } = this.$route.meta
+            const {menuIndex} = this.$route.meta
             if (typeof menuIndex === 'function') {
                 return menuIndex(this.$route)
             }
@@ -188,38 +178,71 @@ export default {
             return this.$store.state.serverList?.filter((s) => !s.running) || []
         },
     },
+    mounted() {
+        this.getSystemName()
+        this.$bus.on('systemName', () => {
+            this.getSystemName()
+        })
+    },
     methods: {
         menuSelect(e) {
             if (this.isDrawer) {
                 this.$emit('select', e)
             }
         },
+        async getSystemName() {
+            this.systemName = (await api.setting.baseSetting()).name
+        }
     },
 }
 </script>
 
-<style>
-.my-menu:not(.el-menu--collapse) {
-  width: 250px;
-  min-height: 400px;
+<style lang="less">
+.my-menu {
+  background-image: url("../../../public/menubg.png");
+  background-size: cover;
+
+  &:not(.el-menu--collapse) {
+    width: 250px;
+    min-height: 400px;
+  }
+
+  .el-menu, .el-menu-item, .el-submenu__title {
+    background-color: rgba(0, 0, 0, 0) !important;
+  }
+
+  .el-submenu__title:hover, .el-menu-item:hover {
+    background-color: #303133 !important;
+  }
+
+  .el-submenu__title:focus, .el-menu-item:focus {
+    background-color: #313131 !important;
+  }
 }
+
 </style>
 <style scoped>
 .title span {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #ffffff;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ffffff;
 }
 
 .title i {
-  font-size: 1.5em;
-  margin-right: 10px;
+    font-size: 1.5em;
+    margin-right: 10px;
 }
 
 .server-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+.title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 10px;
+}
 </style>
