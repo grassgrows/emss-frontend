@@ -29,6 +29,7 @@
         :selected="selected.get(f.fileName) === true"
         :data-filename="f.fileName"
         :file="f"
+        @file-open="$emit('file-open', $event)"
         class="item selection-item"
         @update:selected="selected.set(f.fileName, $event)"
       />
@@ -63,6 +64,7 @@ export default {
         }
 
     },
+    emits: ['file-open'],
     data() {
         return {
             view: 'grid',

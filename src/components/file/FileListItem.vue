@@ -63,7 +63,7 @@ export default {
             default: false,
         },
     },
-    emits: ['update:selected'],
+    emits: ['update:selected', 'file-open'],
     computed: {
         isMobile() {
             return this.$store.isMobile
@@ -85,11 +85,11 @@ export default {
         },
         open() {
             const pathStr = this.file.filePath || ''
-            const paths = pathStr.substr(1).split('/')
             if (this.file.isDirectory) {
+                const paths = pathStr.substr(1).split('/')
                 this.$router.push({name: 'files', params: {filePaths: paths}})
             } else {
-                //TODO: 预览
+                this.$emit('file-open', {path: pathStr, file: this.file})
             }
         }
     },

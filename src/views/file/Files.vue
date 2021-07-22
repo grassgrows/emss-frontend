@@ -19,6 +19,8 @@
           :files="displayFiles"
           :selected="selectedFiles"
           :empty-message="message"
+
+          @file-open="$refs.editor.open($event)"
         />
       </div>
       <div class="card-rooter">
@@ -48,6 +50,7 @@
         <div class="blank" />
       </div>
     </el-card>
+    <file-editor ref="editor" />
   </div>
 </template>
 
@@ -56,10 +59,11 @@ import FileList from '@/views/file/FileList.vue'
 import * as file from '@/api/file.ts'
 import {DateTime} from 'luxon'
 import {mapState} from 'vuex'
+import FileEditor from '@/views/FileEditor'
 
 export default {
     name: 'Files',
-    components: {FileList},
+    components: {FileEditor, FileList},
 
     beforeRouteEnter(to, from, next) {
         next((vm) => vm.refresh())

@@ -38,6 +38,10 @@ const store = createStore({
         setToken(state, val) {
             state.authToken = val
             sessionStorage.setItem('token', val)
+        },
+        clearToken(state) {
+            state.authToken = ''
+            sessionStorage.setItem('token', '')
         }
     },
     actions: {

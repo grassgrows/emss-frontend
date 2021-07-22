@@ -20,7 +20,6 @@ import Terminal from '@/views/server/Terminal.vue'
 import Files from '@/views/file/Files.vue'
 import UserGroupList from '@/views/UserGroupList'
 import GroupListHeader from '@/components/user/GroupListHeader'
-import FileEditor from '@/views/FileEditor'
 import FileListHeader from '@/components/file/FileListHeader'
 import Search from '@/views/file/Search'
 
@@ -91,15 +90,6 @@ const routes = [
                         },
                     },
                 ],
-            },
-            {
-                path: '/file/edit',
-                name: 'file_edit',
-                meta: {
-                    menuIndex: '/file/edit',
-                    breadcrumb: ['工作台', '文件编辑'],
-                },
-                component: FileEditor,
             },
             {
                 path: '/files/:filePaths*',
@@ -180,9 +170,11 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (to.meta.noLogin !== true && !store.state.authToken) {
-        next({ name: 'login' })
+        next({name: 'login'})
     } else {
-        await store.dispatch('refreshServerList')
+        if(store.state.authToken){
+            await store.dispatch('refreshServerList')
+        }
         next()
     }
 })

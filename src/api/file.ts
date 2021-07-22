@@ -110,4 +110,26 @@ export async function createFolder(name: String, filePath: Array<string> | null)
     await axios.post('api/file/newFolder', `${path}/${name}`)
 }
 
+export async function previewFile(filePath: string, pageNum = -1) {
+    const resp = await axios.get('api/file/read', {
+        params: {
+            path: filePath,
+            pageNum,
+        },
+        headers: {
+            Accept: 'text/plain',
+        },
+        transformResponse: (r) => r,
+    })
+    return resp.data
+}
+
+export async function saveFile(filePath: string, data: string) {
+    await axios.post('api/file/save', data ,{
+        params: {
+            path: filePath,
+        },
+        transformRequest: (r) => r,
+    })
+}
 
