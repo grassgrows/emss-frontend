@@ -126,7 +126,7 @@
             <el-button
               type="text"
               size="small"
-              @click="dialogs.permittedLocationEditor = true"
+              @click="editPermittedLocation()"
             >
               编辑文件权限
             </el-button>
@@ -171,7 +171,7 @@
             <el-button
               type="text"
               size="small"
-              @click="dialogs.userListEditor = true"
+              @click="editUserList"
             >
               编辑用户列表
             </el-button>
@@ -186,7 +186,9 @@
     title="管理用户"
   >
     <el-table
+      ref="userListEditor"
       :data="dialogData.userListEditor.users"
+      row-key="id"
       @selection-change="userListSelection"
     >
       <el-table-column
@@ -221,10 +223,10 @@
     </el-table>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogs.permittedLocationEditor = false">取 消</el-button>
+        <el-button @click="dialogs.userListEditor = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogs.permittedLocationEditor = false"
+          @click="updateUserList()"
         >确 定
         </el-button>
       </span>
@@ -269,7 +271,7 @@
         <el-button @click="dialogs.permittedLocationEditor = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogs.permittedLocationEditor = false"
+          @click="updatePermittedLocation()"
         >确 定
         </el-button>
       </span>
@@ -277,9 +279,9 @@
   </el-dialog>
 
   <el-dialog
+    v-model="dialogs.userEditor"
     title="编辑用户信息"
     custom-class="my-dialog"
-    v-model="dialogs.userEditor"
   >
     <el-form :model="dialogData.editingUser">
       <el-form-item
@@ -321,7 +323,7 @@
         <el-button @click="dialogs.userEditor = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="dialogs.userEditor = false"
+          @click="updateUser()"
         >确 定</el-button>
       </span>
     </template>
@@ -330,6 +332,8 @@
 </template>
 
 <script>
+import api from '@/api'
+import {nextTick} from 'vue'
 
 export default {
     name: 'UserGroupListItem',
@@ -347,6 +351,7 @@ export default {
             default: () => [],
         }
     },
+    emits: ['refresh'],
     data() {
         return {
             active: 'user',
@@ -370,20 +375,10 @@ export default {
             //对话框的数据
             dialogData: {
                 userListEditor: {
-                    users: [
-                        {id: 0, username: 'warmthdawn', groupPermissionLevel: 0},
-                        {id: 1, username: 'szy', groupPermissionLevel: 1},
-                        {id: 2, username: 'data', groupPermissionLevel: 2},
-                        {id: 3, username: 'test', groupPermissionLevel: 3},
-                    ],
-                    selection: [],
+                    users: [],
+                    selection: new Map(),
                 },
-                permittedLocation: [
-                    '/backup/et2',
-                    '/backup/ftbi',
-                    '/backup/tog',
-                    '/root/common',
-                ],
+                permittedLocation: [],
                 editingUser:
                     {
                         id: 0,
@@ -440,30 +435,81 @@ export default {
             })
         },
 
+        //用户
+        async updateUser() {
+            this.$emit('refresh', this.data.id)
+            await this.refreshUserList()
+        },
         editUser(id) {
             console.log(id)
             this.dialogs.userEditor = true
         },
+        async removeUser(id) {
+            console.log(id)
+            this.$emit('refresh', this.data.id)
+        },
 
-        addServer() {
+        //服务器
+        async addServer() {
             this.addLoading = true
-            setTimeout(() => {
-                this.dialogs.serverSelector = false
-                //TODO: 添加服务器
-                this.serverToAdd = undefined
-                this.addLoading = false
-            }, 4000)
+            //todo: 添加服务器
 
+            this.dialogs.serverSelector = false
+            //TODO: 添加服务器
+            this.serverToAdd = undefined
+            this.addLoading = false
+        },
+        async removeServer(server) {
+            console.log(server)
+            this.$emit('refresh', this.data.id)
+        },
+
+
+        //权限地址
+        editPermittedLocation() {
+            this.dialogData.permittedLocation = [...this.data.permittedLocation]
+            this.dialogs.permittedLocationEditor = true
+        },
+        updatePermittedLocation() {
+            //TODO: 更新
+            this.dialogs.permittedLocationEditor = false
+            this.$emit('refresh', this.data.id)
         },
         removePermittedLocation(location) {
             console.log(location)
+            //TODO: 删除
+            this.$emit('refresh', this.data.id)
         },
-        removeServer(server) {
-            console.log(server)
+
+        //用户列表
+        async editUserList() {
+            this.dialogData.userListEditor.users = await api.userGroup.getUserList()
+            const current = new Set(this.data.members.map((it) => it.id))
+            this.dialogs.userListEditor = true
+            await nextTick()
+            this.dialogData.userListEditor.users.forEach((it) => {
+                if (current.has(it.id)) {
+                    this.$refs.userListEditor.toggleRowSelection(it)
+                }
+            })
         },
-        manageUser() {
-            console.log('manage user')
+
+        async refreshUserList() {
+            if (this.dialogs.userListEditor) {
+                this.dialogData.userListEditor.users = await api.userGroup.getUserList()
+                const current = new Set(this.data.members.map((it) => it.id))
+                this.dialogData.userListEditor.users.forEach((it) => {
+                    if (current.has(it.id)) {
+                        this.$refs.userListEditor.toggleRowSelection(it)
+                    }
+                })
+            }
         },
+        updateUserList() {
+            //TODO: 更新
+            this.$emit('refresh', this.data.id)
+            this.dialogs.userListEditor = false
+        }
     },
 }
 </script>
@@ -581,5 +627,17 @@ export default {
 
 div.el-collapse-item__content {
     padding-bottom: 0;
+}
+</style>
+
+<style lang="less">
+div.my-dialog.el-dialog {
+  .el-dialog__body {
+    padding: 16px;
+  }
+
+  @media screen and (max-width: 728px) {
+    width: 90% !important;
+  }
 }
 </style>
