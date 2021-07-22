@@ -126,6 +126,7 @@
             <el-button
               type="text"
               size="small"
+              @click="dialogs.permittedLocationEditor = true"
             >
               编辑文件权限
             </el-button>
@@ -148,7 +149,7 @@
               label="权限"
               align="center"
               prop="groupPermissionLevel"
-              width="50"
+              width="100"
             />
             <el-table-column
               label="操作"
@@ -159,7 +160,7 @@
                 <el-button
                   type="text"
                   size="small"
-                  @click="scope.row.showPop = true"
+                  @click="editUser(scope.row.id)"
                 >
                   编辑
                 </el-button>
@@ -170,6 +171,7 @@
             <el-button
               type="text"
               size="small"
+              @click="dialogs.userListEditor = true"
             >
               编辑用户列表
             </el-button>
@@ -180,23 +182,151 @@
   </div>
   <el-dialog
     v-model="dialogs.userListEditor"
+    custom-class="my-dialog"
     title="管理用户"
   >
-    <el-transfer
-      v-model="userIds"
-      :data="userList"
-      :titles="['可选用户','当前用户']"
-      :props="{
-        key: 'id',
-        label: 'username'
-      }"
-    />
+    <el-table
+      :data="dialogData.userListEditor.users"
+      @selection-change="userListSelection"
+    >
+      <el-table-column
+        type="selection"
+      />
+      <el-table-column
+        label="用户名"
+        prop="username"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        label="权限"
+        align="center"
+        prop="groupPermissionLevel"
+        width="100"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+        width="50"
+      >
+        <template #default="scope">
+          <el-button
+            type="text"
+            size="small"
+            @click="editUser(scope.row.id)"
+          >
+            编辑
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     <template #footer>
-      <el-button @click="manageUser">
-        确认
-      </el-button>
+      <span class="dialog-footer">
+        <el-button @click="dialogs.permittedLocationEditor = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogs.permittedLocationEditor = false"
+        >确 定
+        </el-button>
+      </span>
     </template>
   </el-dialog>
+
+  <el-dialog
+    v-model="dialogs.permittedLocationEditor"
+    custom-class="my-dialog"
+    title="管理文件权限"
+  >
+    <div class="file-list">
+      <div
+        v-for="(loc,index) in dialogData.permittedLocation"
+        :key="loc"
+        class="file-edit"
+      >
+        <el-input
+          v-model="dialogData.permittedLocation[index]"
+          size="small "
+        />
+        <el-popconfirm
+          title="确认要删除吗？"
+          @confirm="dialogData.permittedLocation.splice(index, 1)"
+        >
+          <template #reference>
+            <el-button type="text">删除</el-button>
+          </template>
+        </el-popconfirm>
+      </div>
+      <div style="text-align: center">
+        <el-button
+          type="text"
+          @click="dialogData.permittedLocation.push('')"
+        >
+          添加一个新的路径
+        </el-button>
+      </div>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogs.permittedLocationEditor = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogs.permittedLocationEditor = false"
+        >确 定
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
+
+  <el-dialog
+    title="编辑用户信息"
+    custom-class="my-dialog"
+    v-model="dialogs.userEditor"
+  >
+    <el-form :model="dialogData.editingUser">
+      <el-form-item
+        label="用户名"
+      >
+        <el-input
+          v-model="dialogData.editingUser.username"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+        label="用户权限"
+      >
+        <el-input
+          v-model="dialogData.editingUser.groupPermissionLevel"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+        label="密码"
+      >
+        <el-input
+          v-model="dialogData.editingUser.password"
+          type="password"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+    </el-form>
+
+    <div style="text-align: center">
+      <el-button
+        type="text"
+      >
+        删除这个用户
+      </el-button>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogs.userEditor = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogs.userEditor = false"
+        >确 定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+
 </template>
 
 <script>
@@ -229,12 +359,39 @@ export default {
             ],
             addLoading: false,
             serverToAdd: undefined,
+            //对话框的显示状态
             dialogs: {
                 userListEditor: false,
                 userEditor: false,
                 permittedLocationEditor: false,
                 groupEditor: false,
                 serverSelector: false,
+            },
+            //对话框的数据
+            dialogData: {
+                userListEditor: {
+                    users: [
+                        {id: 0, username: 'warmthdawn', groupPermissionLevel: 0},
+                        {id: 1, username: 'szy', groupPermissionLevel: 1},
+                        {id: 2, username: 'data', groupPermissionLevel: 2},
+                        {id: 3, username: 'test', groupPermissionLevel: 3},
+                    ],
+                    selection: [],
+                },
+                permittedLocation: [
+                    '/backup/et2',
+                    '/backup/ftbi',
+                    '/backup/tog',
+                    '/root/common',
+                ],
+                editingUser:
+                    {
+                        id: 0,
+                        username: 'warmthdawn',
+                        password: undefined,
+                        groupPermissionLevel: 0,
+                    },
+
             },
             data: {
                 id: 1,
@@ -264,9 +421,30 @@ export default {
             return this.servers.filter((it) => {
                 return !this.data.servers.some((has) => has.id === it.id)
             })
-        }
+        },
     },
     methods: {
+        //用户编辑列表显示
+        userListSelection(selection) {
+            const selectionMap = new Set(selection.map((it) => it.id))
+            this.dialogData.userListEditor.selection = selectionMap
+            this.dialogData.userListEditor.users.sort((a, b) => {
+                const selA = selectionMap.has(a.id)
+                const selB = selectionMap.has(b.id)
+                if (selA === selB) {
+                    return a.username.localeCompare(b.username)
+                } else {
+                    return selA ? -1 : 1
+                }
+
+            })
+        },
+
+        editUser(id) {
+            console.log(id)
+            this.dialogs.userEditor = true
+        },
+
         addServer() {
             this.addLoading = true
             setTimeout(() => {
@@ -374,12 +552,33 @@ export default {
   }
 }
 
+.my-dialog {
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 12px 16px 0;
+  }
+
+  .file-list {
+    .file-edit {
+      margin: 8px 0;
+      display: flex;
+
+      & > div {
+        margin: 0 12px;
+      }
+    }
+  }
+}
+
 </style>
 
 <style>
 .el-card__body {
     padding-top: 8px;
 }
+
 div.el-collapse-item__content {
     padding-bottom: 0;
 }
