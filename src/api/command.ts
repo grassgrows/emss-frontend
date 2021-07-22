@@ -1,5 +1,6 @@
 import axios from 'axios'
 import result from '@/utils/result'
+import store from '@/store'
 
 export async function attachServer(id: number): Promise<WebSocket> {
     const loc = window.location
@@ -10,7 +11,8 @@ export async function attachServer(id: number): Promise<WebSocket> {
         uri = 'ws:'
     }
     uri += '//' + loc.host
-    uri = `ws://localhost:7777/command/attach/${id}`
+    uri += `/socket/command/attach/${id}`
+    uri += `?token=${store.state.authToken}`
     const ws = new WebSocket(uri)
 
     return await new Promise((resolve, reject) => {
