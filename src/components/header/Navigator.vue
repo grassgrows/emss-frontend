@@ -48,7 +48,7 @@
           v-else
           #title
         >
-&nbsp;
+          &nbsp;
         </template>
       </el-menu-item-group>
     </template>
@@ -169,7 +169,7 @@ export default {
             return this.collapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'
         },
         menuIndex() {
-            const { menuIndex } = this.$route.meta
+            const {menuIndex} = this.$route.meta
             if (typeof menuIndex === 'function') {
                 return menuIndex(this.$route)
             }
@@ -195,42 +195,46 @@ export default {
 }
 </script>
 
-<style>
-.my-menu:not(.el-menu--collapse) {
-  width: 250px;
-  min-height: 400px;
-}
-.my-menu .el-menu {
-    background-color: rgba(0,0,0,0);
-}
+<style lang="less">
 .my-menu {
-    background-image: url("../../../public/menubg.png");
-    background-size: cover;
-}
-.my-menu .el-submenu__title:hover, .my-menu .el-menu-item:hover {
-    background-color: #303133!important;
+  background-image: url("../../../public/menubg.png");
+  background-size: cover;
+
+  &:not(.el-menu--collapse) {
+    width: 250px;
+    min-height: 400px;
+  }
+
+  .el-menu, .el-menu-item, .el-submenu__title {
+    background-color: rgba(0, 0, 0, 0) !important;
+  }
+
+  .el-submenu__title:hover, .el-menu-item:hover {
+    background-color: #303133 !important;
+  }
+
+  .el-submenu__title:focus, .el-menu-item:focus {
+    background-color: #313131 !important;
+  }
 }
 
-.my-menu .el-submenu__title:focus, .my-menu .el-menu-item:focus {
-    background-color: #313131!important;
-}
 </style>
 <style scoped>
 .title span {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #ffffff;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ffffff;
 }
 
 .title i {
-  font-size: 1.5em;
-  margin-right: 10px;
+    font-size: 1.5em;
+    margin-right: 10px;
 }
 
 .server-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .title {
