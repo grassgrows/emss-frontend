@@ -47,10 +47,11 @@ export default {
             current: 0,
             labels: [],
             count: 0,
-            datasets: []
+            datasets: [],
+            timer: 0,
         }
     },
-    created() {
+    mounted() {
         this.$watch(
             () => this.$route.params,
             () => {
@@ -59,7 +60,12 @@ export default {
             },
             { immediate: true}
         )
-        setInterval(this.fetchData,1000*60)
+        this.timer = setInterval(this.fetchData, 1000 * 60)
+    },
+    beforeUnmount() {
+        if (this.timer) {
+            clearInterval(this.timer)
+        }
     },
     methods: {
         async fetchData() {

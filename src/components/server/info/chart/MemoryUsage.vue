@@ -45,18 +45,24 @@ export default {
             labels: [],
             count: 0,
             datasets: [],
+            timer: 0,
         }
     },
-    created() {
+    mounted() {
         this.$watch(
             () => this.$route.params,
             () => {
-                this.loading = true,
+                this.loading = true
                 this.fetchData()
             },
-            { immediate: true },
+            { immediate : true }
         )
-        setInterval(this.fetchData,1000*60)
+        this.timer = setInterval(this.fetchData, 1000 * 60)
+    },
+    beforeUnmount() {
+        if (this.timer) {
+            clearInterval(this.timer)
+        }
     },
     methods: {
         async fetchData() {

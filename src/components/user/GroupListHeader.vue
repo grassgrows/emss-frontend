@@ -88,18 +88,18 @@
           />
         </el-select>
       </el-form-item>
-      <template #footer>
-        <el-button @click="showAddGroup=false">
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="createGroup"
-        >
-          确认
-        </el-button>
-      </template>
     </el-form>
+    <template #footer>
+      <el-button @click="showAddGroup=false">
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        @click="createGroup"
+      >
+        确认
+      </el-button>
+    </template>
   </el-dialog>
 </template>
 
@@ -118,9 +118,11 @@ export default {
         }
     },
     methods: {
-        createGroup() {
+        async createGroup() {
+            await api.userGroup.createGroup(this.newGroup)
+            this.newGroup = {}
             this.showAddGroup = false
-            console.log('add group')
+            this.$bus.emit('refresh-group')
         },
         async createUser() {
             await api.userGroup.createUser(this.newUser)

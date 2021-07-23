@@ -6,7 +6,7 @@
   <div class="container">
     <div class="header">
       <div class="card">
-        <h3>{{ displayHello }}， WarmthDawn， 今天服务器也在正常运行中</h3>
+        <h3>{{ displayHello }}， {{ username }}， 今天服务器也在正常运行中</h3>
         <p class="run">
           服务器已经运行了 {{ runningTime.days }} 天 {{ runningTime.hours }} 小时 {{ runningTime.minutes }} 分 {{
             runningTime.seconds
@@ -22,39 +22,39 @@
           </div>
           <div class="space"></div>
           <div class="wrapper">
-            <el-divider direction="vertical"></el-divider>
-            <statistic
-              title="管理员数量"
-              :value="users"
-              class="statistic"
-              reverse
-              content-style="color: #67C23A;"
-            />
-            <el-divider direction="vertical"></el-divider>
-            <statistic
-              title="运行中服务器"
-              :value="running"
-              class="statistic"
-              reverse
-              content-style="color: #67C23A;"
-            />
-            <el-divider direction="vertical"></el-divider>
-            <statistic
-              title="已关闭服务器"
-              :value="stopped"
-              class="statistic"
-              reverse
-              content-style="color: #F56C6C;"
-            />
-            <el-divider direction="vertical"></el-divider>
-            <statistic
-              title="服务器总数"
-              :value="total"
-              class="statistic"
-              reverse
-              content-style="color: #409EFF;"
-            />
-            <el-divider direction="vertical"></el-divider>
+            <div>
+              <statistic
+                title="管理员总数量"
+                :value="users"
+                class="statistic"
+                reverse
+                content-style="color: #67C23A;"
+              />
+              <statistic
+                title="运行中服务器"
+                :value="running"
+                class="statistic"
+                reverse
+                content-style="color: #67C23A;"
+              />
+
+            </div>
+            <div>
+              <statistic
+                title="已关闭服务器"
+                :value="stopped"
+                class="statistic"
+                reverse
+                content-style="color: #F56C6C;"
+              />
+              <statistic
+                title="服务器总数量"
+                :value="total"
+                class="statistic"
+                reverse
+                content-style="color: #409EFF;"
+              />
+            </div>
           </div>
         </div>
         <div class="card alerts">
@@ -150,6 +150,9 @@ export default {
                 return '晚上好'
             }
             return '晚安'
+        },
+        username() {
+            return localStorage.getItem('username')
         }
     },
     mounted() {
@@ -172,14 +175,14 @@ export default {
             }, 1000)
         })
     },
-    methods: {
-        formatTime(time) {
-            return DateTime.fromISO(time).toFormat('DDDD TT')
-        }
-    },
     beforeUnmount() {
         if (this.timer) {
             clearInterval(this.timer)
+        }
+    },
+    methods: {
+        formatTime(time) {
+            return DateTime.fromISO(time).toFormat('DDDD TT')
         }
     }
 
@@ -199,8 +202,22 @@ export default {
     display: flex;
     flex: auto;
 
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+    }
+
     .left {
       flex: auto;
+    }
+
+    .right {
+      width: 75vh;
+      @media screen and (max-width: 992px) {
+        width: 60vh;
+      }
+      @media screen and (max-width: 768px) {
+        width: auto;
+      }
     }
 
   }
@@ -218,6 +235,10 @@ export default {
   box-sizing: border-box;
   padding: 10px 30px;
   background-color: rgba(255, 255, 255, 0.8);
+  @media screen and (max-width: 768px) {
+    margin: 5px 4px 8px;
+  }
+
 }
 
 .title {
@@ -231,10 +252,12 @@ export default {
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
+  flex-wrap: wrap;
 
   .desc {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
+    flex: 1 0 100px;
   }
 
   .space {
@@ -247,15 +270,30 @@ export default {
     justify-content: flex-end;
     align-items: stretch;
     padding: 0 20px;
+    flex-wrap: wrap;
+
+    & > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: stretch;
+    }
 
     .el-divider {
-      margin: 16px 8px;
+      margin: 16px 4px;
       height: auto;
     }
 
+
     .statistic {
       padding: 5px 16px;
-      width: 100px;
+      width: auto;
+      min-width: 60px;
+      max-width: 100px;
+
+      @media screen and (max-width: 992px) and (min-width: 768px) {
+        width: 60px;
+      }
     }
   }
 }
@@ -278,11 +316,18 @@ export default {
 
 .system {
   margin: 5px 16px 24px;
+  @media screen and (max-width: 768px) {
+    margin: 5px 4px 8px;
+  }
 }
 
 .header {
   .card {
-    margin: 0 0 16px;
+    margin: 16px;
+
+    @media screen and (max-width: 768px) {
+      margin: 4px;
+    }
   }
 
   p.run {

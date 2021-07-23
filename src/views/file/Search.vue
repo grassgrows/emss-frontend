@@ -108,6 +108,13 @@ export default {
             await file.deleteFiles(this.getSelectedFile())
             await this.refresh()
         })
+        this.$bus.on('rename-file', async () => {
+            this.$message({
+                message: '无法在搜索界面重命名文件',
+                type: 'error'
+            })
+        })
+
 
     },
 

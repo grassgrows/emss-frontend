@@ -3,7 +3,10 @@
  * @Date: 2021/7/11
  -->
 <template>
-  <div @click="open">
+  <div
+    @click="open"
+    @contextmenu.stop.prevent="contextMenu"
+  >
     <div
       class="wrapper"
       :class="{selected}"
@@ -26,7 +29,9 @@
         v-if="!selected && !isMobile"
         class="checkbox-container more"
       >
-        <i class="el-icon-more" />
+        <div @click.stop="contextMenu">
+          <i class="el-icon-more" />
+        </div>
       </div>
       <div>
         <div class="image">
@@ -63,7 +68,7 @@ export default {
             default: false,
         },
     },
-    emits: ['update:selected', 'file-open'],
+    emits: ['update:selected', 'file-open', 'clearSelection'],
     computed: {
         isMobile() {
             return this.$store.isMobile
@@ -91,6 +96,13 @@ export default {
             } else {
                 this.$emit('file-open', {path: pathStr, file: this.file})
             }
+        },
+        contextMenu(e) {
+            if (!this.selected) {
+                this.$emit('clearSelection')
+                this.$emit('update:selected', true)
+            }
+            this.$bus.emit('file-context-menu', e)
         }
     },
 }
@@ -156,10 +168,13 @@ export default {
 
   &.selected {
     background-color: rgba(67, 137, 211, 0.2);
+
+    .selector .outline {
+      border: none;
+    }
   }
 
   &.selected, &:hover {
-
     .checkbox-container {
       opacity: 1;
       visibility: visible;

@@ -18,6 +18,16 @@ async function getGroupInfo(id) {
     return result.getData(resp.data, '获取组失败')
 }
 
+async function createGroup(group) {
+    const resp = await axios.post('/api/permission/group', {}, {
+        params: {
+            name: group.groupName,
+            maxLevel: group.maxPermissionLevel,
+        }
+    })
+    return result.getData(resp.data, '获取组失败')
+}
+
 async function getUserList() {
     const resp = await axios.get('/api/permission/user')
     return result.getData(resp.data, '获取用户失败')
@@ -32,6 +42,7 @@ async function removeUser(id) {
 async function createUser(user) {
     await axios.post('/api/login/user/create', user)
 }
+
 async function updateUser(user, groupId) {
     await axios.post('/api/permission/user', user, {
         params: {
@@ -76,5 +87,5 @@ export default {
     addServerToGroup, getGroupInfo,
     removeServerFromGroup, updateLocation,
     deleteLocation, updateUser,
-    updateUserGroup
+    updateUserGroup, createGroup
 }

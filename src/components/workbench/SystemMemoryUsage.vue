@@ -48,6 +48,7 @@ export default {
             labels: [],
             count: 0,
             datasets: [],
+            timer: 0,
         }
     },
     created() {
@@ -59,7 +60,12 @@ export default {
             },
             {immediate: true},
         )
-        setInterval(this.fetchData, 1000 * 5)
+        this.timer = setInterval(this.fetchData, 1000 * 5)
+    },
+    beforeUnmount() {
+        if (this.timer) {
+            clearInterval(this.timer)
+        }
     },
     methods: {
         async fetchData() {

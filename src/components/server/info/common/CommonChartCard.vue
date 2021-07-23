@@ -4,6 +4,7 @@
  -->
 <template>
   <el-card
+    shadow="never"
     :body-style="{ padding: '0px', borderRadius: '0px' }"
   >
     <div class="common-card">

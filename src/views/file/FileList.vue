@@ -22,6 +22,7 @@
     <div
       v-if="view === 'grid'"
       class="list"
+      @contextmenu.prevent="contextMenu"
     >
       <file-list-item
         v-for="f in files"
@@ -31,6 +32,7 @@
         :file="f"
         class="item selection-item"
         @file-open="$emit('file-open', $event)"
+        @clearSelection="clearSelection"
         @update:selected="selected.set(f.fileName, $event)"
       />
     </div>
@@ -138,7 +140,15 @@ export default {
         }
     }
     ,
-    methods: {}
+    methods: {
+        clearSelection() {
+            this.selected.clear()
+        },
+        contextMenu(e) {
+            this.clearSelection()
+            this.$bus.emit('file-context-menu', e)
+        }
+    }
     ,
 
 }

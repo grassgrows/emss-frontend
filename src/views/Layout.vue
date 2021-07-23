@@ -4,6 +4,7 @@
  -->
 <template>
   <el-container class="full-height">
+    <file-context-menu />
     <el-aside
       v-if="!isMobile"
       width="auto"
@@ -61,12 +62,13 @@ import MyNavigator from '@/components/header/Navigator.vue'
 import HeaderNav from '@/components/header/HeaderNav.vue'
 import HeaderBreadcrumb from '@/components/header/HeaderBreadcrumb.vue'
 import Uploader from '@/views/file/Uploader'
+import FileContextMenu from '@/components/file/FileContextMenu'
 
 const smMatch = window.matchMedia('(max-width: 768px)')
 
 export default {
     name: 'Layout',
-    components: {Uploader, HeaderNav, MyNavigator, HeaderBreadcrumb},
+    components: {FileContextMenu, Uploader, HeaderNav, MyNavigator, HeaderBreadcrumb},
     data() {
         return {
             collapseSide: smMatch.matches === true,
