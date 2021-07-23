@@ -30,7 +30,10 @@
             label="密码"
             prop="password"
           >
-            <el-input v-model="user.password" />
+            <el-input
+              type="password"
+              v-model="user.password"
+            />
           </el-form-item>
         </el-form>
         <p>

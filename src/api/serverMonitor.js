@@ -118,7 +118,12 @@ async function tpses(id) {
  */
 async function onlineNumbers(id) {
     const resp = await axios.get(`/api/statistics/${id}/online_player`)
-    return result.getData(resp.data, '获取服务器在线玩家信息失败')
+    const data = result.getData(resp.data, '获取服务器在线玩家信息失败')
+    return {
+        current: Number.parseInt(data.current),
+        values: data.values.map((it) => Number.parseInt(it)),
+        timestamps: data.timestamps,
+    }
 }
 
 export default {
