@@ -29,6 +29,7 @@ const routes = [
         name: 'login',
         meta: {
             noLogin: true,
+            title: '登录',
         },
         component: LogIn,
     },
@@ -36,6 +37,7 @@ const routes = [
         path: '/',
         name: 'Layout',
         component: Layout,
+        redirect: {name: 'workbench'},
         children: [
             {
                 path: '/workbench',
@@ -43,6 +45,7 @@ const routes = [
                 meta: {
                     menuIndex: '/workbench',
                     breadcrumb: ['工作台'],
+                    title: '工作台',
                 },
 
                 component: Workbench,
@@ -53,6 +56,7 @@ const routes = [
                 meta: {
                     menu_Index: '/server/list',
                     breadcrumb: ['工作台', '服务器'],
+                    title: '服务器',
                 },
                 components: {
                     default: ServerList,
@@ -65,6 +69,7 @@ const routes = [
                 meta: {
                     menuIndex: (route) => `/servers/${route.params.abbr}`,
                     breadcrumb: (route) => ['工作台', '服务器', route.params.abbr],
+                    title: '服务器',
                 },
                 props: true,
                 // component: Server,
@@ -100,6 +105,7 @@ const routes = [
                         const paths = route.params.filePaths || []
                         return ['工作台', '文件管理', ...paths.filter((s) => Boolean(s))]
                     },
+                    title: '文件管理',
                 },
                 components: {
                     default: Files,
@@ -114,6 +120,7 @@ const routes = [
                     breadcrumb: (route) => {
                         return ['工作台', '文件搜索', `${route.query.keyword}的搜索结果`]
                     },
+                    title: '文件搜索',
 
                 },
                 components: {
@@ -128,6 +135,7 @@ const routes = [
                 meta: {
                     menuIndex: '/system/users',
                     breadcrumb: ['工作台', '用户管理'],
+                    title: '用户管理',
                 },
                 components: {
                     default: UserGroupList,
@@ -140,6 +148,7 @@ const routes = [
                 meta: {
                     menuIndex: '/system/setting',
                     breadcrumb: ['工作台', '系统设置'],
+                    title: '系统设置',
                 },
                 // route level code-splitting
                 // this generates a separate chunk (about.[hash].js) for this route
@@ -152,6 +161,7 @@ const routes = [
                 meta: {
                     menuIndex: '/404',
                     breadcrumb: ['工作台', '404'],
+                    title: '404',
                 },
                 component: NotFound,
             },
@@ -169,6 +179,10 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+    if(to.meta.title) {
+        document.title = to.meta.title
+    }
+
     if (to.meta.noLogin !== true && !store.state.authToken) {
         next({name: 'login'})
     } else {
