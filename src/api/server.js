@@ -26,11 +26,9 @@ async function list() {
             running: d.running,
             port: d.port,
             lastRun: d.lastStartDate,
-
-
-            tps: 20.0,
-            online_player: 3,
-            max_player: 20,
+            online_player: d.onlinePlayer ?? 0,
+            max_player: d.maxPlayer ?? 20,
+            tps: d.tps ?? 20.0,
         }
     })
 }
