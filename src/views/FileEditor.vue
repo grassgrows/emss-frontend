@@ -25,6 +25,7 @@
         <ace-input
           v-else
           ref="editor"
+          v-model:value="value"
           :read-only="!editing"
           class="textarea"
           @keydown="keyDown"
@@ -200,11 +201,11 @@ export default {
 
 .file-editor-dialog {
   .el-dialog__body {
-    padding: 0;
+    padding: 0 !important;
   }
 
   width: 85% !important;
-  margin: 2vh auto !important;
+  margin: 3vh auto !important;
 
   @media screen and (max-width: 728px) {
     margin: 8vh auto !important;

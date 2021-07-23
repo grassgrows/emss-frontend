@@ -5,7 +5,7 @@
 <template>
   <div class="list-item">
     <el-card
-      shadow="always"
+      shadow="never"
       class="user-card"
     >
       <div class="card-header">

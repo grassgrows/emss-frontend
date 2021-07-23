@@ -48,9 +48,10 @@ export default {
             labels: [],
             count: 0,
             datasets: [],
+            timer: 0,
         }
     },
-    created() {
+    mounted() {
         this.$watch(
             () => this.$route.params,
             () => {
@@ -61,7 +62,12 @@ export default {
             // 此时 data 已经被 observed 了
             {immediate: true},
         )
-        setInterval(this.fetchData, 1000 * 5)
+        this.timer = setInterval(this.fetchData, 1000 * 5)
+    },
+    beforeUnmount() {
+        if (this.timer) {
+            clearInterval(this.timer)
+        }
     },
     methods: {
         async fetchData() {
@@ -73,7 +79,7 @@ export default {
                     borderColor: '#409EFFAA',
                     tension: 0.4,
                     fill: true,
-                    data: data.cpus.map((it)=>it * 100),
+                    data: data.cpus.map((it) => it * 100),
                 },
             ]
             this.current = round(data.currentCpu * 100, 2)

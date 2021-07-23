@@ -5,7 +5,7 @@
 <template>
   <div class="files">
     <el-card
-      shadow="always"
+      shadow="never"
       class="card"
       :class="dropping > 0 ? 'modal' : ''"
       @dragover.prevent
@@ -122,15 +122,15 @@ export default {
 
 
         this.$bus.on('copy-file', () => {
-            this.$store.commit('copyFile', this.getSelectedFile())
+            this.$store.commit('file/copyFile', this.getSelectedFile())
         })
         this.$bus.on('cut-file', () => {
-            this.$store.commit('cutFile', this.getSelectedFile())
+            this.$store.commit('file/cutFile', this.getSelectedFile())
         })
         this.$bus.on('parse-file', async () => {
-            const select = this.$store.state.selectedFileList
+            const select = this.$store.state.file.selectedFileList
             const path = this.$route.params.filePaths
-            const isCopy = this.$store.state.isCopy
+            const isCopy = this.$store.state.file.isCopy
             if (isCopy) {
                 await file.copyAndParseFiles(select, path)
             } else {
@@ -140,6 +140,34 @@ export default {
         })
         this.$bus.on('delete-file', async () => {
             await file.deleteFiles(this.getSelectedFile())
+            await this.refresh()
+        })
+
+        this.$bus.on('rename-file', async () => {
+            const selected = this.getSelectedFile()
+            if (selected.length > 1) {
+                this.$message({
+                    message: '一次只能重命名一个文件',
+                    type: 'error'
+                })
+                return
+            }
+            if (selected.length <= 0) {
+                this.$message({
+                    message: '无法重命名：未选择任何文件',
+                    type: 'error'
+                })
+                return
+            }
+            const currentFile = selected[0]
+            const newName = await this.$prompt('请输入新的文件名', '重命名', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputValue: currentFile.fileName,
+                inputPattern: /^[^\\\\/:*?"<>|]+$/,
+                inputErrorMessage: '文件名含有非法字符'
+            })
+            await file.renameFile(currentFile.filePath, newName.value)
             await this.refresh()
         })
 
@@ -176,15 +204,16 @@ export default {
             this.dropping = 0
             this.$bus.emit('add-upload-drop', event)
         },
-        newDirectory() {
-            this.$prompt('请输入文件夹名字', '新建文件夹', {
+        async newDirectory() {
+            const folder = await this.$prompt('请输入文件夹名字', '新建文件夹', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 inputPattern: /^[^\\\\/:*?"<>|]+$/,
                 inputErrorMessage: '文件夹名含有非法字符'
-            }).then(({value}) => {
-                file.createFolder(value, this.$route.params.filePaths)
             })
+
+            await file.createFolder(folder.value, this.$route.params.filePaths)
+            await this.refresh()
         }
     },
 }

@@ -16,7 +16,8 @@ import '@/assets/icon-file/iconfont'
 import '@/assets/icon-file/iconfont.css'
 import 'animate.css'
 
-import 'element-plus/lib/theme-chalk/base.css'
+// import 'element-plus/lib/theme-chalk/base.css'
+import './element-variables.scss'
 import 'ace-builds'
 
 const app = createApp(App)

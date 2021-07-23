@@ -60,64 +60,28 @@
         circle
         @click="showSearch = !showSearch"
       />
-      <el-popover
-        placement="bottom"
-        trigger="focus"
-      >
-        <template #reference>
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            circle
-          />
+
+      <el-dropdown trigger="click">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          circle
+        />
+        <template #dropdown>
+          <file-menu />
         </template>
-        <el-space
-          direction="vertical"
-          class="operations"
-        >
-          <el-link
-            :underline="false"
-            href="javascript:void(0);"
-            icon="el-icon-document-copy"
-            @click="$bus.emit('copy-file')"
-          >
-            复制
-          </el-link>
-          <el-link
-            :underline="false"
-            href="javascript:void(0);"
-            icon="el-icon-scissors"
-            @click="$bus.emit('cut-file')"
-          >
-            剪切
-          </el-link>
-          <el-link
-            :underline="false"
-            href="javascript:void(0);"
-            icon="el-icon-document-add"
-            @click="$bus.emit('parse-file')"
-          >
-            粘贴
-          </el-link>
-          <el-link
-            :underline="false"
-            href="javascript:void(0);"
-            icon="el-icon-delete"
-            @click="$bus.emit('delete-file')"
-          >
-            删除
-          </el-link>
-        </el-space>
-      </el-popover>
+      </el-dropdown>
     </div>
   </div>
 </template>
 
 <script>
 import {mapState} from 'vuex'
+import FileMenu from '@/components/file/FileMenu'
 
 export default {
     name: 'FileListHeader',
+    components: {FileMenu},
     data() {
         return {
             showSearch: false,
@@ -145,7 +109,7 @@ export default {
         }),
         sortMethodName() {
             return this.sortMethods.find((it) => it.key === this.sortMethod).name
-        }
+        },
     },
     methods: {
         searchFile() {
@@ -189,5 +153,10 @@ export default {
 .operation-button {
   display: flex;
   flex-direction: row;
+
+  div button {
+    margin: 0 10px;
+  }
 }
+
 </style>

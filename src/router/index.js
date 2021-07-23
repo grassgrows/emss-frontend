@@ -135,10 +135,10 @@ const routes = [
                 }
             },
             {
-                path: '/system/workbench',
+                path: '/system/setting',
                 name: 'setting',
                 meta: {
-                    menuIndex: '/system/workbench',
+                    menuIndex: '/system/setting',
                     breadcrumb: ['工作台', '系统设置'],
                 },
                 // route level code-splitting

@@ -104,10 +104,23 @@ export async function deleteFiles(files: Array<FileInfo>) {
     await axios.post('api/file/delete', paths)
 }
 
+export async function renameFile(filePath: string, newName: string) {
+    await axios.post('api/file/rename', {}, {
+        params: {
+            path: filePath,
+            newName,
+        }
+    })
+}
+
 export async function createFolder(name: String, filePath: Array<string> | null) {
     const path: string = (filePath || []).join('/')
 
-    await axios.post('api/file/newFolder', `${path}/${name}`)
+    await axios.post('api/file/newFolder', {}, {
+        params: {
+            path: `${path}/${name}`
+        }
+    })
 }
 
 export async function previewFile(filePath: string, pageNum = -1) {
@@ -125,7 +138,7 @@ export async function previewFile(filePath: string, pageNum = -1) {
 }
 
 export async function saveFile(filePath: string, data: string) {
-    await axios.post('api/file/save', data ,{
+    await axios.post('api/file/save', data, {
         params: {
             path: filePath,
         },
