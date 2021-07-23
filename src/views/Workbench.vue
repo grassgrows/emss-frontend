@@ -6,7 +6,7 @@
   <div class="container">
     <div class="header">
       <div class="card">
-        <h3>{{ displayHello }}， WarmthDawn， 今天服务器也在正常运行中</h3>
+        <h3>{{ displayHello }}， {{ username }}， 今天服务器也在正常运行中</h3>
         <p class="run">
           服务器已经运行了 {{ runningTime.days }} 天 {{ runningTime.hours }} 小时 {{ runningTime.minutes }} 分 {{
             runningTime.seconds
@@ -150,6 +150,9 @@ export default {
                 return '晚上好'
             }
             return '晚安'
+        },
+        username() {
+            return localStorage.getItem('username')
         }
     },
     mounted() {

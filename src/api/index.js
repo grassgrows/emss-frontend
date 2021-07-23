@@ -11,8 +11,8 @@ import login from '@/api/login'
 import * as file from '@/api/file'
 import * as command from '@/api/command'
 import system from '@/api/system'
-
+import user from '@/api/user'
 
 export default {
-    server, setting, file, command, userGroup, login, system
+    server, setting, file, command, userGroup, login, system, user
 }

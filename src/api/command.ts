@@ -12,6 +12,7 @@ export async function attachServer(id: number): Promise<WebSocket> {
     }
     uri += '//' + loc.host
     uri += `/socket/command/attach/${id}`
+    uri = `ws://localhost:7777/command/attach/${id}`
     uri += `?token=${store.state.authToken}`
     const ws = new WebSocket(uri)
 

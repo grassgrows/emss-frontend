@@ -32,15 +32,15 @@
         </div>
       </template>
       <div class="avatar-popover">
-        <el-row 
-          align="center" 
+        <el-row
+          align="center"
           :gutter="10"
           style="width: 100%;"
         >
           <i class="icon" />
           <h4>EMSS</h4>
           <div class="blank" />
-          <el-button 
+          <el-button
             type="text"
             @click="signOut"
           >
@@ -62,10 +62,11 @@
             <el-row justify="center">
               <h3 class="username">
                 {{ username }}
-                <el-link>
-                  icon="el-icon-edit" 
-                  :underline="false" 
+                <el-link
+                  icon="el-icon-edit"
+                  :underline="false"
                   @click.prevent="changeName"
+                >
                 </el-link>
               </h3>
             </el-row>
@@ -81,8 +82,8 @@
         </el-row>
       </div>
     </el-popover>
-    <el-dialog 
-      v-model="showEdit" 
+    <el-dialog
+      v-model="showEdit"
       title="修改密码"
       top="30px"
       width="35%"
@@ -124,14 +125,14 @@
           />
         </el-form-item>
       </el-form>
-      <p 
-        v-if="showMsg" 
+      <p
+        v-if="showMsg"
         style="height: 40px; display: flex; align-items: center; text-align: right"
       >
         请联系服务器管理员！
       </p>
-      <p 
-        v-else 
+      <p
+        v-else
         style="text-align: right"
       >
         <el-button
@@ -162,7 +163,7 @@ import api from '@/api'
 
 export default {
     name: 'HeaderNav',
-    components: { HeaderBreadcrumb },
+    components: {HeaderBreadcrumb},
     props: {
         collapseSide: {
             type: Boolean,
@@ -209,10 +210,10 @@ export default {
             showEdit: false,
             showMsg: false,
             rules: {
-                password: [{ validator: validPass, trigger: 'blur' }],
-                newPassword: [{ validator: validPass2, trigger: 'blur' },
+                password: [{validator: validPass, trigger: 'blur'}],
+                newPassword: [{validator: validPass2, trigger: 'blur'},
                     {pattern: /^[a-zA-Z0-9]{6,20}$/, message: '密码只能为大小写字母或数字，且长度为6~20个字符', trigger: 'blur'}],
-                checkPassword: [{ validator: validPass3, trigger: 'blur' }],
+                checkPassword: [{validator: validPass3, trigger: 'blur'}],
             },
         }
     },
@@ -220,6 +221,9 @@ export default {
         icon() {
             return this.collapseSide ? 'el-icon-s-unfold' : 'el-icon-s-fold'
         },
+        username() {
+            return localStorage.getItem('username')
+        }
     },
     methods: {
         async confirmPwd() {
@@ -249,18 +253,22 @@ export default {
         signOut() {
             this.$store.commit('clearToken')
             localStorage.removeItem('password')
-            this.$router.push({name:'login'})
+            this.$router.push({name: 'login'})
         },
         async changeName() {
-            this.$prompt('新用户名', '修改用户名', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                inputPlaceholder: '由大小写字母、数字或下划线组成，且长度为3~20个字符',
-                inputPattern: /^[a-zA-Z0-9_]{3,20}$/,
-                inputErrorMessage: '格式不正确',
-            }).then(async ({ value }) => {
-                await api.user.changeName(value)
-            }).catch(() => {})
+            try {
+                const newName = await this.$prompt('新用户名', '修改用户名', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPlaceholder: '由大小写字母、数字或下划线组成，且长度为3~20个字符',
+                    inputPattern: /^[a-zA-Z0-9_]{3,20}$/,
+                    inputErrorMessage: '格式不正确',
+                })
+                await api.user.changeName(newName.value)
+                // eslint-disable-next-line no-empty
+            } catch (e) {
+                console.log(e)
+            }
         }
     },
 }
@@ -273,11 +281,13 @@ export default {
     display: flex;
     flex-direction: row;
 }
+
 .avatar2 .el-avatar--large {
     width: 70px;
     height: 70px;
     line-height: 70px;
 }
+
 .avatar2 .el-avatar--icon {
     font-size: 30px;
     margin-top: 10px;
@@ -286,45 +296,50 @@ export default {
 .el-form-item {
     margin-bottom: 5px;
 }
+
 .avatar-popover {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
 }
+
 .my-header-nav {
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-  height: 100%;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .button {
-  font-size: 2em;
-  color: #8a8a8a;
-  margin-right: 30px;
+    font-size: 2em;
+    color: #8a8a8a;
+    margin-right: 30px;
 }
 
 .button.small {
-  font-size: 1.5em;
-  margin-right: 15px;
+    font-size: 1.5em;
+    margin-right: 15px;
 }
 
 .button:hover {
-  color: #4888d6;
+    color: #4888d6;
 }
 
 @media screen and (max-width: 768px) {
-  .button:hover, .button {
-    color: #4888d6;
-  }
+    .button:hover, .button {
+        color: #4888d6;
+    }
 }
+
 .my-header-end {
-  flex: 0 0 1;
+    flex: 0 0 1;
 }
+
 .el-divider--horizontal {
     margin: 0;
 }
+
 .el-col-8 {
     margin-top: 10px;
     margin-right: 5px;
@@ -333,16 +348,19 @@ export default {
 
 <style>
 .el-popover.el-popper {
-    border-radius: 0!important;
-    padding: 10px 25px!important;
+    border-radius: 0 !important;
+    padding: 10px 25px !important;
 }
+
 .el-dialog {
-    border-radius: 0!important;
+    border-radius: 0 !important;
 }
+
 .el-dialog__body {
-    padding: 5px 20px!important;
+    padding: 5px 20px !important;
 }
+
 .el-input__inner {
-    border-radius: 0!important;
+    border-radius: 0 !important;
 }
 </style>
