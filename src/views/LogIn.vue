@@ -4,16 +4,18 @@
  -->
 <template>
   <div class="log-in">
-    <div class="blank" />
+    <div class="header">
+      <img src="../../public/login-header.png" />
+    </div>
     <div class="login-form">
       <el-card shadow="always">
         <template #header>
-          <h2>登录</h2>
+          <h2 class="login-text">登录</h2>
         </template>
         <el-form
           ref="form"
           :model="user"
-          label-position="left"
+          label-position="top"
           label-width="60px"
           :rules="rules"
           hide-required-asterisk
@@ -31,13 +33,6 @@
             <el-input v-model="user.password" />
           </el-form-item>
         </el-form>
-        <button
-          type="submit"
-          class="btn btn-secondary btn-block"
-          @click="login()"
-        >
-          登录
-        </button>
         <p>
           <label>
             <input
@@ -46,6 +41,13 @@
             >记住密码
           </label>
         </p>
+        <button
+          type="submit"
+          class="btn btn-secondary btn-block"
+          @click="login()"
+        >
+          登录
+        </button>
       </el-card>
     </div>
   </div>
@@ -121,16 +123,53 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+.header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 12%;
+  background-image: url("../../public/menubg.png");
+  box-shadow: 0 6px 0 0 rgba(0,0,0,.20);
+  display: flex;
+  align-items: center;
+  @media screen and (max-width: 728px) {
+    height: 8%;
+  }
+}
+
+img {
+    height: 86.4px;
+    width:265.8px;
+  @media screen and (max-width: 728px) {
+    height: 43.2px;
+    width: 132.9px;
+  }
 }
 
 .login-form {
-    width: 400px;
+    width: 500px;
     height: 450px;
-    margin: 0 100px;
+    margin: 0 auto;
+
     .el-card {
       height: 100%;
       width: 100%;
     }
+
+  @media screen and (max-width: 728px) {
+    width: 300px;
+    height: 450px;
+  }
+}
+
+.login-text {
+  margin: 5px 0;
+}
+
+.el-form-item {
+  margin-bottom: 10px;
 }
 </style>
 
@@ -194,15 +233,27 @@ button {
 }
 .btn-block {
     display: block;
-    width: 50%;
+    width: 100%;
+    height: 50px;
+    margin-top: 40px;
 }
 </style>
 
 <style lang="less">
 .login-form .el-form-item__label {
-  font-size: 17px;
+  font-size: 16px;
 }
 .login-form .el-input__inner {
   border-radius: 0;
+  border-color: #313131;
+}
+.el-form--label-top .el-form-item__label {
+  padding: 0!important;
+}
+.el-card__header {
+  padding: 25px 40px!important;
+}
+.el-card__body {
+  padding: 10px 40px!important;
 }
 </style>
