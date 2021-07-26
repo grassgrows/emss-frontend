@@ -209,22 +209,7 @@ export default {
         async openDialog() {
             this.loading = true
             const images = await api.setting.images()
-            const server = await api.server.serverInfo(this.$store.state.currentServer.id)
-            const newServer = {}
-            Object.assign(newServer, server)
-            newServer.portBindings = Object.entries(server.portBindings).map((it) => {
-                return {
-                    hostPort: it[0],
-                    containerPort: it[1],
-                }
-            })
-            newServer.volumeBind = Object.entries(server.volumeBind).map((it) => {
-                return {
-                    hostVolume: it[0],
-                    containerVolume: it[1],
-                }
-            })
-            this.server = newServer
+            this.server = await api.server.serverInfo(this.$store.state.currentServer.id)
             const result = []
             for (const image of images) {
                 const s = await api.setting.imageStatus(image.id)

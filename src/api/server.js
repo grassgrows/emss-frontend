@@ -44,14 +44,6 @@ async function serverInfo(id) {
  * 开服 关服 重启
  */
 async function create(val) {
-    const portBindings = {}
-    val.portBindings.forEach((it) => {
-        portBindings[it.hostPort] = it.containerPort
-    })
-    const volumeBind = new Map()
-    val.volumeBind.forEach((it) => {
-        volumeBind[it.hostVolume] = it.containerVolume
-    })
     const req = {
         name: val.name,
         aliasName: val.anotherName,
@@ -59,8 +51,8 @@ async function create(val) {
         location: val.serverPosition,
         startCommand: val.startCommand,
         workingDir: val.workingDir,
-        portBindings,
-        volumeBind,
+        portBindings: val.portBindings,
+        volumeBind: val.volumeBind,
         imageId: val.selectedDocker,
         permissionGroup: [...val.permittedGroup],
     }
@@ -90,20 +82,7 @@ async function remove(id) {
 }
 
 async function updateSetting(server) {
-    const portBindings = {}
-    server.portBindings.forEach((it) => {
-        portBindings[it.hostPort] = it.containerPort
-    })
-    const volumeBind = new Map()
-    server.volumeBind.forEach((it) => {
-        volumeBind[it.hostVolume] = it.containerVolume
-    })
-    const data = {}
-    Object.assign(data, server)
-    data.id = undefined
-    data.portBindings = portBindings
-    data.volumeBind = volumeBind
-    const resp = await axios.post(`/api/servers/${server.id}`, data)
+    const resp = await axios.post(`/api/servers/${server.id}`, server)
 
     result.getData(resp.data, '保存设置失败')
 }
