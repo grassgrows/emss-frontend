@@ -129,7 +129,7 @@
           <el-button
             type="text"
             class="button auto-size color-primary"
-            @click="$router.push({name:'files', params:{ filePath:[abbr] }})"
+            @click="toFile"
           >
             文件
           </el-button>
@@ -262,6 +262,10 @@ export default {
                 type: 'success'
             })
             await this.$store.dispatch('refreshServerList')
+        },
+        async toFile() {
+            const path = await api.server.filePath(this.id)
+            await this.$router.push({name: 'files', params: {filePaths: path.split('/')}})
         }
     }
 }

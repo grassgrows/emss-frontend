@@ -23,8 +23,8 @@
           </li>
           <li
             class="el-dropdown-menu__item"
-            :disabled="!canParse"
-            @click="$bus.emit('parse-file')"
+            :class="{'is-disabled': !canParse}"
+            @click="canParse && $bus.emit('parse-file')"
           >
             <i class="el-icon-document-add" />
             粘贴
@@ -42,6 +42,14 @@
           >
             <i class="el-icon-delete" />
             删除
+          </li>
+
+          <li
+            class="el-dropdown-menu__item"
+            @click="$bus.emit('refresh-file')"
+          >
+            <i class="el-icon-refresh" />
+            刷新
           </li>
         </ul>
       </div>

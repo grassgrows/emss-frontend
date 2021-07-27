@@ -20,7 +20,10 @@
           @collapse-click="collapseSide = !collapseSide"
         />
       </el-header>
-      <el-main class="main-content">
+      <el-main
+        v-loading="$store.state.loadingList"
+        class="main-content"
+      >
         <div class="content-header">
           <header-breadcrumb
             v-if="isMobile"

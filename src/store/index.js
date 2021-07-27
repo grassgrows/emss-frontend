@@ -15,6 +15,7 @@ const store = createStore({
             addState: false,
             serverSetting: false,
             isMobile: false,
+            loadingList: false,
 
             authToken: sessionStorage.getItem('token')
         }
@@ -25,6 +26,9 @@ const store = createStore({
         },
         setServer(state, server) {
             state.currentServer = server
+        },
+        setLoadingList(state, val) {
+            state.loadingList = val
         },
         changeAddState(state, val) {
             state.addState = val

@@ -5,7 +5,7 @@ function getData(data, errorTitle){
         ElNotification({
             type: 'error',
             title: errorTitle,
-            message: data.message
+            message: data.msg
         })
         return false
     }

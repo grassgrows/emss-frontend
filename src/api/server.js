@@ -29,6 +29,7 @@ async function list() {
             online_player: d.onlinePlayer ?? 0,
             max_player: d.maxPlayer ?? 20,
             tps: d.tps ?? 20.0,
+            autoRestart: d.autoRestart,
         }
     })
 }
@@ -87,6 +88,20 @@ async function updateSetting(server) {
     result.getData(resp.data, '保存设置失败')
 }
 
+async function autoRestart(id, value) {
+    await axios.post(`/api/servers/${id}/autoRestart`, {}, {
+        params: {
+            value
+        }
+    })
+}
+
+async function filePath(id) {
+    const resp = await axios.get(`/api/servers/${id}/filePath`)
+    return result.getData(resp.data, '获取服务器文件路径失败').substr(1)
+}
+
+
 export default {
-    monitor, list, start, stop, restart, create, updateSetting, serverInfo, remove
+    monitor, list, start, stop, restart, create, updateSetting, serverInfo, remove, autoRestart, filePath
 }

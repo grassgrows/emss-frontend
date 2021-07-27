@@ -7,6 +7,7 @@
     <el-empty
       v-if="!emptyMessage"
       :description="emptyDesc"
+      @contextmenu.prevent="contextMenu"
     />
     <el-result
       v-else
@@ -18,11 +19,11 @@
   <div
     v-else
     class="selection-container"
+    @contextmenu.prevent="contextMenu"
   >
     <div
       v-if="view === 'grid'"
       class="list"
-      @contextmenu.prevent="contextMenu"
     >
       <file-list-item
         v-for="f in files"
