@@ -1,0 +1,58 @@
+{
+  "id": "2662060",
+  "name": "emss",
+  "font_family": "iconfont",
+  "css_prefix_text": "emss-icon-",
+  "description": "EMSS图标库",
+  "glyphs": [
+    {
+      "icon_id": "5127166",
+      "name": "archive-in",
+      "font_class": "archive-in",
+      "unicode": "e717",
+      "unicode_decimal": 59159
+    },
+    {
+      "icon_id": "5127168",
+      "name": "archive-out",
+      "font_class": "archive-out",
+      "unicode": "e718",
+      "unicode_decimal": 59160
+    },
+    {
+      "icon_id": "4767104",
+      "name": "pause",
+      "font_class": "pause",
+      "unicode": "e7fe",
+      "unicode_decimal": 59390
+    },
+    {
+      "icon_id": "128825",
+      "name": "books",
+      "font_class": "books",
+      "unicode": "e716",
+      "unicode_decimal": 59158
+    },
+    {
+      "icon_id": "5634350",
+      "name": "server",
+      "font_class": "server",
+      "unicode": "f0ac",
+      "unicode_decimal": 61612
+    },
+    {
+      "icon_id": "142351",
+      "name": "plus",
+      "font_class": "plus",
+      "unicode": "e98c",
+      "unicode_decimal": 59788
+    },
+    {
+      "icon_id": "1190782",
+      "name": "folder",
+      "font_class": "folder",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    }
+  ]
+}

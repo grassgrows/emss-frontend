@@ -159,3 +159,20 @@ export async function saveFile(filePath: string, data: string) {
     })
 }
 
+export async function compressFiles(files: Array<FileInfo>) {
+    const paths = files.map((to) => {
+        return to.filePath
+    })
+    await axios.post('api/file/compress', paths)
+}
+
+
+export async function uncompressFile(filePath: string) {
+    await axios.post('api/file/uncompress', {}, {
+        params: {
+            path: filePath,
+        },
+    })
+}
+
+

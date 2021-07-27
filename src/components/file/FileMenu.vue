@@ -38,6 +38,20 @@
     >
       刷新
     </el-dropdown-item>
+
+    <el-dropdown-item
+      @click="$bus.emit('compress-file')"
+    >
+      <i class="el-icon- iconfont emss-icon-archive-in" />
+      压缩
+    </el-dropdown-item>
+
+    <el-dropdown-item
+      @click="$bus.emit('uncompress-file')"
+    >
+      <i class="el-icon- iconfont emss-icon-archive-out" />
+      解压缩
+    </el-dropdown-item>
   </el-dropdown-menu>
 </template>
 
@@ -47,7 +61,7 @@ export default {
     computed: {
         canParse() {
             return this.$store.state.file.selectedFileList.length > 0
-        }
+        },
     }
 }
 </script>

@@ -198,6 +198,35 @@ export default {
             await this.refresh()
         })
 
+        this.$bus.on('compress-file', async () => {
+            await file.compressFiles(this.getSelectedFile())
+            await this.refresh()
+            //TODO: 进度条
+        })
+
+        this.$bus.on('rename-file', async () => {
+            const selected = this.getSelectedFile()
+            if (selected.length > 1) {
+                this.$message({
+                    message: '一次只能解压缩一个文件',
+                    type: 'error'
+                })
+                return
+            }
+            if (selected.length <= 0) {
+                this.$message({
+                    message: '无法解压缩：未选择任何文件',
+                    type: 'error'
+                })
+                return
+            }
+            const currentFile = selected[0]
+            await file.uncompressFile(currentFile.filePath)
+            //TODO: 进度条
+            await this.refresh()
+        })
+
+
     },
     methods: {
         async refresh(filePaths) {

@@ -51,6 +51,22 @@
             <i class="el-icon-refresh" />
             刷新
           </li>
+
+          <li
+            class="el-dropdown-menu__item"
+            @click="$bus.emit('compress-file')"
+          >
+            <i class="el-icon- iconfont emss-icon-archive-in" />
+            压缩
+          </li>
+
+          <li
+            class="el-dropdown-menu__item"
+            @click="$bus.emit('uncompress-file')"
+          >
+            <i class="el-icon- iconfont emss-icon-archive-out" />
+            解压缩
+          </li>
         </ul>
       </div>
     </transition>
@@ -70,7 +86,7 @@ export default {
     computed: {
         canParse() {
             return this.$store.state.file.selectedFileList.length > 0
-        }
+        },
     },
     watch: {
         visible(value) {
@@ -83,7 +99,6 @@ export default {
     },
     created() {
         this.$bus.on('file-context-menu', this.openMenu)
-
     },
     methods: {
         openMenu(e) {
