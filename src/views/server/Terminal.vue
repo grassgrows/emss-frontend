@@ -68,6 +68,11 @@ export default defineComponent({
         }
     },
     created() {
+        this.$bus.on('server-start', () => {
+            this.initTerminal()
+        })
+    },
+    mounted() {
         this.initTerminal()
     },
     methods: {
@@ -76,7 +81,7 @@ export default defineComponent({
             this.ws && this.ws.close()
             this.ws = await attachServer(this.$store.state.currentServer.id)
             this.ws.onclose = () => {
-                this.$notify({
+                this.$message({
                     type: 'info',
                     title: '连接断开',
                     message: '终端断开连接，请稍后刷新重试'

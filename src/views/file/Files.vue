@@ -132,15 +132,39 @@ export default {
             const path = this.$route.params.filePaths
             const isCopy = this.$store.state.file.isCopy
             if (isCopy) {
-                await file.copyAndParseFiles(select, path)
+                const duplicate = await file.copyCheck(select, path)
+                if (duplicate > 0) {
+                    try {
+                        await this.$confirm(`粘贴的目标有${duplicate}个重复文件，确认覆盖？`, '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        })
+
+                        await file.copyAndParseFiles(select, path)
+                        // eslint-disable-next-line no-empty
+                    } catch (e) {
+                    }
+                } else {
+                    await file.copyAndParseFiles(select, path)
+                }
             } else {
                 await file.cutAndParseFiles(select, path)
             }
             await this.refresh()
         })
         this.$bus.on('delete-file', async () => {
-            await file.deleteFiles(this.getSelectedFile())
-            await this.refresh()
+            try {
+                await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                await file.deleteFiles(this.getSelectedFile())
+                await this.refresh()
+                // eslint-disable-next-line no-empty
+            } catch (e) {
+            }
         })
 
         this.$bus.on('rename-file', async () => {
@@ -168,6 +192,9 @@ export default {
                 inputErrorMessage: '文件名含有非法字符'
             })
             await file.renameFile(currentFile.filePath, newName.value)
+            await this.refresh()
+        })
+        this.$bus.on('refresh-file', async () => {
             await this.refresh()
         })
 

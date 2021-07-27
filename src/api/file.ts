@@ -72,6 +72,19 @@ export async function getFiles(filePath: Array<string> | null): Promise<Result<A
     }
 
 }
+export async function copyCheck(files: Array<FileInfo>, filePath: Array<string> | null) {
+    const path: string = (filePath || []).join('/')
+    const paths = files.map((to) => {
+        return to.filePath
+    })
+    const resp = await axios.post('/api/file/copy/check', paths, {
+        params: {
+            path,
+        },
+    })
+    return result.getData(resp.data, '尝试粘贴失败')
+}
+
 
 export async function copyAndParseFiles(files: Array<FileInfo>, filePath: Array<string> | null) {
     const path: string = (filePath || []).join('/')

@@ -54,7 +54,7 @@ const routes = [
                 path: '/server/list',
                 name: 'server_list',
                 meta: {
-                    menu_Index: '/server/list',
+                    menuIndex: '/server/list',
                     breadcrumb: ['工作台', '服务器'],
                     title: '服务器',
                 },
@@ -187,7 +187,9 @@ router.beforeEach(async (to, from, next) => {
         next({name: 'login'})
     } else {
         if(store.state.authToken){
+            store.commit('setLoadingList', true)
             await store.dispatch('refreshServerList')
+            store.commit('setLoadingList', false)
         }
         next()
     }

@@ -31,6 +31,13 @@
     >
       删除
     </el-dropdown-item>
+
+    <el-dropdown-item
+      icon="el-icon-refresh"
+      @click="$bus.emit('refresh-file')"
+    >
+      刷新
+    </el-dropdown-item>
   </el-dropdown-menu>
 </template>
 
