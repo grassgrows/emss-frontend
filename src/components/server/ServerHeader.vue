@@ -58,7 +58,7 @@
       <el-button
         type="primary"
         class="button auto-size"
-        @click="$router.push({name:'files', params:{ filePath:[abbr] }})"
+        @click="toFile"
       >
         文件
       </el-button>
@@ -79,13 +79,13 @@ export default {
     },
     methods: {
         async closeServer() {
-            this.$notify({
+            this.$message({
                 title: '开始关闭',
                 message: '服务器正在关闭',
                 type: 'info'
             })
             await api.server.stop(this.id)
-            this.$notify({
+            this.$message({
                 title: '关闭成功',
                 message: '服务器已经关闭',
                 type: 'success'
@@ -93,7 +93,7 @@ export default {
             await this.$store.dispatch('refreshServerList')
         },
         async startServer() {
-            this.$notify({
+            this.$message({
                 title: '正在开启',
                 message: '服务器正在开启',
                 type: 'info'
@@ -101,7 +101,7 @@ export default {
             try {
                 await api.server.start(this.id)
             } catch (e) {
-                this.$notify({
+                this.$message({
                     title: '启动服务器失败',
                     message: e.message,
                     type: 'error'
@@ -110,35 +110,42 @@ export default {
                 return
             }
 
-            this.$notify({
+            this.$message({
                 title: '启动成功',
                 message: '服务器已经启动',
                 type: 'success'
             })
             await this.$store.dispatch('refreshServerList')
+            this.$bus.emit('server-start')
         },
         async restartServer() {
-            this.$notify({
+            this.$message({
                 title: '正在重启',
                 message: '服务器正在重启',
                 type: 'info'
             })
             await api.server.restart(this.id)
-            this.$notify({
+            this.$message({
                 title: '启动成功',
                 message: '服务器已经启动',
                 type: 'success'
             })
             this.$store.dispatch('refreshServerList')
+            this.$bus.emit('server-start')
         },
         async removeServer() {
             await api.server.remove(this.id)
-            this.$notify({
+            this.$message({
                 title: '删除成功',
                 message: '已经删除服务器',
                 type: 'success'
             })
             await this.$store.dispatch('refreshServerList')
+        },
+
+        async toFile() {
+            const path = await api.server.filePath(this.id)
+            await this.$router.push({name: 'files', params: {filePaths: path.split('/')}})
         }
     },
 }

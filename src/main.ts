@@ -14,6 +14,8 @@ import 'chartjs-adapter-luxon'
 
 import '@/assets/icon-file/iconfont'
 import '@/assets/icon-file/iconfont.css'
+import '@/assets/icon-base/iconfont'
+import '@/assets/icon-base/iconfont.css'
 import 'animate.css'
 
 // import 'element-plus/lib/theme-chalk/base.css'

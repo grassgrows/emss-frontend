@@ -72,6 +72,19 @@ export async function getFiles(filePath: Array<string> | null): Promise<Result<A
     }
 
 }
+export async function copyCheck(files: Array<FileInfo>, filePath: Array<string> | null) {
+    const path: string = (filePath || []).join('/')
+    const paths = files.map((to) => {
+        return to.filePath
+    })
+    const resp = await axios.post('/api/file/copy/check', paths, {
+        params: {
+            path,
+        },
+    })
+    return result.getData(resp.data, '尝试粘贴失败')
+}
+
 
 export async function copyAndParseFiles(files: Array<FileInfo>, filePath: Array<string> | null) {
     const path: string = (filePath || []).join('/')
@@ -145,4 +158,21 @@ export async function saveFile(filePath: string, data: string) {
         transformRequest: (r) => r,
     })
 }
+
+export async function compressFiles(files: Array<FileInfo>) {
+    const paths = files.map((to) => {
+        return to.filePath
+    })
+    await axios.post('api/file/compress', paths)
+}
+
+
+export async function uncompressFile(filePath: string) {
+    await axios.post('api/file/uncompress', {}, {
+        params: {
+            path: filePath,
+        },
+    })
+}
+
 

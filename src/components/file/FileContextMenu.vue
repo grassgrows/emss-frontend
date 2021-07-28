@@ -23,8 +23,8 @@
           </li>
           <li
             class="el-dropdown-menu__item"
-            :disabled="!canParse"
-            @click="$bus.emit('parse-file')"
+            :class="{'is-disabled': !canParse}"
+            @click="canParse && $bus.emit('parse-file')"
           >
             <i class="el-icon-document-add" />
             粘贴
@@ -42,6 +42,30 @@
           >
             <i class="el-icon-delete" />
             删除
+          </li>
+
+          <li
+            class="el-dropdown-menu__item"
+            @click="$bus.emit('refresh-file')"
+          >
+            <i class="el-icon-refresh" />
+            刷新
+          </li>
+
+          <li
+            class="el-dropdown-menu__item"
+            @click="$bus.emit('compress-file')"
+          >
+            <i class="el-icon- iconfont emss-icon-archive-in" />
+            压缩
+          </li>
+
+          <li
+            class="el-dropdown-menu__item"
+            @click="$bus.emit('uncompress-file')"
+          >
+            <i class="el-icon- iconfont emss-icon-archive-out" />
+            解压缩
           </li>
         </ul>
       </div>
@@ -62,7 +86,7 @@ export default {
     computed: {
         canParse() {
             return this.$store.state.file.selectedFileList.length > 0
-        }
+        },
     },
     watch: {
         visible(value) {
@@ -75,7 +99,6 @@ export default {
     },
     created() {
         this.$bus.on('file-context-menu', this.openMenu)
-
     },
     methods: {
         openMenu(e) {

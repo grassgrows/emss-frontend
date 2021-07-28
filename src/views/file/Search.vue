@@ -114,7 +114,9 @@ export default {
                 type: 'error'
             })
         })
-
+        this.$bus.on('refresh-file', async () => {
+            await this.refresh()
+        })
 
     },
 

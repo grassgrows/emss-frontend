@@ -10,9 +10,12 @@ axios.interceptors.request.use((config) => {
 })
 
 axios.interceptors.response.use(undefined, (err) => {
-    if (err && err.response && err.response.data && err.response.data.code === 'E201') {
-        store.commit('clearToken')
-        router.push({name: 'login'})
+    if (err && err.response ) {
+        if (err.response.data && err.response.data.code === 'E201') {
+            store.commit('clearToken')
+            router.push({name: 'login'})
+        }
+        return Promise.resolve(err.response)
     }
     return Promise.reject(err)
 })
