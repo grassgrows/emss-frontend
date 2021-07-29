@@ -40,9 +40,15 @@ export default {
             this.ws?.send('\r')
             curr_line = ''
         }
+
+        this.terminal.onData((e)=> {
+            this.terminal.write(e)
+            curr_line += e
+        })
+
         this.terminal.onKey((e) => {
             const ev = e.domEvent
-            const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey
+            // const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey
 
             if (this.written) {
                 this.terminal.write(curr_line)
@@ -55,9 +61,6 @@ export default {
                     curr_line = curr_line.slice(0, curr_line.length - 1)
                     this.terminal.write('\b \b')
                 }
-            } else if (printable) {
-                this.terminal.write(e.key)
-                curr_line += e.key
             }
 
         })
